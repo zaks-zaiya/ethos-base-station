@@ -1,10 +1,10 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+  <q-layout view="lHh Lpr lFf" class="bg-blue-grey-2">
+    <q-header flat class="transparent">
       <q-toolbar>
-        <q-toolbar-title> Ethos Heat Monitor </q-toolbar-title>
-
-        <div>Settings</div>
+        <img src="ethos.svg" height="30" />
+        <q-toolbar-title></q-toolbar-title>
+        <q-btn square color="secondary" icon="settings" />
       </q-toolbar>
     </q-header>
 
