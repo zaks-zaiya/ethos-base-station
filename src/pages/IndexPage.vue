@@ -1,49 +1,69 @@
 <template>
-  <q-page class="row items-center justify-evenly">
-    <example-component
-      title="Example component"
-      active
-      :todos="todos"
-      :meta="meta"
-    ></example-component>
+  <q-page class="row">
+    <div
+      class="col-4 display-component"
+      v-for="sensorData in allSensorData"
+      :key="sensorData.id"
+    >
+      <sensor-display :sensor-data="sensorData"></sensor-display>
+    </div>
+    <div class="col-8 display-component">
+      <forecast-display></forecast-display>
+    </div>
   </q-page>
 </template>
 
 <script lang="ts">
-import { Todo, Meta } from 'components/models';
-import ExampleComponent from 'components/ExampleComponent.vue';
+import { SensorData } from 'components/models';
+
+import SensorDisplay from 'components/SensorDisplay.vue';
+import ForecastDisplay from 'components/ForecastDisplay.vue';
+
 import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
   name: 'IndexPage',
-  components: { ExampleComponent },
-  setup () {
-    const todos = ref<Todo[]>([
+  components: { SensorDisplay, ForecastDisplay },
+  setup() {
+    // Temporary test data
+    const allSensorData = ref<SensorData[]>([
       {
-        id: 1,
-        content: 'ct1'
+        id: '1',
+        name: 'Bedroom',
+        temperature: 31,
+        humidity: 24,
+        lastSeen: new Date(Date.now()),
       },
       {
-        id: 2,
-        content: 'ct2'
+        id: '2',
+        name: 'Outside',
+        temperature: 31,
+        humidity: 24,
+        lastSeen: new Date(Date.now()),
       },
       {
-        id: 3,
-        content: 'ct3'
+        id: '3',
+        name: 'Kitchen',
+        temperature: 31,
+        humidity: 24,
+        lastSeen: new Date(Date.now()),
       },
       {
-        id: 4,
-        content: 'ct4'
+        id: '4',
+        name: 'Living',
+        temperature: 31,
+        humidity: 24,
+        lastSeen: new Date(Date.now()),
       },
-      {
-        id: 5,
-        content: 'ct5'
-      }
     ]);
-    const meta = ref<Meta>({
-      totalCount: 1200
-    });
-    return { todos, meta };
-  }
+    return { allSensorData };
+  },
 });
 </script>
+
+<style lang="scss" scoped>
+.display-component {
+  height: 215px;
+  padding: 10px;
+}
+</style>

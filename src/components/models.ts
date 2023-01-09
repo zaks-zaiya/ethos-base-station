@@ -1,8 +1,7 @@
-export interface Todo {
-  id: number;
-  content: string;
-}
-
-export interface Meta {
-  totalCount: number;
+export interface SensorData {
+  name: string;
+  id: string;
+  temperature: number;
+  humidity: number;
+  lastSeen: Date;
 }
