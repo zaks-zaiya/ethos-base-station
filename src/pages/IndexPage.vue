@@ -46,7 +46,7 @@ export default defineComponent({
         name: 'Kitchen',
         temperature: 31,
         humidity: 24,
-        lastSeen: new Date(Date.now()),
+        lastSeen: new Date(Date.now() - 5000000),
       },
       {
         id: '4',

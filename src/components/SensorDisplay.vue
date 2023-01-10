@@ -1,15 +1,15 @@
 <template>
-  <q-card flat bordered class="full-height">
-    <q-card-section>
+  <q-card class="full-height bg-positive">
+    <q-card-section class="full-height">
       <div class="text-h6">{{ sensorData.name }}</div>
-    </q-card-section>
 
-    <q-separator inset />
+      <q-separator inset />
 
-    <q-card-section>
-      <div>{{ sensorData.temperature }}</div>
-      <div>{{ sensorData.humidity }}</div>
-      <div>{{ sensorData.lastSeen }}</div>
+      <div class="text-h3">{{ sensorData.temperature }}°C</div>
+      <div class="text-h4">{{ sensorData.humidity }}% RH</div>
+      <div class="text-italic">
+        Last seen: {{ sensorData.lastSeen.toLocaleString() }}
+      </div>
     </q-card-section>
   </q-card>
 </template>
