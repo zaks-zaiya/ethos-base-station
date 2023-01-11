@@ -19,12 +19,16 @@ import { SensorData } from 'components/models';
 import SensorDisplay from 'components/SensorDisplay.vue';
 import ForecastDisplay from 'components/ForecastDisplay.vue';
 
+import { useSensorDataStore } from 'stores/sensorData'
+
 import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
   name: 'IndexPage',
   components: { SensorDisplay, ForecastDisplay },
   setup() {
+    const store = useSensorDataStore();
+    store.setup();
     // Temporary test data
     const allSensorData = ref<SensorData[]>([
       {
