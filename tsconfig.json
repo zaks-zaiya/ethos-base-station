@@ -1,0 +1,4 @@
+// Dummy tsconfig file to avoid issues with Vetur
+{
+  "extends": "./javascript_ui/tsconfig.json"
+}
