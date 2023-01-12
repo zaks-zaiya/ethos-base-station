@@ -53,11 +53,11 @@ export default defineComponent({
       return wetBulbTemperature;
     },
     getRiskLevel: function () {
-      if (this.getWetBulb >= 35) {
+      if (this.getWetBulb >= 30) {
         return 'high';
-      } else if (this.getWetBulb >= 30) {
+      } else if (this.getWetBulb >= 25) {
         return 'medium';
-      } else if (this.getWetBulb < 30) {
+      } else if (this.getWetBulb < 25) {
         return 'low';
       } else {
         console.log('Unable to find correct risk level');
