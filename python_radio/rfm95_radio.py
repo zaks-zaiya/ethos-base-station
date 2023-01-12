@@ -1,17 +1,21 @@
-import socket
+import eventlet
+import socketio
 
-HOST = "127.0.0.1"  # Standard loopback interface address (localhost)
-PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
+# Allow web (9000) or electron (9300) apps to connect
+sio = socketio.Server(cors_allowed_origins=['http://localhost:9000', 'http://localhost:9300'])
+app = socketio.WSGIApp(sio)
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-  s.bind((HOST, PORT))
-  s.listen()
-  print("Server listening for connections...")
-  conn, addr = s.accept()
-  with conn:
-    print(f"Connected by {addr}")
-    while True:
-        data = conn.recv(1024)
-        if not data:
-          break
-        conn.sendall(data)
+@sio.event
+def connect(sid, environ):
+    print('connect ', sid)
+
+@sio.event
+def my_message(sid, data):
+    print('message ', data)
+
+@sio.event
+def disconnect(sid):
+    print('disconnect ', sid)
+
+if __name__ == '__main__':
+    eventlet.wsgi.server(eventlet.listen(('localhost', 5000)), app)

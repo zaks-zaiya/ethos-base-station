@@ -1,30 +1,32 @@
 import { defineStore } from 'pinia';
-import net from 'net';
+import { io } from 'socket.io-client';
 import { SensorData } from 'src/components/models';
 
 export const useSensorDataStore = defineStore('sensorData', {
   state: () => ({
-    socket: null as net.Socket | null, // socket to connect to python
-    isConnected: false, // whether we are connected to the socket
+    socket: io(),
     allSensorData: [] as Array<SensorData> // sensor data
   }),
 
   getters: {
+    isConnected: (state) => {
+      return state.socket.connected;
+    }
   },
 
   actions: {
-    setup () {
-      console.log('Setting up socket...')
-      this.socket = new net.Socket();
+    setup() {
+      console.log('Setting up socket...');
+      this.socket = io('localhost:5000');
 
-      // Connect to python radio socket
-      this.socket.connect(65432, '127.0.0.1', () => {
-        console.log('Client connected');
-        this.isConnected = true;
+      // Callbacks for socket
+      this.socket.on('connect', () => {
+        console.log('Connected:', this.socket.id);
       });
 
-      // Set keep alive to ensure the socket connection remains open (checking every 10s)
-      this.socket.setKeepAlive(true, 10000);
+      this.socket.on('disconnect', () => {
+        console.log('Disconnected:', this.socket.id);
+      });
 
       // Callback to update sensor data when applicable
       this.socket.on('data', data => {
@@ -42,7 +44,7 @@ export const useSensorDataStore = defineStore('sensorData', {
         const i = this.allSensorData.findIndex(sensorData => sensorData.id == data_obj.id)
         if (i < 0) {
           // Could not find index
-          console.error('Wrong sensor id')
+          console.error('Wrong sensor id');
           return;
         }
 
