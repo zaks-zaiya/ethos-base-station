@@ -4,14 +4,15 @@ import { SensorData } from 'src/components/models';
 
 export const useSensorDataStore = defineStore('sensorData', {
   state: () => ({
+    isConnected: false,
     socket: io(),
     allSensorData: [] as Array<SensorData> // sensor data
   }),
 
   getters: {
-    isConnected: (state) => {
-      return state.socket.connected;
-    }
+    // isConnected: (state) => {
+    //   return state.socket.connected;
+    // }
   },
 
   actions: {
@@ -21,10 +22,12 @@ export const useSensorDataStore = defineStore('sensorData', {
 
       // Callbacks for socket
       this.socket.on('connect', () => {
+        this.isConnected = true;
         console.log('Connected:', this.socket.id);
       });
 
       this.socket.on('disconnect', () => {
+        this.isConnected = false;
         console.log('Disconnected:', this.socket.id);
       });
 

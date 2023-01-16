@@ -1,5 +1,8 @@
 <template>
   <q-layout view="lHh Lpr lFf" class="bg-blue-grey-2">
+    <!-- Register Modals -->
+    <modal-no-connection />
+    <!-- Main layout -->
     <q-header flat class="transparent">
       <q-toolbar>
         <img src="ethos.svg" height="30" />
@@ -17,9 +20,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
+import ModalNoConnection from 'components/ModalNoConnection.vue';
+
 export default defineComponent({
   name: 'MainLayout',
-
+  components: { ModalNoConnection },
   setup() {
     return {};
   },
