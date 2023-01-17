@@ -4,5 +4,12 @@
 
 Requirements: NPM and Python 3 (with venv) to be previously installed
 
-1. Run install script `./install.sh` (linux) or `.\install.bat` (windows)
-2. To run development build run `./run_dev.sh` (linux) or `.\run_dev.bat` (windows)
+Run install script `sh install.sh` (Mac/Linux) or `.\install.bat` (Windows)
+
+## Run dev build
+
+To run development build run `sh run_dev.sh` (Mac/Linux) or `.\run_dev.bat` (Windows)
+
+## Run prod build
+
+TODO
