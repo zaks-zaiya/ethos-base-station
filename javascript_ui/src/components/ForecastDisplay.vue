@@ -4,7 +4,7 @@
       <div class="text-h6">Weather Forecast</div>
 
       <q-separator inset />
-      <div><img :src="iconUrl" alt="Weather icon"></div>
+      <div><img :src="iconUrl" alt="Weather icon" /></div>
       <div>{{ weatherDescription }}</div>
       <div>{{ currentTemp }}°C</div>
       <div>{{ currentHumidity }}% RH</div>
@@ -13,57 +13,66 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref, computed, onMounted, onUnmounted } from 'vue';
 import axios from 'axios';
 
 export default defineComponent({
   name: 'ForecastDisplay',
-  data() {
-    return {
-      currentTemp: null,
-      currentHumidity: null,
-      maxTemp: null,
-      minTemp: null,
-      weatherDescription: null,
-      weatherIcon: null as null | string,
-      pollInterval: null as null | number
-    }
-  },
-  computed: {
-    iconUrl() {
-      if (this.weatherIcon) {
-        return `http://openweathermap.org/img/w/${this.weatherIcon}.png`;
+  setup() {
+    let currentTemp = ref(null);
+    let currentHumidity = ref(null);
+    let maxTemp = ref(null);
+    let minTemp = ref(null);
+    let weatherDescription = ref(null);
+    let weatherIcon = ref(null);
+    let pollInterval: null | number = null;
+
+    let iconUrl = computed(() => {
+      if (weatherIcon.value) {
+        return `http://openweathermap.org/img/w/${weatherIcon.value}.png`;
       }
       return '';
-    }
-  },
-  methods: {
-    async updateWeather() {
+    });
+
+    onMounted(() => {
+      updateWeather();
+      // Setup poll interval for every 10 min
+      pollInterval = window.setInterval(updateWeather, 60000 * 10);
+    });
+
+    onUnmounted(() => {
+      // Clear poll interval if already exists
+      if (pollInterval) {
+        window.clearInterval(pollInterval);
+        pollInterval = null;
+      }
+    });
+
+    let updateWeather = async () => {
       console.log('Updating weather...');
       let url = `https://api.openweathermap.org/data/2.5/weather?lat=-28.0167&lon=153.400&units=metric&appid=${process.env.OPENWEATHERMAPSAPIKEY}`;
       let result = await axios.get(url, {
         timeout: 4000,
         responseType: 'text',
-        maxContentLength: 65536
+        maxContentLength: 65536,
       });
-      let weatherObj = JSON.parse(result.data)
-      this.currentTemp = weatherObj.main.temp;
-      this.currentHumidity = weatherObj.main.humidity;
-      this.minTemp = weatherObj.main.temp_min;
-      this.maxTemp = weatherObj.main.temp_max;
-      this.weatherDescription = weatherObj.weather[0].description;
-      this.weatherIcon = weatherObj.weather[0].icon;
-    }
+      let weatherObj = JSON.parse(result.data);
+      currentTemp.value = weatherObj.main.temp;
+      currentHumidity.value = weatherObj.main.humidity;
+      minTemp.value = weatherObj.main.temp_min;
+      maxTemp.value = weatherObj.main.temp_max;
+      weatherDescription.value = weatherObj.weather[0].description;
+      weatherIcon.value = weatherObj.weather[0].icon;
+    };
+
+    return {
+      currentTemp,
+      currentHumidity,
+      maxTemp,
+      minTemp,
+      weatherDescription,
+      iconUrl,
+    };
   },
-  mounted() {
-    this.updateWeather();
-    // Clear poll interval if already exists
-    if (this.pollInterval) {
-      window.clearInterval(this.pollInterval);
-      this.pollInterval = null;
-    }
-    // Setup poll interval for every 5 min
-    this.pollInterval = window.setInterval(this.updateWeather, 60000 * 10) // 10 minutes;
-  }
 });
 </script>
