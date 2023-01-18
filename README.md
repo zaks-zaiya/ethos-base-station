@@ -4,7 +4,8 @@
 
 Requirements: NPM and Python 3 (with venv) to be previously installed
 
-Run install script `sh install.sh` (Mac/Linux) or `.\install.bat` (Windows)
+1. Run install script `sh install.sh` (Mac/Linux) or `.\install.bat` (Windows)
+2. Under `./javascript_ui` make a file named `.env` using the provided `.env.example` file and fill in all variables
 
 ## Run dev build
 

@@ -1,0 +1,3 @@
+{
+  "extends": "./javascript_ui/package.json"
+}

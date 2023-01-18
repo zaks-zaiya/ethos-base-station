@@ -1,6 +1,7 @@
 {
 	"python.defaultInterpreterPath": "python_radio/env/bin/python",
 	"cSpell.words": [
+		"axios",
 		"eventlet",
 		"pinia",
 		"Vetur"
