@@ -1,0 +1,25 @@
+{
+  "folders": [
+    {
+      "name": "ROOT",
+      "path": "../"
+    },
+    {
+      "name": "javascript_ui",
+      "path": "../javascript_ui"
+    },
+    {
+      "name": "python_radio",
+      "path": "../python_radio"
+    },
+  ],
+  "settings": {
+    "python.defaultInterpreterPath": "python_radio/env/bin/python",
+    "cSpell.words": [
+      "axios",
+      "eventlet",
+      "pinia",
+      "Vetur"
+    ],
+  }
+}
