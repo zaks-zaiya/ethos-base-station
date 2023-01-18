@@ -5,7 +5,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
-import { useSensorDataStore } from 'stores/sensorData'
+import { useSensorDataStore } from 'stores/sensorData';
 
 export default defineComponent({
   name: 'App',
@@ -13,6 +13,6 @@ export default defineComponent({
   setup() {
     const store = useSensorDataStore();
     store.setup();
-  }
+  },
 });
 </script>

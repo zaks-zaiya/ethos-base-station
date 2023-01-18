@@ -6,7 +6,7 @@ export const useSensorDataStore = defineStore('sensorData', {
   state: () => ({
     isConnected: false,
     socket: io(),
-    allSensorData: [] as Array<SensorData> // sensor data
+    allSensorData: [] as Array<SensorData>, // sensor data
   }),
 
   getters: {
@@ -32,7 +32,7 @@ export const useSensorDataStore = defineStore('sensorData', {
       });
 
       // Callback to update sensor data when applicable
-      this.socket.on('data', data => {
+      this.socket.on('data', (data) => {
         console.log('Received: ' + data);
         const data_obj = JSON.parse(data.toString());
 
@@ -44,7 +44,9 @@ export const useSensorDataStore = defineStore('sensorData', {
         }
 
         // Check it exists in the array
-        const i = this.allSensorData.findIndex(sensorData => sensorData.id == data_obj.id)
+        const i = this.allSensorData.findIndex(
+          (sensorData) => sensorData.id == data_obj.id
+        );
         if (i < 0) {
           // Could not find index
           console.error('Wrong sensor id');
@@ -55,6 +57,6 @@ export const useSensorDataStore = defineStore('sensorData', {
         this.allSensorData[i].temperature = data_obj.temperature;
         this.allSensorData[i].humidity = data_obj.humidity;
       });
-    }
-  }
+    },
+  },
 });
