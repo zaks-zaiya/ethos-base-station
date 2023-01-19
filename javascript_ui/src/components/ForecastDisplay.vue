@@ -11,7 +11,7 @@
       <div v-else class="row">
         <div class="col">
           <div><img :src="iconUrl" alt="Weather icon" /></div>
-          <div>{{ weatherDescription }}</div>
+          <div class="text-capitalize">{{ weatherDescription }}</div>
         </div>
         <div class="col">
           <div>Temperature: {{ currentTemp?.toFixed(1) }}°C</div>
@@ -40,7 +40,7 @@ import axios, { AxiosError } from 'axios';
 export default defineComponent({
   name: 'ForecastDisplay',
   setup() {
-    let errorMessage = ref('');
+    let errorMessage = ref('Updating data...');
     let currentTemp: Ref<null | number> = ref(null);
     let currentHumidity: Ref<null | number> = ref(null);
     let minTemp: Ref<null | number> = ref(null);
@@ -55,9 +55,6 @@ export default defineComponent({
       }
       return '';
     });
-
-    let capitalizeFirstLetter = (string: string) =>
-      string.charAt(0).toUpperCase() + string.slice(1);
 
     onMounted(() => {
       updateWeather();
@@ -88,9 +85,7 @@ export default defineComponent({
         currentHumidity.value = weatherObj.main.humidity;
         minTemp.value = weatherObj.main.temp_min;
         maxTemp.value = weatherObj.main.temp_max;
-        weatherDescription.value = capitalizeFirstLetter(
-          weatherObj.weather[0].description
-        );
+        weatherDescription.value = weatherObj.weather[0].description;
         weatherIconId.value = weatherObj.weather[0].icon;
         // Clear error message
         errorMessage.value = '';
