@@ -8,16 +8,17 @@
         Weather Forecast Offline <br />
         Reason: {{ errorMessage }}
       </div>
-      <div v-else class="row">
-        <div class="col">
-          <div><img :src="iconUrl" alt="Weather icon" /></div>
-          <div class="text-capitalize">{{ weatherDescription }}</div>
+      <div v-else class="row" style="font-size: 20px">
+        <div class="col-3">
+          <div>
+            <img :src="iconUrl" :alt="weatherDescription" style="width: 75px" />
+          </div>
         </div>
         <div class="col">
           <div>Temperature: {{ currentTemp?.toFixed(1) }}°C</div>
           <div>Humidity: {{ currentHumidity }}% RH</div>
         </div>
-        <div class="col">
+        <div class="col-4">
           <div>Min: {{ minTemp?.toFixed(1) }}°C</div>
           <div>Max: {{ maxTemp?.toFixed(1) }}°C</div>
         </div>
@@ -45,7 +46,7 @@ export default defineComponent({
     let currentHumidity: Ref<null | number> = ref(null);
     let minTemp: Ref<null | number> = ref(null);
     let maxTemp: Ref<null | number> = ref(null);
-    let weatherDescription: Ref<null | string> = ref(null);
+    let weatherDescription: Ref<undefined | string> = ref(undefined);
     let weatherIconId: Ref<null | string> = ref(null);
     let pollInterval: null | number = null;
 
