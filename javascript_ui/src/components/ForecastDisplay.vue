@@ -8,38 +8,56 @@
         Weather Forecast Offline <br />
         Reason: {{ errorMessage }}
       </div>
-      <div v-else>
-        <div><img :src="iconUrl" alt="Weather icon" /></div>
-        <div>{{ weatherDescription }}</div>
-        <div>{{ currentTemp }}°C</div>
-        <div>{{ currentHumidity }}% RH</div>
+      <div v-else class="row">
+        <div class="col">
+          <div><img :src="iconUrl" alt="Weather icon" /></div>
+          <div>{{ weatherDescription }}</div>
+        </div>
+        <div class="col">
+          <div>Temperature: {{ currentTemp?.toFixed(1) }}°C</div>
+          <div>Humidity: {{ currentHumidity }}% RH</div>
+        </div>
+        <div class="col">
+          <div>Min: {{ minTemp?.toFixed(1) }}°C</div>
+          <div>Max: {{ maxTemp?.toFixed(1) }}°C</div>
+        </div>
       </div>
     </q-card-section>
   </q-card>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted, onUnmounted } from 'vue';
+import {
+  defineComponent,
+  ref,
+  Ref,
+  computed,
+  onMounted,
+  onUnmounted,
+} from 'vue';
 import axios, { AxiosError } from 'axios';
 
 export default defineComponent({
   name: 'ForecastDisplay',
   setup() {
     let errorMessage = ref('');
-    let currentTemp = ref(null);
-    let currentHumidity = ref(null);
-    let maxTemp = ref(null);
-    let minTemp = ref(null);
-    let weatherDescription = ref(null);
-    let weatherIcon = ref(null);
+    let currentTemp: Ref<null | number> = ref(null);
+    let currentHumidity: Ref<null | number> = ref(null);
+    let minTemp: Ref<null | number> = ref(null);
+    let maxTemp: Ref<null | number> = ref(null);
+    let weatherDescription: Ref<null | string> = ref(null);
+    let weatherIconId: Ref<null | string> = ref(null);
     let pollInterval: null | number = null;
 
     let iconUrl = computed(() => {
-      if (weatherIcon.value) {
-        return `http://openweathermap.org/img/w/${weatherIcon.value}.png`;
+      if (weatherIconId.value) {
+        return `http://openweathermap.org/img/w/${weatherIconId.value}.png`;
       }
       return '';
     });
+
+    let capitalizeFirstLetter = (string: string) =>
+      string.charAt(0).toUpperCase() + string.slice(1);
 
     onMounted(() => {
       updateWeather();
@@ -70,8 +88,10 @@ export default defineComponent({
         currentHumidity.value = weatherObj.main.humidity;
         minTemp.value = weatherObj.main.temp_min;
         maxTemp.value = weatherObj.main.temp_max;
-        weatherDescription.value = weatherObj.weather[0].description;
-        weatherIcon.value = weatherObj.weather[0].icon;
+        weatherDescription.value = capitalizeFirstLetter(
+          weatherObj.weather[0].description
+        );
+        weatherIconId.value = weatherObj.weather[0].icon;
         // Clear error message
         errorMessage.value = '';
       } catch (error: unknown) {
