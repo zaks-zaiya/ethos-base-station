@@ -1,5 +1,5 @@
 <template>
-  <q-card flat bordered class="full-height">
+  <q-card class="full-height">
     <q-card-section>
       <div class="text-h6">Weather Forecast</div>
 
