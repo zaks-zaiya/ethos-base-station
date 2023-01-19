@@ -1,5 +1,5 @@
 <template>
-  <q-card class="full-height" :class="getBackgroundColor">
+  <q-card class="full-height" :class="backgroundColor">
     <q-card-section class="full-height">
       <div class="text-h6">
         {{ sensorData.name }} <span v-if="isOffline">(Offline)</span>
@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, computed } from 'vue';
 import { SensorData } from 'components/models';
 
 export default defineComponent({
@@ -28,19 +28,20 @@ export default defineComponent({
       required: true,
     },
   },
-  computed: {
-    isOffline: function () {
+  setup(props) {
+    let isOffline = computed(() => {
       let timeDifference = Math.abs(
-        this.sensorData.lastSeen.getTime() - Date.now()
+        props.sensorData.lastSeen.getTime() - Date.now()
       );
       let thirtyMinutes = 1800000; // in ms
       return timeDifference > thirtyMinutes;
-    },
-    getWetBulb: function () {
+    });
+
+    let wetBulbTemperature = computed(() => {
       // Equation taken from:
       // https://physicscalc.com/physics/wet-bulb-calculator/
-      let temperature = this.sensorData.temperature;
-      let humidity = this.sensorData.humidity;
+      let temperature = props.sensorData.temperature;
+      let humidity = props.sensorData.humidity;
       let wetBulbTemperature =
         temperature *
           Math.atan(0.151977 * Math.pow(humidity + 8.313659, 1 / 2)) +
@@ -51,38 +52,41 @@ export default defineComponent({
           Math.atan(0.023101 * humidity) -
         4.686035;
       return wetBulbTemperature;
-    },
-    getRiskLevel: function () {
-      if (this.getWetBulb >= 30) {
+    });
+
+    let riskLevel = computed(() => {
+      if (wetBulbTemperature.value >= 30) {
         return 'high';
-      } else if (this.getWetBulb >= 25) {
+      } else if (wetBulbTemperature.value >= 25) {
         return 'medium';
-      } else if (this.getWetBulb < 25) {
+      } else if (wetBulbTemperature.value < 25) {
         return 'low';
       } else {
         console.log('Unable to find correct risk level');
         return '';
       }
-    },
-    getBackgroundColor: function () {
-      let risk = this.getRiskLevel;
-      if (this.isOffline) {
+    });
+
+    let backgroundColor = computed(() => {
+      if (isOffline.value) {
         // Sensor is offline
         return 'bg-grey';
-      } else if (risk == 'low') {
+      } else if (riskLevel.value == 'low') {
         // Low risk, background green
         return 'bg-positive';
-      } else if (risk == 'medium') {
+      } else if (riskLevel.value == 'medium') {
         // Medium risk, background yellow
         return 'bg-warning';
-      } else if (risk == 'high') {
+      } else if (riskLevel.value == 'high') {
         // High risk, background red
         return 'bg-negative';
       } else {
         console.error('Unable to find correct background color');
         return 'bg-grey';
       }
-    },
+    });
+
+    return { isOffline, backgroundColor };
   },
 });
 </script>
