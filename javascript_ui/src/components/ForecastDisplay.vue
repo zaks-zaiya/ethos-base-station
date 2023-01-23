@@ -1,27 +1,40 @@
 <template>
-  <q-card class="full-height">
-    <q-card-section>
-      <div class="text-h6">Weather Forecast</div>
-
-      <q-separator inset />
-      <div v-if="errorMessage">
-        Weather Forecast Offline <br />
-        Reason: {{ errorMessage }}
-      </div>
-      <div v-else class="row" style="font-size: 20px">
-        <div class="col-3">
-          <div>
-            <img :src="iconUrl" :alt="weatherDescription" style="width: 75px" />
+  <q-card class="full-height bg-dark text-white">
+    <q-card-section horizontal class="full-height">
+      <q-card-section>
+        <div>
+          <img :src="iconUrl" :alt="weatherDescription" style="width: 75px" />
+          <div class="text-capitalize text-center">
+            {{ weatherDescription }}
           </div>
         </div>
-        <div class="col">
-          <div>Temperature: {{ currentTemp?.toFixed(1) }}°C</div>
-          <div>Humidity: {{ currentHumidity }}% RH</div>
-        </div>
-        <div class="col-4">
-          <div>Min: {{ minTemp?.toFixed(1) }}°C</div>
-          <div>Max: {{ maxTemp?.toFixed(1) }}°C</div>
-        </div>
+      </q-card-section>
+
+      <q-separator vertical dark />
+
+      <div class="full-width">
+        <q-card-section class="q-pa-sm">
+          <div class="text-h6">Weather Forecast</div>
+        </q-card-section>
+
+        <q-separator dark />
+
+        <q-card-section class="q-pa-sm">
+          <div v-if="errorMessage">
+            Weather Forecast Offline <br />
+            Reason: {{ errorMessage }}
+          </div>
+          <div v-else class="row" style="font-size: 22px">
+            <div class="col-7">
+              <div>Temperature: {{ currentTemp?.toFixed(1) }}°C</div>
+              <div>Humidity: {{ currentHumidity }}% RH</div>
+            </div>
+            <div class="col">
+              <div>Min: {{ minTemp?.toFixed(1) }}°C</div>
+              <div>Max: {{ maxTemp?.toFixed(1) }}°C</div>
+            </div>
+          </div>
+        </q-card-section>
       </div>
     </q-card-section>
   </q-card>
