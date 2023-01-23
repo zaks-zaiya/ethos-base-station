@@ -1,14 +1,16 @@
 <template>
   <q-card class="full-height" :class="backgroundColor">
-    <q-card-section class="full-height">
+    <q-card-section class="q-pa-sm">
       <div class="text-h6">
         {{ sensorData.name }} <span v-if="isOffline">(Offline)</span>
       </div>
+    </q-card-section>
 
-      <q-separator inset />
+    <q-separator />
 
+    <q-card-section class="full-height q-pa-sm">
       <div class="text-h3">{{ sensorData.temperature }}°C</div>
-      <div class="text-h4">{{ sensorData.humidity }}% RH</div>
+      <div class="text-h4 q-pb-md">{{ sensorData.humidity }}% RH</div>
       <div class="text-italic">
         Last seen: {{ sensorData.lastSeen.toLocaleString() }}
       </div>

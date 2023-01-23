@@ -37,8 +37,8 @@ export default defineComponent({
       {
         id: '2',
         name: 'Outside',
-        temperature: 42,
-        humidity: 64,
+        temperature: 39,
+        humidity: 52,
         lastSeen: new Date(Date.now()),
       },
       {
@@ -51,8 +51,8 @@ export default defineComponent({
       {
         id: '4',
         name: 'Living',
-        temperature: 39,
-        humidity: 52,
+        temperature: 35,
+        humidity: 48,
         lastSeen: new Date(Date.now()),
       },
     ]);
