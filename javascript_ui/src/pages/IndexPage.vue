@@ -65,7 +65,7 @@ export default defineComponent({
         }
         return false;
       });
-      if (outsideIndex) {
+      if (outsideIndex >= 0) {
         copyOfSensorData.push(copyOfSensorData.splice(outsideIndex, 1)[0]);
       }
       return copyOfSensorData;
