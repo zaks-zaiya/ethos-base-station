@@ -2,7 +2,7 @@
   <q-page class="row">
     <div
       class="col-4 display-component"
-      v-for="sensorData in allSensorData"
+      v-for="sensorData in sortedSensorData"
       :key="sensorData.id"
     >
       <sensor-display :sensor-data="sensorData"></sensor-display>
@@ -19,7 +19,7 @@ import { SensorData } from 'components/models';
 import SensorDisplay from 'components/SensorDisplay.vue';
 import ForecastDisplay from 'components/ForecastDisplay.vue';
 
-import { defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
 
 export default defineComponent({
   name: 'IndexPage',
@@ -56,7 +56,21 @@ export default defineComponent({
         lastSeen: new Date(Date.now()),
       },
     ]);
-    return { allSensorData };
+
+    const sortedSensorData = computed(() => {
+      const copyOfSensorData = [...allSensorData.value]; // Shallow copy
+      const outsideIndex = allSensorData.value.findIndex((el) => {
+        if (el.name.toLowerCase().includes('out')) {
+          return true;
+        }
+        return false;
+      });
+      if (outsideIndex) {
+        copyOfSensorData.push(copyOfSensorData.splice(outsideIndex, 1)[0]);
+      }
+      return copyOfSensorData;
+    });
+    return { sortedSensorData };
   },
 });
 </script>
