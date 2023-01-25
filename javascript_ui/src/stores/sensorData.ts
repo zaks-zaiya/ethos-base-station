@@ -5,7 +5,7 @@ import { SensorData } from 'src/components/models';
 export const useSensorDataStore = defineStore('sensorData', {
   state: () => ({
     isConnected: false,
-    socket: io(),
+    socket: io('ws://localhost:5000'),
     allSensorData: [] as Array<SensorData>, // sensor data
   }),
 
@@ -18,7 +18,6 @@ export const useSensorDataStore = defineStore('sensorData', {
   actions: {
     setup() {
       console.log('Setting up socket...');
-      this.socket = io('http://localhost:5000');
 
       // Callbacks for socket
       this.socket.on('connect', () => {
