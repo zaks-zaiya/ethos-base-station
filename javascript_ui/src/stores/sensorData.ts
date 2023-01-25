@@ -18,7 +18,7 @@ export const useSensorDataStore = defineStore('sensorData', {
   actions: {
     setup() {
       console.log('Setting up socket...');
-      this.socket = io('localhost:5000');
+      this.socket = io('localhost:5000', { transports: ['websocket'] });
 
       // Callbacks for socket
       this.socket.on('connect', () => {
