@@ -55,6 +55,7 @@ export const useSensorDataStore = defineStore('sensorData', {
         // Update array values
         this.allSensorData[i].temperature = data_obj.temperature;
         this.allSensorData[i].humidity = data_obj.humidity;
+        this.allSensorData[i].lastSeen = new Date(Date.now());
       });
     },
   },
