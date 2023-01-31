@@ -1,28 +1,22 @@
 import board
 import busio
-import digitalio
+from digitalio import DigitalInOut
 
 import adafruit_rfm9x
 
-
-# Define radio parameters.
-RADIO_FREQ_MHZ = 915.0  # Frequency of the radio in Mhz. Must match your
-# module! Can be a value like 915.0, 433.0, etc.
-
-# Define pins connected to the chip, use these if wiring up the breakout according to the guide:
-CS = digitalio.DigitalInOut(board.D5)
-RESET = digitalio.DigitalInOut(board.D6)
-
-# Initialize SPI bus.
-spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
-
-# Initialize RFM radio
-rfm9x = adafruit_rfm9x.RFM9x(spi, CS, RESET, RADIO_FREQ_MHZ)
-
-# Transmit power (in dB). The default is 13 dB
-rfm9x.tx_power = 23
-
 def radio_listen(sio):
+  # Define radio parameters.
+  RADIO_FREQ_MHZ = 915.0  # Frequency of the radio in Mhz. Must match your
+  # module! Can be a value like 915.0, 433.0, etc.
+
+  # Configure LoRa Radio
+  CS = DigitalInOut(board.CE1)
+  RESET = DigitalInOut(board.D25)
+  spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
+  rfm9x = adafruit_rfm9x.RFM9x(spi, CS, RESET, RADIO_FREQ_MHZ)
+  rfm9x.tx_power = 23
+
+  # Radio listen loop
   while True:
     packet = rfm9x.receive()
     # Optionally change the receive timeout from its default of 0.5 seconds:
