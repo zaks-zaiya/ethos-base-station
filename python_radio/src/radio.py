@@ -27,6 +27,7 @@ def radio_listen(sio):
       # Also read the RSSI (signal strength) of the last received message and print it.
       rssi = rfm9x.last_rssi
       print("Received signal strength: {0} dB".format(rssi))
+      # TODO: Send response acknowledging recieved message
       # TODO: Decode radio packet with temp sensor information
       # TODO: Emit event with temperature information
       sio.emit('data', {'id': 1, 'temperature': 99, 'humidity': 99})
