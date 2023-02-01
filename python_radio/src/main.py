@@ -17,6 +17,6 @@ def disconnect(sid):
   print('disconnect ', sid)
 
 if __name__ == '__main__':
-  radio_thread = threading.Thread(target=radio_listen, args=(sio))
+  radio_thread = threading.Thread(target=radio_listen, args=[sio])
   radio_thread.start()
   eventlet.wsgi.server(eventlet.listen(('localhost', 5000)), app)
