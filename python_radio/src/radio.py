@@ -1,8 +1,9 @@
 import board
 import busio
 from digitalio import DigitalInOut
-
 import adafruit_rfm9x
+
+import re
 
 def radio_listen(sio):
   # Configure LoRa Radio
@@ -16,24 +17,38 @@ def radio_listen(sio):
   # Radio listen loop
   while True:
     packet = rfm9x.receive(timeout=5.0)
+
     # If no packet was received during the timeout then None is returned.
-    if packet is not None:
-      # Received a packet!
-      # TODO: Decode radio packet with temp sensor information
-      # Print out the raw bytes of the packet:
-      print("Received (raw bytes): {0}".format(packet))
-      # And decode to ASCII text and print it too.
-      packet_text = str(packet, "ascii")
-      print("Received (ASCII): {0}".format(packet_text))
-      # Also read the RSSI (signal strength) of the last received message and print it.
-      rssi = rfm9x.last_rssi
-      print("Received signal strength: {0} dB".format(rssi))
-      # Send response acknowledging received message
-      # TODO: Check if sensor is one of the ones tied to the house
-      id = "000" # TODO: Set ID based on the message received
-      acknowledgement_data = bytes("R" + id + "\r\n","utf-8")
-      rfm9x.send(acknowledgement_data)
-      # TODO: Emit event with temperature information
-      sio.emit('data', {'id': 1, 'temperature': 99, 'humidity': 99})
-    else:
+    if packet is None:
       print("Nothing received, trying again...")
+      continue
+
+    # Received a packet!
+    packet_text = str(packet, "ascii")
+    print("Received (ASCII): {0}".format(packet_text))
+    # Also read the RSSI (signal strength) of the last received message and print it.
+    rssi = rfm9x.last_rssi
+    print("Received signal strength: {0} dB".format(rssi))
+
+    # Decode radio packet with temp sensor information
+    match = re.match("^I(\d+)T([\d\.]+)H([\d\.]+)$", packet_text)
+
+    # If no regex match, radio must be coming from a different source
+    if match is None:
+      print("Incorrect radio message, trying again...")
+      continue
+
+    # Decode message
+    id = match[1]
+    temperature = match[2]
+    humidity = match[3]
+
+    # TODO: Check if sensor id is one of the ones tied to the house
+
+    # Send acknowledgement to let sensor know
+    # we received the message
+    acknowledgement_data = bytes("R" + id + "\r\n","utf-8")
+    rfm9x.send(acknowledgement_data)
+
+    # Send socket event to main program with the data
+    sio.emit('data', {'id': id, 'temperature': temperature, 'humidity': humidity})
