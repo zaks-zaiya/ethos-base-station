@@ -19,6 +19,7 @@ def radio_listen(sio):
     # If no packet was received during the timeout then None is returned.
     if packet is not None:
       # Received a packet!
+      # TODO: Decode radio packet with temp sensor information
       # Print out the raw bytes of the packet:
       print("Received (raw bytes): {0}".format(packet))
       # And decode to ASCII text and print it too.
@@ -27,8 +28,11 @@ def radio_listen(sio):
       # Also read the RSSI (signal strength) of the last received message and print it.
       rssi = rfm9x.last_rssi
       print("Received signal strength: {0} dB".format(rssi))
-      # TODO: Send response acknowledging recieved message
-      # TODO: Decode radio packet with temp sensor information
+      # Send response acknowledging received message
+      # TODO: Check if sensor is one of the ones tied to the house
+      id = "000" # TODO: Set ID based on the message received
+      acknowledgement_data = bytes("R" + id + "\r\n","utf-8")
+      rfm9x.send(acknowledgement_data)
       # TODO: Emit event with temperature information
       sio.emit('data', {'id': 1, 'temperature': 99, 'humidity': 99})
     else:
