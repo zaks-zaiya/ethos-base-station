@@ -52,7 +52,7 @@ import {
 import axios, { AxiosError } from 'axios';
 
 export default defineComponent({
-  name: 'ForecastDisplay',
+  name: 'DisplayForecast',
   setup() {
     let errorMessage = ref('Updating data...');
     let currentTemp: Ref<null | number> = ref(null);

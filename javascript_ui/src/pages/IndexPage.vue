@@ -5,10 +5,10 @@
       v-for="sensorData in sortedSensorData"
       :key="sensorData.id"
     >
-      <sensor-display :sensor-data="sensorData"></sensor-display>
+      <DisplaySensor :sensor-data="sensorData"></DisplaySensor>
     </div>
     <div class="col-8 display-component">
-      <forecast-display></forecast-display>
+      <DisplayForecast />
     </div>
   </q-page>
 </template>
@@ -16,14 +16,14 @@
 <script lang="ts">
 import { SensorData } from 'components/models';
 
-import SensorDisplay from 'components/SensorDisplay.vue';
-import ForecastDisplay from 'components/ForecastDisplay.vue';
+import DisplaySensor from 'components/DisplaySensor.vue';
+import DisplayForecast from 'components/DisplayForecast.vue';
 
 import { computed, defineComponent, ref } from 'vue';
 
 export default defineComponent({
   name: 'IndexPage',
-  components: { SensorDisplay, ForecastDisplay },
+  components: { DisplaySensor, DisplayForecast },
   setup() {
     // Temporary test data
     const allSensorData = ref<SensorData[]>([

@@ -23,7 +23,7 @@ import { defineComponent, PropType, computed } from 'vue';
 import { SensorData } from 'components/models';
 
 export default defineComponent({
-  name: 'SensorDisplay',
+  name: 'DisplaySensor',
   props: {
     sensorData: {
       type: Object as PropType<SensorData>,
