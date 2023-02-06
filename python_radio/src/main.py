@@ -1,12 +1,13 @@
-import eventlet
+from aiohttp import web
 import socketio
-import threading
 
+import threading
 from radio import radio_listen
 
 # Allow web (9000) or electron (9300) apps to connect
-sio = socketio.Server(cors_allowed_origins='*')
-app = socketio.WSGIApp(sio)
+sio = socketio.AsyncServer(cors_allowed_origins='*')
+app = web.Application()
+sio.attach(app)
 
 @sio.event
 def connect(sid, environ):
@@ -17,6 +18,7 @@ def disconnect(sid):
   print('disconnect ', sid)
 
 if __name__ == '__main__':
+  # Uncomment for RPI build
   radio_thread = threading.Thread(target=radio_listen, args=[sio])
   radio_thread.start()
-  eventlet.wsgi.server(eventlet.listen(('localhost', 5000)), app)
+  web.run_app(app, port=5000)
