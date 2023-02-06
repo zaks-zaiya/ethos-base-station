@@ -8,7 +8,7 @@
         <img src="ethos.svg" height="30" />
         <q-toolbar-title></q-toolbar-title>
         <q-btn color="secondary" label="help" class="q-mr-md" />
-        <q-btn color="secondary" icon="settings" />
+        <q-btn color="secondary" icon="settings" to="settings" />
       </q-toolbar>
     </q-header>
 
