@@ -1,7 +1,7 @@
 <template>
   <div
     class="justify-center items-center text-center"
-    style="margin: 0px 200px"
+    style="margin: 20px 200px"
   >
     <b
       >If you are a researcher, enter passcode to go to settings page, otherwise
