@@ -6,6 +6,14 @@
     <q-header flat class="transparent">
       <q-toolbar>
         <img src="ethos.svg" height="30" />
+        <q-btn
+          v-if="$route.path !== '/'"
+          to="/"
+          color="info"
+          label="go back to home"
+          icon="home"
+          class="q-ml-md"
+        />
         <q-toolbar-title></q-toolbar-title>
         <q-btn color="secondary" label="help" class="q-mr-md" />
         <q-btn color="secondary" icon="settings" to="settings" />
@@ -26,8 +34,5 @@ import ModalNoConnection from 'components/ModalNoConnection.vue';
 export default defineComponent({
   name: 'MainLayout',
   components: { ModalNoConnection },
-  setup() {
-    return {};
-  },
 });
 </script>
