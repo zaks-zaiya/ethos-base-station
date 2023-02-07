@@ -1,5 +1,9 @@
 # ethos-raspberrypi
 
+## Show settings button
+
+To show the settings button, press the ethos logo (top left) 7 times in quick succession
+
 ## Installation
 
 Requirements: NPM and Python 3 (with venv) to be previously installed

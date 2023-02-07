@@ -5,7 +5,7 @@
     <!-- Main layout -->
     <q-header flat class="transparent">
       <q-toolbar>
-        <img src="ethos.svg" height="30" />
+        <img src="ethos.svg" height="30" @click="showSettingsButton" />
         <q-btn
           v-if="$route.path !== '/'"
           to="/"
@@ -15,8 +15,15 @@
           class="q-ml-md"
         />
         <q-toolbar-title></q-toolbar-title>
-        <q-btn color="secondary" label="help" class="q-mr-md" />
-        <q-btn color="secondary" icon="settings" to="settings" />
+        <q-btn
+          v-if="isShowSettingsButton"
+          @click="hideSettingsButton"
+          class="q-mr-md"
+          color="secondary"
+          icon="settings"
+          to="settings"
+        />
+        <q-btn color="secondary" label="help" />
       </q-toolbar>
     </q-header>
 
@@ -27,12 +34,44 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 
 import ModalNoConnection from 'components/ModalNoConnection.vue';
 
 export default defineComponent({
   name: 'MainLayout',
   components: { ModalNoConnection },
+  setup() {
+    let isShowSettingsButton = ref(false);
+
+    let timeoutShowSettingsButton: null | number = null;
+    let showSettingsPressedCount = 0;
+
+    // Function to show settings button if activated multiple times in quick succession
+    let showSettingsButton = () => {
+      // Increment pressed count
+      showSettingsPressedCount++;
+      // Check if the threshold has been met to show the settings button
+      if (showSettingsPressedCount >= 7) {
+        showSettingsPressedCount = 0;
+        isShowSettingsButton.value = true;
+        return;
+      }
+      // Clear the timeout (if it exists)
+      if (timeoutShowSettingsButton) {
+        clearTimeout(timeoutShowSettingsButton);
+      }
+      // Set another timeout that resets logo pressed count when it expires
+      timeoutShowSettingsButton = window.setTimeout(() => {
+        showSettingsPressedCount = 0;
+      }, 3000);
+    };
+
+    let hideSettingsButton = () => {
+      isShowSettingsButton.value = false;
+    };
+
+    return { isShowSettingsButton, showSettingsButton, hideSettingsButton };
+  },
 });
 </script>
