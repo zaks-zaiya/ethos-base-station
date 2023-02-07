@@ -72,7 +72,7 @@ export default defineComponent({
     let backgroundColor = computed(() => {
       if (isOffline.value) {
         // Sensor is offline
-        return 'bg-grey';
+        return 'bg-grey text-grey-8';
       } else if (riskLevel.value == 'low') {
         // Low risk, background green
         return 'bg-positive';
