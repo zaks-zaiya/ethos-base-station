@@ -18,7 +18,6 @@
           transition-next="slide-up"
         >
           <q-tab-panel name="user-data">
-            <div class="text-h4 q-mb-md">User Data</div>
             <SettingsMenuUserData />
           </q-tab-panel>
 
