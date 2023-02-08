@@ -7,5 +7,5 @@
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "vue"],
   "typescript.tsdk": "node_modules/typescript/lib",
   "python.defaultInterpreterPath": "python_radio/env/bin/python",
-  "cSpell.words": ["axios", "eventlet", "pinia", "Vetur"]
+  "cSpell.words": ["axios", "eventlet", "pinia", "SETTINGSPASSCODE", "Vetur"]
 }
