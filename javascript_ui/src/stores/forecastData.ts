@@ -5,6 +5,7 @@ import axios, { AxiosError } from 'axios';
 export const useForecastDataStore = defineStore('forecastData', {
   state: () => ({
     errorMessage: 'Updating data...',
+    stationName: null as null | string,
     currentTemp: null as null | number,
     currentHumidity: null as null | number,
     minTemp: null as null | number,
@@ -29,6 +30,7 @@ export const useForecastDataStore = defineStore('forecastData', {
           });
           // Update weather values
           const weatherObj = JSON.parse(result.data);
+          this.stationName = weatherObj.name;
           this.currentTemp = weatherObj.main.temp;
           this.currentHumidity = weatherObj.main.humidity;
           this.minTemp = weatherObj.main.temp_min;

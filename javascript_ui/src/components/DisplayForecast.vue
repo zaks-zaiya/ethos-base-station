@@ -18,14 +18,17 @@
 
       <div class="full-width">
         <q-card-section class="q-pa-sm">
-          <div class="text-h6">Weather Forecast</div>
+          <div class="text-h6">
+            <span v-if="store.stationName"> {{ store.stationName }} - </span>
+            <span>Weather Station</span>
+          </div>
         </q-card-section>
 
         <q-separator dark />
 
         <q-card-section class="q-pa-sm">
           <div v-if="store.errorMessage">
-            Weather Forecast Offline <br />
+            Weather Station Offline <br />
             Reason: {{ store.errorMessage }}
           </div>
           <div v-else class="row" style="font-size: 22px">
