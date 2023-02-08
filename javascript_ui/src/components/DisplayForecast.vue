@@ -36,10 +36,10 @@
               <div>Temperature: {{ store.currentTemp?.toFixed(1) }}°C</div>
               <div>Humidity: {{ store.currentHumidity }}% RH</div>
             </div>
-            <div class="col">
-              <div>Min: {{ store.minTemp?.toFixed(1) }}°C</div>
-              <div>Max: {{ store.maxTemp?.toFixed(1) }}°C</div>
-            </div>
+            <!-- <div class="col"> -->
+            <!-- <div>Min: {{ store.minTemp?.toFixed(1) }}°C</div> -->
+            <!-- <div>Max: {{ store.maxTemp?.toFixed(1) }}°C</div> -->
+            <!-- </div> -->
           </div>
         </q-card-section>
       </div>

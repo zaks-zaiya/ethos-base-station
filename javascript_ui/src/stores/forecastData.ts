@@ -8,8 +8,8 @@ export const useForecastDataStore = defineStore('forecastData', {
     stationName: null as null | string,
     currentTemp: null as null | number,
     currentHumidity: null as null | number,
-    minTemp: null as null | number,
-    maxTemp: null as null | number,
+    // minTemp: null as null | number,
+    // maxTemp: null as null | number,
     weatherDescription: undefined as undefined | string,
     weatherIconId: null as null | string,
     pollInterval: null as null | number,
@@ -33,8 +33,8 @@ export const useForecastDataStore = defineStore('forecastData', {
           this.stationName = weatherObj.name;
           this.currentTemp = weatherObj.main.temp;
           this.currentHumidity = weatherObj.main.humidity;
-          this.minTemp = weatherObj.main.temp_min;
-          this.maxTemp = weatherObj.main.temp_max;
+          // this.minTemp = weatherObj.main.temp_min;
+          // this.maxTemp = weatherObj.main.temp_max;
           this.weatherDescription = weatherObj.weather[0].description;
           this.weatherIconId = weatherObj.weather[0].icon;
           // Clear error message
