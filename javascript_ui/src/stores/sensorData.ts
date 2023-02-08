@@ -6,13 +6,55 @@ export const useSensorDataStore = defineStore('sensorData', {
   state: () => ({
     isConnected: false,
     socket: io('ws://localhost:5000'),
-    allSensorData: [] as Array<SensorData>, // sensor data
+    allSensorData: [
+      {
+        id: '001',
+        name: 'Bedroom',
+        temperature: 31,
+        humidity: 24,
+        lastSeen: new Date(Date.now()),
+      },
+      {
+        id: '002',
+        name: 'Outside',
+        temperature: 39,
+        humidity: 52,
+        lastSeen: new Date(Date.now()),
+      },
+      {
+        id: '003',
+        name: 'Kitchen',
+        temperature: 31,
+        humidity: 24,
+        lastSeen: new Date(Date.now() - 5000000),
+      },
+      {
+        id: '004',
+        name: 'Living',
+        temperature: 35,
+        humidity: 48,
+        lastSeen: new Date(Date.now()),
+      },
+    ] as Array<SensorData>, // sensor data
   }),
 
   getters: {
-    // isConnected: (state) => {
-    //   return state.socket.connected;
-    // }
+    getSortedSensorData: (state) => {
+      // Take a shallow copy of the array to prevent data mutation
+      const copyOfSensorData = [...state.allSensorData];
+      // Find index of the sensor that has 'out' in its name
+      const outsideIndex = copyOfSensorData.findIndex((el) => {
+        if (el.name.toLowerCase().includes('out')) {
+          return true;
+        }
+        return false;
+      });
+      // If a sensor matches outside, push it to the end of the array
+      if (outsideIndex >= 0) {
+        copyOfSensorData.push(copyOfSensorData.splice(outsideIndex, 1)[0]);
+      }
+      return copyOfSensorData;
+    },
   },
 
   actions: {
