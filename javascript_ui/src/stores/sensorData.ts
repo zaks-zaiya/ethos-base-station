@@ -3,6 +3,8 @@ import { io } from 'socket.io-client';
 import { SensorData } from 'src/components/models';
 
 export const useSensorDataStore = defineStore('sensorData', {
+  persist: true,
+
   state: () => ({
     isConnected: false,
     socket: io('ws://localhost:5000'),

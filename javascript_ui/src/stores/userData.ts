@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia';
 
 export const useUserDataStore = defineStore('userData', {
+  persist: true,
+
   state: () => ({
     postcode: undefined as undefined | number,
     ageYears: undefined as undefined | number,
