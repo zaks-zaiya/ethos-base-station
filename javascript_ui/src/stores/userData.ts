@@ -5,6 +5,8 @@ export const useUserDataStore = defineStore('userData', {
 
   state: () => ({
     postcode: undefined as undefined | number,
+    latitude: undefined as undefined | number,
+    longitude: undefined as undefined | number,
     ageYears: undefined as undefined | number,
     heightCm: undefined as undefined | number,
     weightKg: undefined as undefined | number,

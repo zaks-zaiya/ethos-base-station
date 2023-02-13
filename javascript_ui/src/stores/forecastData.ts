@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 
 import axios, { AxiosError } from 'axios';
+import { useUserDataStore } from './userData';
 
 export const useForecastDataStore = defineStore('forecastData', {
   state: () => ({
@@ -19,10 +20,17 @@ export const useForecastDataStore = defineStore('forecastData', {
 
   actions: {
     setup() {
+      const { latitude, longitude } = useUserDataStore();
+
       const updateWeather = async () => {
         console.log('Updating weather...');
+        if (!(latitude && longitude)) {
+          this.errorMessage =
+            'Unspecified latitude/longitude, is postcode specified in settings?';
+          return;
+        }
         try {
-          const url = `https://api.openweathermap.org/data/2.5/weather?lat=-28.0167&lon=153.400&units=metric&appid=${process.env.OPENWEATHERMAPSAPIKEY}`;
+          const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${process.env.OPENWEATHERMAPSAPIKEY}`;
           const result = await axios.get(url, {
             timeout: 4000,
             responseType: 'text',
