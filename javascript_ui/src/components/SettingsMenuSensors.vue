@@ -10,12 +10,17 @@
           <q-input
             outlined
             v-model="sensor.name"
+            :rules="[
+              (val) => (val.length > 0 ? true : 'Please enter sensor location'),
+            ]"
             label="Location"
             class="q-mb-sm"
           />
           <q-input
             outlined
-            v-model="sensor.id"
+            v-model.number="sensor.id"
+            :rules="[checkSensorId]"
+            type="number"
             label="ID"
             hint="The ID number on the case"
           />
@@ -37,9 +42,16 @@ export default defineComponent({
 
     const allSensorData = store.allSensorData;
 
+    const checkSensorId = (id: number) => {
+      if (id > 0 && id < 1000) {
+        return true;
+      }
+      return 'Enter valid ID (1-999)';
+    };
+
     console.log(allSensorData);
 
-    return { allSensorData };
+    return { allSensorData, checkSensorId };
   },
 });
 </script>

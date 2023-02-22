@@ -10,28 +10,28 @@ export const useSensorDataStore = defineStore('sensorData', {
     socket: io('ws://localhost:5000'),
     allSensorData: [
       {
-        id: '001',
+        id: 1,
         name: 'Bedroom',
         temperature: 31,
         humidity: 24,
         lastSeen: new Date(Date.now()),
       },
       {
-        id: '002',
+        id: 2,
         name: 'Outside',
         temperature: 39,
         humidity: 52,
         lastSeen: new Date(Date.now()),
       },
       {
-        id: '003',
+        id: 3,
         name: 'Kitchen',
         temperature: 31,
         humidity: 24,
         lastSeen: new Date(Date.now() - 5000000),
       },
       {
-        id: '004',
+        id: 4,
         name: 'Living',
         temperature: 35,
         humidity: 48,

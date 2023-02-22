@@ -1,6 +1,6 @@
 export interface SensorData {
   name: string;
-  id: string;
+  id: number;
   temperature: number;
   humidity: number;
   lastSeen: Date;
