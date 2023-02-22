@@ -5,7 +5,12 @@
     <!-- Main layout -->
     <q-header flat class="transparent">
       <q-toolbar>
-        <img src="ethos.svg" height="30" @click="showSettingsButton" />
+        <img
+          v-if="$route.path !== '/settings'"
+          src="ethos.svg"
+          height="30"
+          @click="showSettingsButton"
+        />
         <q-btn
           v-if="$route.path !== '/'"
           to="/"
@@ -23,7 +28,11 @@
           icon="settings"
           to="settings"
         />
-        <q-btn color="secondary" label="help" />
+        <q-btn
+          v-if="$route.path !== '/settings'"
+          color="secondary"
+          label="help"
+        />
       </q-toolbar>
     </q-header>
 
