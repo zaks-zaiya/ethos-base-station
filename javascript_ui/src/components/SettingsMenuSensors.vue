@@ -1,15 +1,28 @@
 <template>
-  <div class="q-pb-md">
-    <div v-for="(sensor, index) in allSensorData" :key="index">
-      <div class="text-h6">Sensor {{ index + 1 }}</div>
+  <div>
+    <!-- For each sensor -->
+    <div v-for="(sensor, index) in allSensorData" :key="index" class="q-mb-md">
+      <div class="row q-mb-md">
+        <!-- Display sensor number -->
+        <div class="col-2 text-bold">Sensor {{ index + 1 }}</div>
+        <!-- Things that can be edited -->
+        <div class="col">
+          <q-input
+            outlined
+            v-model="sensor.name"
+            label="Location"
+            class="q-mb-sm"
+          />
+          <q-input
+            outlined
+            v-model="sensor.id"
+            label="ID"
+            hint="The ID number on the case"
+          />
+        </div>
+      </div>
+      <!-- Dividing line between sensors -->
       <q-separator />
-      <q-input
-        outlined
-        v-model="sensor.name"
-        label="Location"
-        class="q-my-md"
-      />
-      <q-input outlined v-model="sensor.id" label="ID" class="q-mb-lg" />
     </div>
   </div>
 </template>
