@@ -79,7 +79,11 @@ export default defineComponent({
     });
 
     let backgroundColor = computed(() => {
-      if (isUndefined.value) {
+      if (
+        isUndefined.value ||
+        !props.sensorData.temperature ||
+        !props.sensorData.humidity
+      ) {
         // Sensor is undefined
         return 'bg-grey-8 text-grey';
       } else if (isOffline.value) {
