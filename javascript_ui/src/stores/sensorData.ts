@@ -7,7 +7,9 @@ const deserializeSensorData = (sensorDataString: string) => {
   const state = JSON.parse(sensorDataString);
   state.allSensorData.forEach((sensorData: SensorData) => {
     // Parse the date (previously lost with JSON.stringify())
-    sensorData.lastSeen = new Date(sensorData.lastSeen);
+    sensorData.lastSeen = sensorData.lastSeen
+      ? new Date(sensorData.lastSeen)
+      : undefined;
   });
   // Return parsed state
   return state;
