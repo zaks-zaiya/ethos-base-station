@@ -37,8 +37,6 @@ export default defineComponent({
   },
   setup(props) {
     let isUndefined = computed(() => {
-      console.log('LOOK AT MEE!!!!');
-      console.log(!props.sensorData.id || !props.sensorData.name);
       return !props.sensorData.id || !props.sensorData.name;
     });
 
