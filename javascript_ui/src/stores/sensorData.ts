@@ -2,12 +2,27 @@ import { defineStore } from 'pinia';
 import { io } from 'socket.io-client';
 import { SensorData } from 'src/components/models';
 
+const deserializeSensorData = (sensorDataString: string) => {
+  // Parse the JSON string
+  const state = JSON.parse(sensorDataString);
+  state.allSensorData.forEach((sensorData: SensorData) => {
+    // Parse the date (previously lost with JSON.stringify())
+    sensorData.lastSeen = new Date(sensorData.lastSeen);
+  });
+  // Return parsed state
+  return state;
+};
+
 export const useSensorDataStore = defineStore('sensorData', {
-  persist: true,
+  persist: {
+    serializer: {
+      deserialize: deserializeSensorData,
+      serialize: JSON.stringify,
+    },
+  },
 
   state: () => ({
     isConnected: false,
-    socket: io('ws://localhost:5000'),
     allSensorData: [
       {
         id: undefined,
@@ -51,6 +66,10 @@ export const useSensorDataStore = defineStore('sensorData', {
       }
       return false;
     },
+    // Get deep copy of sensor data
+    getDeepCopySensorData: (state) => {
+      return deserializeSensorData(JSON.stringify(state)).allSensorData;
+    },
     // Get sorted sensor data, where the outside sensor comes last in the list
     getSortedSensorData: (state) => {
       // Take a shallow copy of the array to prevent data mutation
@@ -73,20 +92,21 @@ export const useSensorDataStore = defineStore('sensorData', {
   actions: {
     setup() {
       console.log('Setting up socket...');
+      const socket = io('ws://localhost:5000');
 
       // Callbacks for socket
-      this.socket.on('connect', () => {
+      socket.on('connect', () => {
         this.isConnected = true;
-        console.log('Connected:', this.socket.id);
+        console.log('Connected:', socket.id);
       });
 
-      this.socket.on('disconnect', () => {
+      socket.on('disconnect', () => {
         this.isConnected = false;
-        console.log('Disconnected:', this.socket.id);
+        console.log('Disconnected:', socket.id);
       });
 
       // Callback to update sensor data when applicable
-      this.socket.on('data', (data) => {
+      socket.on('data', (data) => {
         console.log('Received: ' + data);
         const data_obj = JSON.parse(data.toString());
 
