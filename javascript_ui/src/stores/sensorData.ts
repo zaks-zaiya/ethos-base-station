@@ -10,18 +10,18 @@ export const useSensorDataStore = defineStore('sensorData', {
     socket: io('ws://localhost:5000'),
     allSensorData: [
       {
-        id: 1,
-        name: 'Bedroom',
-        temperature: 31,
-        humidity: 24,
-        lastSeen: new Date(Date.now()),
+        id: undefined,
+        name: undefined,
+        temperature: undefined,
+        humidity: undefined,
+        lastSeen: undefined,
       },
       {
-        id: 2,
-        name: 'Outside',
-        temperature: 39,
-        humidity: 52,
-        lastSeen: new Date(Date.now()),
+        id: undefined,
+        name: undefined,
+        temperature: undefined,
+        humidity: undefined,
+        lastSeen: undefined,
       },
       {
         id: 3,
@@ -41,12 +41,23 @@ export const useSensorDataStore = defineStore('sensorData', {
   }),
 
   getters: {
+    // Check whether either the name or id of ANY of the sensors are undefined
+    containsUndefined: (state) => {
+      for (const sensor of state.allSensorData) {
+        // If no sensor ID or sensor name
+        if (!sensor.id || !sensor.name) {
+          return true;
+        }
+      }
+      return false;
+    },
+    // Get sorted sensor data, where the outside sensor comes last in the list
     getSortedSensorData: (state) => {
       // Take a shallow copy of the array to prevent data mutation
       const copyOfSensorData = [...state.allSensorData];
       // Find index of the sensor that has 'out' in its name
       const outsideIndex = copyOfSensorData.findIndex((el) => {
-        if (el.name.toLowerCase().includes('out')) {
+        if (el.name?.toLowerCase().includes('out')) {
           return true;
         }
         return false;

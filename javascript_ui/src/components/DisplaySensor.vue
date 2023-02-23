@@ -2,7 +2,9 @@
   <q-card class="full-height" :class="backgroundColor">
     <q-card-section class="q-pa-sm">
       <div class="text-h6">
-        {{ sensorData.name }} <span v-if="isOffline">(Offline)</span>
+        {{ sensorData.name ? sensorData.name : 'Undefined' }}
+        {{ sensorData.id ? '' : '(ID Undefined)' }}
+        <span v-if="isOffline">(Offline)</span>
       </div>
     </q-card-section>
 
@@ -12,7 +14,10 @@
       <div class="text-h3">{{ sensorData.temperature }}°C</div>
       <div class="text-h4 q-pb-md">{{ sensorData.humidity }}% RH</div>
       <div class="text-italic">
-        Last seen: {{ sensorData.lastSeen.toLocaleString() }}
+        Last seen:
+        {{
+          sensorData.lastSeen ? sensorData.lastSeen.toLocaleString() : 'Never'
+        }}
       </div>
     </q-card-section>
   </q-card>
@@ -31,9 +36,15 @@ export default defineComponent({
     },
   },
   setup(props) {
+    let isUndefined = computed(() => {
+      console.log('LOOK AT MEE!!!!');
+      console.log(!props.sensorData.id || !props.sensorData.name);
+      return !props.sensorData.id || !props.sensorData.name;
+    });
+
     let isOffline = computed(() => {
       let timeDifference = Math.abs(
-        props.sensorData.lastSeen.getTime() - Date.now()
+        props.sensorData.lastSeen?.getTime() - Date.now()
       );
       let thirtyMinutes = 1800000; // in ms
       return timeDifference > thirtyMinutes;
@@ -70,7 +81,10 @@ export default defineComponent({
     });
 
     let backgroundColor = computed(() => {
-      if (isOffline.value) {
+      if (isUndefined.value) {
+        // Sensor is undefined
+        return 'bg-grey-8 text-grey';
+      } else if (isOffline.value) {
         // Sensor is offline
         return 'bg-grey text-grey-8';
       } else if (riskLevel.value == 'low') {
@@ -88,7 +102,7 @@ export default defineComponent({
       }
     });
 
-    return { isOffline, backgroundColor };
+    return { isUndefined, isOffline, backgroundColor };
   },
 });
 </script>
