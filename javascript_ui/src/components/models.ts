@@ -1,7 +1,7 @@
 export interface SensorData {
-  name: string;
-  id: number;
-  temperature: number;
-  humidity: number;
-  lastSeen: Date;
+  name: string | undefined;
+  id: number | undefined;
+  temperature: number | undefined;
+  humidity: number | undefined;
+  lastSeen: Date | undefined;
 }
