@@ -41,10 +41,12 @@ export default defineComponent({
     });
 
     let isOffline = computed(() => {
-      let timeDifference = Math.abs(
-        props.sensorData.lastSeen?.getTime() - Date.now()
-      );
-      let thirtyMinutes = 1800000; // in ms
+      const lastSeen = props.sensorData.lastSeen?.getTime();
+      if (!lastSeen) {
+        return true;
+      }
+      const timeDifference = Math.abs(lastSeen - Date.now());
+      const thirtyMinutes = 1800000; // in ms
       return timeDifference > thirtyMinutes;
     });
 
@@ -53,6 +55,9 @@ export default defineComponent({
       // https://physicscalc.com/physics/wet-bulb-calculator/
       let temperature = props.sensorData.temperature;
       let humidity = props.sensorData.humidity;
+      if (!temperature || !humidity) {
+        return undefined;
+      }
       let wetBulbTemperature =
         temperature *
           Math.atan(0.151977 * Math.pow(humidity + 8.313659, 1 / 2)) +
@@ -66,6 +71,11 @@ export default defineComponent({
     });
 
     let riskLevel = computed(() => {
+      // Check undefined
+      if (!wetBulbTemperature.value) {
+        console.log('Unable to find correct risk level (no WBGT defined)');
+        return '';
+      }
       if (wetBulbTemperature.value >= 30) {
         return 'high';
       } else if (wetBulbTemperature.value >= 25) {
@@ -73,7 +83,7 @@ export default defineComponent({
       } else if (wetBulbTemperature.value < 25) {
         return 'low';
       } else {
-        console.log('Unable to find correct risk level');
+        console.log('Unable to find correct risk level (unknown error)');
         return '';
       }
     });
