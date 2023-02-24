@@ -3,6 +3,15 @@
     <div class="text-h6 q-mb-md">User Data</div>
     <q-input
       outlined
+      v-model.number="newId"
+      :rules="[checkAndSetId]"
+      type="number"
+      label="User ID (number)"
+      class="q-my-md"
+    />
+
+    <q-input
+      outlined
       v-model.number="newPostcode"
       :rules="[checkQldPostcode, findAndSetPostcode]"
       :hint="`Lat: ${userDataStore.latitude}, Lon: ${userDataStore.longitude}`"
@@ -49,6 +58,7 @@ export default defineComponent({
     const userDataStore = useUserDataStore();
 
     const newPostcode = ref(userDataStore.postcode);
+    const newId = ref(userDataStore.id);
     const newAge = ref(userDataStore.ageYears);
     const newHeight = ref(userDataStore.heightCm);
     const newWeight = ref(userDataStore.weightKg);
@@ -79,6 +89,14 @@ export default defineComponent({
       return 'Postcode not found';
     };
 
+    const checkAndSetId = (id: number) => {
+      if (id && id > 0) {
+        userDataStore.id = id;
+        return true;
+      }
+      return 'Please enter an ID';
+    };
+
     const checkAndSetAge = (age: number) => {
       if (age > 0 && age < 200) {
         userDataStore.ageYears = age;
@@ -105,12 +123,14 @@ export default defineComponent({
 
     return {
       userDataStore,
+      newId,
       newPostcode,
       newAge,
       newHeight,
       newWeight,
       checkQldPostcode,
       findAndSetPostcode,
+      checkAndSetId,
       checkAndSetAge,
       checkAndSetHeight,
       checkAndSetWeight,
