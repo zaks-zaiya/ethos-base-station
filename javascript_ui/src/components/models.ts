@@ -5,3 +5,13 @@ export interface SensorData {
   humidity: number | undefined;
   lastSeen: Date | undefined;
 }
+
+export interface UserData {
+  id: undefined | number;
+  postcode: undefined | number;
+  latitude: undefined | number;
+  longitude: undefined | number;
+  ageYears: undefined | number;
+  heightCm: undefined | number;
+  weightKg: undefined | number;
+}

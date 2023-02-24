@@ -1,15 +1,17 @@
 import { defineStore } from 'pinia';
+import { UserData } from '../components/models';
 
 export const useUserDataStore = defineStore('userData', {
   persist: true,
 
-  state: () => ({
-    postcode: undefined as undefined | number,
-    latitude: undefined as undefined | number,
-    longitude: undefined as undefined | number,
-    ageYears: undefined as undefined | number,
-    heightCm: undefined as undefined | number,
-    weightKg: undefined as undefined | number,
+  state: (): UserData => ({
+    id: undefined,
+    postcode: undefined,
+    latitude: undefined,
+    longitude: undefined,
+    ageYears: undefined,
+    heightCm: undefined,
+    weightKg: undefined,
   }),
 
   getters: {},
