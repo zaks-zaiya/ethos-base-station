@@ -14,7 +14,12 @@ export const useUserDataStore = defineStore('userData', {
     weightKg: undefined,
   }),
 
-  getters: {},
+  getters: {
+    containsUndefined(state) {
+      // Check whether any state values are equal to undefined
+      return Object.values(state).some((val) => val === undefined);
+    },
+  },
 
   actions: {},
 });
