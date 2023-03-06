@@ -24,7 +24,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from 'vue';
+import {
+  defineComponent,
+  PropType,
+  ref,
+  computed,
+  onMounted,
+  onUnmounted,
+} from 'vue';
 import { SensorData } from 'components/models';
 
 export default defineComponent({
@@ -36,20 +43,43 @@ export default defineComponent({
     },
   },
   setup(props) {
-    let isUndefined = computed(() => {
-      return !props.sensorData.id || !props.sensorData.name;
+    // The current time/date
+    let currentTime = ref(Date.now());
+    // An interval which handles updating the currentTime
+    let updateCurrentTimeInterval: NodeJS.Timeout | undefined = undefined;
+
+    // The function which updates the currentTime
+    let updateCurrentTime = () => {
+      currentTime.value = Date.now();
+    };
+
+    // Update currentTime every 5 seconds
+    onMounted(() => {
+      updateCurrentTimeInterval = setInterval(updateCurrentTime, 5000);
     });
 
+    // Clear the interval when unmounted
+    onUnmounted(() => {
+      clearInterval(updateCurrentTimeInterval);
+    });
+
+    // Calculate whether the sensor is offline using currentTime and lastSeen
     let isOffline = computed(() => {
       const lastSeen = props.sensorData.lastSeen?.getTime();
       if (!lastSeen) {
         return true;
       }
-      const timeDifference = Math.abs(lastSeen - Date.now());
+      const timeDifference = Math.abs(lastSeen - currentTime.value);
       const thirtyMinutes = 1800000; // in ms
       return timeDifference > thirtyMinutes;
     });
 
+    // Check whether the sensor name or id is undefined
+    let isUndefined = computed(() => {
+      return !props.sensorData.id || !props.sensorData.name;
+    });
+
+    // Calculate the WBGT for risk level
     let wetBulbTemperature = computed(() => {
       // Equation taken from:
       // https://physicscalc.com/physics/wet-bulb-calculator/
@@ -70,6 +100,7 @@ export default defineComponent({
       return wetBulbTemperature;
     });
 
+    // Return the risk level as 'high', 'medium', low' or '' (undefined)
     let riskLevel = computed(() => {
       // Check undefined
       if (!wetBulbTemperature.value) {
@@ -88,6 +119,7 @@ export default defineComponent({
       }
     });
 
+    // Calculate what background color to use for the form card
     let backgroundColor = computed(() => {
       if (
         isUndefined.value ||
