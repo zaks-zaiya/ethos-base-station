@@ -6,8 +6,7 @@
           Error, unable to connect to temperature sensors (socket issue)
         </div>
         <div>Please contact the ethos team at:</div>
-        <div class="q-mt-sm">ethos@griffith.edu.au</div>
-        <div class="q-mt-sm">5552 7903</div>
+        <ContactCard />
       </q-card-section>
     </q-card>
   </q-dialog>
@@ -17,9 +16,11 @@
 import { defineComponent, computed } from 'vue';
 
 import { useSensorDataStore } from 'stores/sensorData';
+import ContactCard from './ContactCard.vue';
 
 export default defineComponent({
   name: 'ModalNoConnection',
+  components: { ContactCard },
   setup() {
     const store = useSensorDataStore();
     return {
