@@ -58,7 +58,7 @@ export default defineComponent({
 
     let iconUrl = computed(() => {
       if (store.weatherIconId) {
-        return `http://openweathermap.org/img/w/${store.weatherIconId}.png`;
+        return `https://openweathermap.org/img/w/${store.weatherIconId}.png`;
       }
       return '';
     });
