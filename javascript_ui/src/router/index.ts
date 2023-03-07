@@ -8,6 +8,9 @@ import {
 
 import routes from './routes';
 
+import { useSensorDataStore } from 'src/stores/sensorData';
+import { useUserDataStore } from 'src/stores/userData';
+
 /*
  * If not building with SSR mode, you can
  * directly export the Router instantiation;
@@ -32,6 +35,24 @@ export default route(function (/* { store, ssrContext } */) {
     // quasar.conf.js -> build -> vueRouterMode
     // quasar.conf.js -> build -> publicPath
     history: createHistory(process.env.VUE_ROUTER_BASE),
+  });
+
+  // Check whether data needs to be initialized
+  const userDataStore = useUserDataStore();
+  const sensorDataStore = useSensorDataStore();
+  Router.beforeEach((to) => {
+    const initializePath = '/initialize';
+    console.log(to.path);
+
+    if (
+      // Any data is undefined
+      (userDataStore.containsUndefined || sensorDataStore.containsUndefined) &&
+      // Avoid an infinite redirect
+      to.path !== initializePath
+    ) {
+      // redirect the user to the initialize page
+      return initializePath;
+    }
   });
 
   return Router;

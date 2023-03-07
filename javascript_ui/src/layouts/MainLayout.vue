@@ -12,7 +12,7 @@
           @click="showSettingsButton"
         />
         <q-btn
-          v-if="$route.path !== '/'"
+          v-if="$route.path !== '/' && $route.path !== '/initialize'"
           to="/"
           color="info"
           label="go back to home"

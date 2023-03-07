@@ -16,8 +16,16 @@ export const useUserDataStore = defineStore('userData', {
 
   getters: {
     containsUndefined(state) {
-      // Check whether any state values are equal to undefined
-      return Object.values(state).some((val) => val === undefined);
+      // Inverse (!) has to be used to return boolean
+      return (
+        !state.id ||
+        !state.postcode ||
+        !state.latitude ||
+        !state.longitude ||
+        !state.ageYears ||
+        !state.heightCm ||
+        !state.weightKg
+      );
     },
   },
 
