@@ -35,6 +35,9 @@
             <div class="col-7">
               <div>Temperature: {{ store.currentTemp?.toFixed(1) }}°C</div>
               <div>Humidity: {{ store.currentHumidity }}% RH</div>
+              <q-btn class="q-mt-sm" color="secondary"
+                >View Detailed Forecast</q-btn
+              >
             </div>
             <!-- <div class="col"> -->
             <!-- <div>Min: {{ store.minTemp?.toFixed(1) }}°C</div> -->
