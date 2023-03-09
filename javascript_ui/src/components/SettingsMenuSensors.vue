@@ -1,23 +1,21 @@
 <template>
   <div>
     <!-- For each sensor -->
-    <div v-for="(sensor, index) in newSensorData" :key="index" class="q-mb-md">
+    <div v-for="(sensor, index) in allSensorData" :key="index" class="q-mb-md">
       <div class="row q-mb-md">
         <!-- Display sensor number -->
         <div class="col-2 text-bold">Sensor {{ index + 1 }}</div>
         <!-- Things that can be edited -->
         <div class="col">
-          <q-input
-            outlined
+          <input-keyboard
             v-model="sensor.name"
-            :rules="[(val) => checkAndSetSensorName(val, index)]"
             label="Location"
-            class="q-mb-sm"
+            :customRule="checkSensorName"
           />
-          <q-input
+          <input-keyboard
             outlined
             v-model.number="sensor.id"
-            :rules="[(val) => checkAndSetSensorId(val, index)]"
+            :customRule="checkSensorId"
             type="number"
             label="ID"
             hint="The ID number on the case"
@@ -32,33 +30,34 @@
 
 <script lang="ts">
 import { useSensorDataStore } from 'src/stores/sensorData';
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
+import InputKeyboard from './InputKeyboard.vue';
 
 export default defineComponent({
+  components: { InputKeyboard },
   setup() {
-    const allSensorData = useSensorDataStore().allSensorData;
-    // Get a deep copy of sensor data to prevent modification without verifying inputs
-    const newSensorData = ref(useSensorDataStore().getDeepCopySensorData);
+    const { allSensorData } = useSensorDataStore();
 
-    const checkAndSetSensorName = (newName: string, index: number) => {
+    const checkSensorName = (newName: string) => {
       if (newName?.length > 0) {
-        allSensorData[index].name = newName;
         return true;
       }
       return 'Please enter sensor location';
     };
 
-    const checkAndSetSensorId = (newId: number, index: number) => {
+    const checkSensorId = (newId: number) => {
       // Check if ID is valid
       if (newId > 0 && newId < 1000) {
-        // Update original value
-        allSensorData[index].id = newId;
         return true;
       }
       return 'Enter a valid ID (1-999)';
     };
 
-    return { newSensorData, checkAndSetSensorName, checkAndSetSensorId };
+    return {
+      allSensorData,
+      checkSensorName,
+      checkSensorId,
+    };
   },
 });
 </script>

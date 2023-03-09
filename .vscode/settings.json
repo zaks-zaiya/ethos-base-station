@@ -9,6 +9,7 @@
   "python.defaultInterpreterPath": "python_radio/env/bin/python",
   "cSpell.words": [
     "axios",
+    "bksp",
     "eventlet",
     "Persistedstate",
     "pinia",

@@ -39,18 +39,30 @@
     <q-page-container>
       <router-view />
     </q-page-container>
+
+    <q-footer
+      class="text-black"
+      elevated
+      :model-value="keyboardStore.isKeyboardBound"
+    >
+      <SimpleKeyboard />
+    </q-footer>
   </q-layout>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 
+import { useKeyboardStore } from 'src/stores/keyboard';
+
 import ModalNoConnection from 'components/ModalNoConnection.vue';
+import SimpleKeyboard from 'src/components/SimpleKeyboard.vue';
 
 export default defineComponent({
   name: 'MainLayout',
-  components: { ModalNoConnection },
+  components: { ModalNoConnection, SimpleKeyboard },
   setup() {
+    const keyboardStore = useKeyboardStore();
     let isShowSettingsButton = ref(false);
 
     let timeoutShowSettingsButton: null | number = null;
@@ -80,7 +92,12 @@ export default defineComponent({
       isShowSettingsButton.value = false;
     };
 
-    return { isShowSettingsButton, showSettingsButton, hideSettingsButton };
+    return {
+      keyboardStore,
+      isShowSettingsButton,
+      showSettingsButton,
+      hideSettingsButton,
+    };
   },
 });
 </script>
