@@ -1,12 +1,13 @@
 <template>
-  <div @click="focusInput" class="simple-keyboard"></div>
+  <!-- Mousedown.prevent prevents loss of focus on original input element when clicked -->
+  <div @mousedown.prevent class="simple-keyboard"></div>
 </template>
 
-<script>
+<script lang="ts">
 import Keyboard from 'simple-keyboard';
 import 'simple-keyboard/build/css/index.css';
 import { useKeyboardStore } from 'src/stores/keyboard';
-import { defineComponent, onMounted, watch } from 'vue';
+import { defineComponent, nextTick, onMounted, watch } from 'vue';
 
 const textLayout = {
   default: [
@@ -34,64 +35,123 @@ export default defineComponent({
   name: 'SimpleKeyboard',
   setup() {
     const keyboardStore = useKeyboardStore();
-    let keyboard = null;
-    let numericKeyboard = null;
+    let keyboard: null | Keyboard = null;
 
     onMounted(() => {
+      // Initialize keyboard
       keyboard = new Keyboard('simple-keyboard', {
-        onChange: onChange,
         onKeyPress: onKeyPress,
         layout: textLayout,
       });
     });
 
+    // Watch for keyboard changing state between text and numerical input
     watch(keyboardStore, () => {
       if (keyboardStore.keyboardType === 'text') {
-        keyboard.setOptions({
+        keyboard?.setOptions({
           layout: textLayout,
         });
       }
       if (keyboardStore.keyboardType === 'number') {
-        keyboard.setOptions({
+        keyboard?.setOptions({
           layout: numberLayout,
         });
       }
     });
 
-    const focusInput = () => {
-      console.log('refocus');
-      keyboardStore.keyboardBinding.focus();
-    };
-
-    const onChange = () => {
-      console.log('onChange');
-    };
-
-    const onKeyPress = (button) => {
-      if (button.length === 1) {
-        keyboardStore.keyboardValue.value += button;
+    const onKeyPress = (button: string) => {
+      // Sanity check
+      if (!keyboardStore.keyboardBinding || !keyboardStore.keyboardValue) {
+        console.error('Keyboard store contains undefined');
+        return;
       }
-      // Backspace
-      else if (button === '{bksp}') {
-        keyboardStore.keyboardValue.value =
-          keyboardStore.keyboardValue.value.slice(0, -1);
-      }
-      // Shift and caps
-      else if (button === '{shift}' || button === '{lock}') {
+
+      // Handle shift press
+      if (button === '{shift}' || button === '{lock}') {
         handleShift();
+        return;
+      }
+
+      // Get starting and ending cursor position
+      const selectionStart =
+        keyboardStore.keyboardBinding.nativeEl.selectionStart;
+      const selectionEnd = keyboardStore.keyboardBinding.nativeEl.selectionEnd;
+
+      if (selectionStart === null || selectionEnd === null) {
+        console.error('No cursor position in input element');
+        return;
+      }
+
+      // Is a normal character (e.g. 'a', 'f', ';', etc.)
+      if (button.length === 1) {
+        // Insert characters at position
+        keyboardStore.keyboardValue.value = insertCharFromSelection(
+          keyboardStore.keyboardValue.value,
+          button,
+          selectionStart,
+          selectionEnd
+        );
+        // Restore cursor position
+        restoreInputCursorToPosition(selectionStart + 1);
+      }
+      // Is backspace
+      else if (button === '{bksp}') {
+        keyboardStore.keyboardValue.value = deleteCharFromSelection(
+          keyboardStore.keyboardValue.value,
+          selectionStart,
+          selectionEnd
+        );
+        // Restore cursor position
+        restoreInputCursorToPosition(selectionStart - 1);
       }
     };
 
+    // Toggle between capitalized layouts
     const handleShift = () => {
-      let currentLayout = keyboard.options.layoutName;
+      let currentLayout = keyboard?.options.layoutName;
       let shiftToggle = currentLayout === 'default' ? 'shift' : 'default';
 
-      keyboard.setOptions({
+      keyboard?.setOptions({
         layoutName: shiftToggle,
       });
     };
 
-    return { focusInput, keyboard, numericKeyboard };
+    // Inserts char at cursor pos, replacing selection (if applicable)
+    const insertCharFromSelection = (
+      str: string,
+      newChar: string,
+      selectionStart: number,
+      selectionEnd: number
+    ) => {
+      return str.slice(0, selectionStart) + newChar + str.slice(selectionEnd);
+    };
+
+    // If no chars are selected, delete the char before the cursor, otherwise replace the selection with ''
+    const deleteCharFromSelection = (
+      str: string,
+      selectionStart: number,
+      selectionEnd: number
+    ) => {
+      if (selectionStart === selectionEnd) {
+        // Delete a single character
+        return str.slice(0, selectionStart - 1) + str.slice(selectionEnd);
+      }
+
+      // Replace the selection with ''
+      return str.slice(0, selectionStart) + str.slice(selectionEnd);
+    };
+
+    // Restore the input cursor position to the specified position
+    const restoreInputCursorToPosition = (newStartPos: number) => {
+      nextTick(() => {
+        keyboardStore.keyboardBinding?.nativeEl.setSelectionRange(
+          newStartPos,
+          newStartPos
+        );
+      });
+    };
+
+    return { keyboard };
   },
 });
 </script>
