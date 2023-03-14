@@ -72,6 +72,15 @@ export default defineComponent({
         return;
       }
 
+      // Handle enter press
+      if (button === '{enter}') {
+        setTimeout(() => {
+          // Blur instead of unbind to prevent continued focus
+          keyboardStore.keyboardBinding?.blur();
+        }, 100); // Timeout prevents click from focusing element below
+        return;
+      }
+
       // Get starting and ending cursor position
       const selectionStart =
         keyboardStore.keyboardBinding.nativeEl.selectionStart;
