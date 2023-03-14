@@ -11,24 +11,19 @@ import { defineComponent, nextTick, onMounted, watch } from 'vue';
 
 const textLayout = {
   default: [
-    '` 1 2 3 4 5 6 7 8 9 0 - = {bksp}',
-    '{tab} q w e r t y u i o p [ ] \\',
-    "{lock} a s d f g h j k l ; ' {enter}",
-    '{shift} z x c v b n m , . / {shift}',
-    '.com @ {space}',
+    'q w e r t y u i o p',
+    'a s d f g h j k l',
+    '{shift} z x c v b n m {backspace}',
+    '{numbers} {space} {enter}',
   ],
   shift: [
-    '~ ! @ # $ % ^ &amp; * ( ) _ + {bksp}',
-    '{tab} Q W E R T Y U I O P { } |',
-    '{lock} A S D F G H J K L : " {enter}',
-    '{shift} Z X C V B N M &lt; &gt; ? {shift}',
-    '.com @ {space}',
+    'Q W E R T Y U I O P',
+    'A S D F G H J K L',
+    '{shift} Z X C V B N M {backspace}',
+    '{numbers} {space} {enter}',
   ],
-};
-
-const numberLayout = {
-  default: ['1 2 3', '4 5 6', '7 8 9', '{bksp} 0 {bksp}'],
-  shift: ['1 2 3', '4 5 6', '7 8 9', '{bksp} 0 {bksp}'],
+  numbers: ['1 2 3', '4 5 6', '7 8 9', '{abc} 0 {backspace}'],
+  numbersFixed: ['1 2 3', '4 5 6', '7 8 9', '{enter} 0 {backspace}'],
 };
 
 export default defineComponent({
@@ -42,6 +37,14 @@ export default defineComponent({
       keyboard = new Keyboard('simple-keyboard', {
         onKeyPress: onKeyPress,
         layout: textLayout,
+        display: {
+          '{numbers}': '123',
+          '{enter}': 'return',
+          '{backspace}': '⌫',
+          '{space}': ' ',
+          '{shift}': '⇧',
+          '{abc}': 'ABC',
+        },
       });
     });
 
@@ -49,12 +52,12 @@ export default defineComponent({
     watch(keyboardStore, () => {
       if (keyboardStore.keyboardType === 'text') {
         keyboard?.setOptions({
-          layout: textLayout,
+          layoutName: 'default',
         });
       }
       if (keyboardStore.keyboardType === 'number') {
         keyboard?.setOptions({
-          layout: numberLayout,
+          layoutName: 'numbersFixed',
         });
       }
     });
@@ -69,6 +72,12 @@ export default defineComponent({
       // Handle shift press
       if (button === '{shift}' || button === '{lock}') {
         handleShift();
+        return;
+      }
+
+      // Handle number mode
+      if (button === '{numbers}' || button === '{abc}') {
+        handleNumbers();
         return;
       }
 
@@ -125,6 +134,16 @@ export default defineComponent({
       });
     };
 
+    // Toggle between numbers/letters
+    const handleNumbers = () => {
+      let currentLayout = keyboard?.options.layoutName;
+      let numbersToggle = currentLayout !== 'numbers' ? 'numbers' : 'default';
+
+      keyboard?.setOptions({
+        layoutName: numbersToggle,
+      });
+    };
+
     // Inserts char at cursor pos, replacing selection (if applicable)
     const insertCharFromSelection = (
       str: string,
@@ -166,4 +185,31 @@ export default defineComponent({
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped></style>
+<style>
+.simple-keyboard {
+  margin: 0 auto;
+}
+
+.simple-keyboard .hg-button-space {
+  min-width: 150px;
+  max-width: none;
+}
+
+.simple-keyboard.hg-theme-default .hg-button[data-skbtnuid^='numbers-'] {
+  width: 33%;
+  max-width: none;
+}
+
+.simple-keyboard.hg-theme-default .hg-button[data-skbtnuid^='numbersFixed-'] {
+  width: 33%;
+  max-width: none;
+}
+
+.simple-keyboard .hg-button-numbers {
+  max-width: 100px;
+}
+
+.simple-keyboard .hg-button-enter {
+  max-width: 100px;
+}
+</style>
