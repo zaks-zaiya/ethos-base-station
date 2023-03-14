@@ -23,10 +23,12 @@ export const useKeyboardStore = defineStore('keyboard', {
       value: { value: string },
       type: 'text' | 'number'
     ) {
-      console.log('Binding keyboard');
-      this.keyboardBinding = el;
-      this.keyboardValue = value;
-      this.keyboardType = type;
+      setTimeout(() => {
+        console.log('Binding keyboard');
+        this.keyboardBinding = el;
+        this.keyboardValue = value;
+        this.keyboardType = type;
+      }, 50);
     },
     unbindKeyboard() {
       console.log('Unbinding keyboard');
