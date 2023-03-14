@@ -113,7 +113,7 @@ export default defineComponent({
         restoreInputCursorToPosition(selectionStart + 1);
       }
       // Is backspace
-      else if (button === '{bksp}') {
+      else if (button === '{backspace}') {
         keyboardStore.keyboardValue.value = deleteCharFromSelection(
           keyboardStore.keyboardValue.value,
           selectionStart,
