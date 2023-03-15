@@ -1,48 +1,38 @@
 <template>
   <div>
     <div class="text-h6 q-mb-md">User Data</div>
-    <q-input
-      outlined
+    <input-keyboard
       v-model.number="newId"
-      :rules="[checkAndSetId]"
+      :customRule="checkAndSetId"
       type="number"
       label="User ID (number)"
-      class="q-my-md"
     />
 
-    <q-input
-      outlined
+    <input-keyboard
       v-model.number="newPostcode"
-      :rules="[checkQldPostcode, findAndSetPostcode]"
+      :customRule="findAndSetPostcode"
       :hint="`Lat: ${userDataStore.latitude}, Lon: ${userDataStore.longitude}`"
       type="number"
       label="Postcode"
-      class="q-my-md"
     />
 
-    <q-input
-      outlined
+    <input-keyboard
       v-model.number="newAge"
-      :rules="[checkAndSetAge]"
+      :customRule="checkAndSetAge"
       type="number"
       label="Age (years)"
-      class="q-my-md"
     />
-    <q-input
-      outlined
+    <input-keyboard
       v-model.number="newHeight"
-      :rules="[checkAndSetHeight]"
+      :customRule="checkAndSetHeight"
       type="number"
       label="Height (cm)"
-      class="q-my-md"
     />
-    <q-input
-      outlined
+    <input-keyboard
       v-model.number="newWeight"
-      :rules="[checkAndSetWeight]"
+      :customRule="checkAndSetWeight"
       type="number"
       label="Weight (kg)"
-      class="q-my-md"
     />
   </div>
 </template>
@@ -52,8 +42,12 @@ import { useUserDataStore } from 'src/stores/userData';
 import { defineComponent, ref } from 'vue';
 
 import postcodeArrayString from '../assets/australian_postcodes.js';
+import InputKeyboard from './InputKeyboard.vue';
 
 export default defineComponent({
+  components: {
+    InputKeyboard,
+  },
   setup() {
     const userDataStore = useUserDataStore();
 
@@ -72,6 +66,11 @@ export default defineComponent({
     };
 
     const findAndSetPostcode = (postcode: number) => {
+      // Check if valid postcode
+      if (postcode < 4000 || postcode >= 5000) {
+        return 'Please enter a QLD postcode (4000-4999)';
+      }
+      // Lookup postcode latitude and longitude
       const postcodeArray = JSON.parse(postcodeArrayString);
       let postcodeString = postcode.toString();
       // Loop through all postcodes and find correct one
