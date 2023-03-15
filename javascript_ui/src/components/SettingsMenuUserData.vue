@@ -1,36 +1,37 @@
 <template>
   <div>
     <div class="text-h6 q-mb-md">User Data</div>
+    <!-- Inputs below -->
     <input-keyboard
-      v-model.number="newId"
-      :customRule="checkAndSetId"
+      v-model.number="userDataStore.id"
+      :customRule="checkId"
       type="number"
       label="User ID (number)"
     />
 
     <input-keyboard
-      v-model.number="newPostcode"
-      :customRule="findAndSetPostcode"
+      v-model.number="userDataStore.postcode"
+      :customRule="checkPostcode"
       :hint="`Lat: ${userDataStore.latitude}, Lon: ${userDataStore.longitude}`"
       type="number"
       label="Postcode"
     />
 
     <input-keyboard
-      v-model.number="newAge"
-      :customRule="checkAndSetAge"
+      v-model.number="userDataStore.ageYears"
+      :customRule="checkAge"
       type="number"
       label="Age (years)"
     />
     <input-keyboard
-      v-model.number="newHeight"
-      :customRule="checkAndSetHeight"
+      v-model.number="userDataStore.heightCm"
+      :customRule="checkHeight"
       type="number"
       label="Height (cm)"
     />
     <input-keyboard
-      v-model.number="newWeight"
-      :customRule="checkAndSetWeight"
+      v-model.number="userDataStore.weightKg"
+      :customRule="checkWeight"
       type="number"
       label="Weight (kg)"
     />
@@ -39,7 +40,7 @@
 
 <script lang="ts">
 import { useUserDataStore } from 'src/stores/userData';
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 
 import postcodeArrayString from '../assets/australian_postcodes.js';
 import InputKeyboard from './InputKeyboard.vue';
@@ -51,25 +52,26 @@ export default defineComponent({
   setup() {
     const userDataStore = useUserDataStore();
 
-    const newPostcode = ref(userDataStore.postcode);
-    const newId = ref(userDataStore.id);
-    const newAge = ref(userDataStore.ageYears);
-    const newHeight = ref(userDataStore.heightCm);
-    const newWeight = ref(userDataStore.weightKg);
-
-    const checkQldPostcode = (postcode: number) => {
-      // QLD postcode should be from 4000-4999
-      if (postcode >= 4000 && postcode < 5000) {
-        return true;
-      }
-      return 'Please enter a QLD postcode (4000-4999)';
-    };
-
-    const findAndSetPostcode = (postcode: number) => {
-      // Check if valid postcode
+    const checkPostcode = (postcode: number): boolean | string => {
+      // Queensland postcodes range from 4000-5000
       if (postcode < 4000 || postcode >= 5000) {
         return 'Please enter a QLD postcode (4000-4999)';
       }
+      // ❗ The below function causes side effects and sets the latitude/longitude
+      const foundLatLon = findAndSetPostcodeLatLon(postcode);
+      if (!foundLatLon) {
+        return 'Postcode lat/lon not found';
+      }
+      // Everything looks ok
+      return true;
+    };
+
+    /**
+     * Lookup and set the latitude and longitude for a certain postcode
+     * ❗ Side effect: will also change the lat/lon in the userDataStore
+     * @returns true if lat/lon are found, otherwise false
+     */
+    const findAndSetPostcodeLatLon = (postcode: number): boolean => {
       // Lookup postcode latitude and longitude
       const postcodeArray = JSON.parse(postcodeArrayString);
       let postcodeString = postcode.toString();
@@ -78,17 +80,16 @@ export default defineComponent({
         // Postcode found
         if (area.postcode === postcodeString) {
           // Set postcode, latitude and longitude
-          userDataStore.postcode = postcode;
           userDataStore.latitude = area.lat;
           userDataStore.longitude = area.long;
           return true;
         }
       }
       // No postcode found
-      return 'Postcode not found';
+      return false;
     };
 
-    const checkAndSetId = (id: number) => {
+    const checkId = (id: number) => {
       if (id && id > 0) {
         userDataStore.id = id;
         return true;
@@ -96,7 +97,7 @@ export default defineComponent({
       return 'Please enter an ID';
     };
 
-    const checkAndSetAge = (age: number) => {
+    const checkAge = (age: number) => {
       if (age > 0 && age < 200) {
         userDataStore.ageYears = age;
         return true;
@@ -104,7 +105,7 @@ export default defineComponent({
       return 'Invalid age value';
     };
 
-    const checkAndSetHeight = (height: number) => {
+    const checkHeight = (height: number) => {
       if (height > 30 && height < 300) {
         userDataStore.heightCm = height;
         return true;
@@ -112,7 +113,7 @@ export default defineComponent({
       return 'Invalid height value';
     };
 
-    const checkAndSetWeight = (weight: number) => {
+    const checkWeight = (weight: number) => {
       if (weight > 10 && weight < 300) {
         userDataStore.weightKg = weight;
         return true;
@@ -122,17 +123,11 @@ export default defineComponent({
 
     return {
       userDataStore,
-      newId,
-      newPostcode,
-      newAge,
-      newHeight,
-      newWeight,
-      checkQldPostcode,
-      findAndSetPostcode,
-      checkAndSetId,
-      checkAndSetAge,
-      checkAndSetHeight,
-      checkAndSetWeight,
+      checkPostcode,
+      checkId,
+      checkAge,
+      checkHeight,
+      checkWeight,
     };
   },
 });

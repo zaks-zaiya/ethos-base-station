@@ -1,4 +1,5 @@
 <template>
+  <!-- Type="text" has to be used so cursor position can be obtained -->
   <q-input
     ref="inputEl"
     :model-value="reactiveValue.value"
@@ -22,16 +23,32 @@ import { QInput } from 'quasar';
 export default defineComponent({
   name: 'InputPasscode',
   props: {
-    // modelValue for v-model binding
+    /**
+     * Model value of component
+     */
     modelValue: {
       type: [String, Number],
     },
+    /**
+     * The main label text
+     */
     label: String,
+    /**
+     * A hint to accompany the input
+     */
     hint: String,
+    /**
+     * A function that will check whether the input to the component
+     * is valid
+     * @returns true if input is valid, otherwise a string with an error message
+     */
     customRule: {
       type: Function,
       required: true,
     },
+    /**
+     * Whether the input to the component is a number or text
+     */
     type: {
       type: String as PropType<'number' | 'text'>,
       default: 'text',
@@ -74,7 +91,7 @@ export default defineComponent({
         emitValue = reactiveValue.value;
       }
       // Check if valid
-      const validCheck: boolean | string = props.customRule(emitValue);
+      const validCheck: true | string = props.customRule(emitValue);
       if (validCheck === true) {
         // Is valid, clear error
         error.value = false;
@@ -82,7 +99,6 @@ export default defineComponent({
         // Emit new value to parent
         emit('update:modelValue', emitValue);
       } else if (typeof validCheck === 'string') {
-        console.log('set error');
         // Not valid, throw error
         error.value = true;
         errorMessage.value = validCheck;
