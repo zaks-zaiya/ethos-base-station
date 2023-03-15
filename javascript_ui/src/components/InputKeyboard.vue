@@ -1,15 +1,16 @@
 <template>
   <q-input
-    outlined
-    v-model="reactiveValue.value"
-    :rules="[(val) => customRule(val)]"
     ref="inputEl"
+    :model-value="reactiveValue.value"
     :label="label"
     :hint="hint"
-    :type="type"
-    class="q-mb-sm"
+    :error="error"
+    :error-message="errorMessage"
     @focus="bindKeyboard"
     @blur="unbindKeyboard"
+    type="text"
+    class="q-mb-sm"
+    outlined
   />
 </template>
 
@@ -38,6 +39,8 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const keyboardStore = useKeyboardStore();
+    const error = ref(false);
+    const errorMessage = ref('');
 
     const toString = (val: string | number | undefined) => {
       if (val && typeof val === 'number') {
@@ -62,16 +65,30 @@ export default defineComponent({
     // Watch reactiveValue and emit 'update:modelValue' when changed (for v-model binding)
     watch(reactiveValue, () => {
       let emitValue;
+      // Cast value to correct type
       if (props.type === 'number') {
         // Convert to number
-        emitValue = parseInt(reactiveValue.value);
+        emitValue = parseInt(reactiveValue.value, 10);
       } else {
         // Already a string
         emitValue = reactiveValue.value;
       }
       // Check if valid
-      if (props.customRule(emitValue) === true) {
+      const validCheck: boolean | string = props.customRule(emitValue);
+      if (validCheck === true) {
+        // Is valid, clear error
+        error.value = false;
+        errorMessage.value = '';
+        // Emit new value to parent
         emit('update:modelValue', emitValue);
+      } else if (typeof validCheck === 'string') {
+        console.log('set error');
+        // Not valid, throw error
+        error.value = true;
+        errorMessage.value = validCheck;
+      } else {
+        // Something went wrong
+        console.error('validCheck is not a valid type:', typeof validCheck);
       }
     });
 
@@ -88,6 +105,8 @@ export default defineComponent({
     };
 
     return {
+      error,
+      errorMessage,
       inputEl,
       reactiveValue,
       bindKeyboard,
