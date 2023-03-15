@@ -94,9 +94,18 @@ export default defineComponent({
 
     // Bind keyboard on focus
     const bindKeyboard = () => {
-      if (Number.isFinite(reactiveValue)) {
-      }
       keyboardStore.bindKeyboard(inputEl.value, reactiveValue, props.type);
+      setTimeout(() => {
+        // Scroll input element into view
+        if (inputEl.value) {
+          const yOffset = -100;
+          const y =
+            inputEl.value.nativeEl.getBoundingClientRect().top +
+            window.pageYOffset +
+            yOffset;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      }, 150);
     };
 
     // Unbind keyboard on blur
