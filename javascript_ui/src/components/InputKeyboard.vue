@@ -95,17 +95,21 @@ export default defineComponent({
     // Bind keyboard on focus
     const bindKeyboard = () => {
       keyboardStore.bindKeyboard(inputEl.value, reactiveValue, props.type);
+      // Scroll input element into view
       setTimeout(() => {
-        // Scroll input element into view
-        if (inputEl.value) {
+        // Get parent div to be scrolled
+        const scrollParent = inputEl.value?.nativeEl.closest('.q-panel');
+        if (inputEl.value && scrollParent) {
+          // Calculate where to scroll
           const yOffset = -100;
           const y =
             inputEl.value.nativeEl.getBoundingClientRect().top +
-            window.pageYOffset +
+            scrollParent.scrollTop +
             yOffset;
-          window.scrollTo({ top: y, behavior: 'smooth' });
+          // Scroll to y location
+          scrollParent.scrollTo({ top: y, behavior: 'smooth' });
         }
-      }, 150);
+      }, 150); // to ensure that the window is resized already
     };
 
     // Unbind keyboard on blur
