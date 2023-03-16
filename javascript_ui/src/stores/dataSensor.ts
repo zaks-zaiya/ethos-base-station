@@ -5,17 +5,17 @@ import { SensorData } from 'src/components/models';
 const deserializeSensorData = (sensorDataString: string) => {
   // Parse the JSON string
   const state = JSON.parse(sensorDataString);
-  state.allSensorData.forEach((sensorData: SensorData) => {
+  state.allSensorData.forEach((dataSensor: SensorData) => {
     // Parse the date (previously lost with JSON.stringify())
-    sensorData.lastSeen = sensorData.lastSeen
-      ? new Date(sensorData.lastSeen)
+    dataSensor.lastSeen = dataSensor.lastSeen
+      ? new Date(dataSensor.lastSeen)
       : undefined;
   });
   // Return parsed state
   return state;
 };
 
-export const useSensorDataStore = defineStore('sensorData', {
+export const useDataSensorStore = defineStore('dataSensor', {
   persist: {
     serializer: {
       deserialize: deserializeSensorData,
@@ -121,7 +121,7 @@ export const useSensorDataStore = defineStore('sensorData', {
 
         // Check it exists in the array
         const i = this.allSensorData.findIndex(
-          (sensorData) => sensorData.id == data_obj.id
+          (dataSensor) => dataSensor.id == data_obj.id
         );
         if (i < 0) {
           // Could not find index

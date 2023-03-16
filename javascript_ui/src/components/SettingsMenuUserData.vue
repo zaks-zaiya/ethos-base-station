@@ -3,34 +3,34 @@
     <div class="text-h6 q-mb-md">User Data</div>
     <!-- Inputs below -->
     <input-keyboard
-      v-model.number="userDataStore.id"
+      v-model.number="dataUserStore.id"
       :customRule="checkId"
       type="number"
       label="User ID (number)"
     />
 
     <input-keyboard
-      v-model.number="userDataStore.postcode"
+      v-model.number="dataUserStore.postcode"
       :customRule="checkPostcode"
-      :hint="`Lat: ${userDataStore.latitude}, Lon: ${userDataStore.longitude}`"
+      :hint="`Lat: ${dataUserStore.latitude}, Lon: ${dataUserStore.longitude}`"
       type="number"
       label="Postcode"
     />
 
     <input-keyboard
-      v-model.number="userDataStore.ageYears"
+      v-model.number="dataUserStore.ageYears"
       :customRule="checkAge"
       type="number"
       label="Age (years)"
     />
     <input-keyboard
-      v-model.number="userDataStore.heightCm"
+      v-model.number="dataUserStore.heightCm"
       :customRule="checkHeight"
       type="number"
       label="Height (cm)"
     />
     <input-keyboard
-      v-model.number="userDataStore.weightKg"
+      v-model.number="dataUserStore.weightKg"
       :customRule="checkWeight"
       type="number"
       label="Weight (kg)"
@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts">
-import { useUserDataStore } from 'src/stores/userData';
+import { useDataUserStore } from 'src/stores/dataUser';
 import { defineComponent } from 'vue';
 
 import postcodeArrayString from '../assets/australian_postcodes.js';
@@ -50,7 +50,7 @@ export default defineComponent({
     InputKeyboard,
   },
   setup() {
-    const userDataStore = useUserDataStore();
+    const dataUserStore = useDataUserStore();
 
     const checkPostcode = (postcode: number): boolean | string => {
       // Queensland postcodes range from 4000-5000
@@ -68,7 +68,7 @@ export default defineComponent({
 
     /**
      * Lookup and set the latitude and longitude for a certain postcode
-     * ❗ Side effect: will also change the lat/lon in the userDataStore
+     * ❗ Side effect: will also change the lat/lon in the dataUserStore
      * @returns true if lat/lon are found, otherwise false
      */
     const findAndSetPostcodeLatLon = (postcode: number): boolean => {
@@ -80,8 +80,8 @@ export default defineComponent({
         // Postcode found
         if (area.postcode === postcodeString) {
           // Set postcode, latitude and longitude
-          userDataStore.latitude = area.lat;
-          userDataStore.longitude = area.long;
+          dataUserStore.latitude = area.lat;
+          dataUserStore.longitude = area.long;
           return true;
         }
       }
@@ -91,7 +91,7 @@ export default defineComponent({
 
     const checkId = (id: number) => {
       if (id && id > 0) {
-        userDataStore.id = id;
+        dataUserStore.id = id;
         return true;
       }
       return 'Please enter an ID';
@@ -99,7 +99,7 @@ export default defineComponent({
 
     const checkAge = (age: number) => {
       if (age > 0 && age < 200) {
-        userDataStore.ageYears = age;
+        dataUserStore.ageYears = age;
         return true;
       }
       return 'Invalid age value';
@@ -107,7 +107,7 @@ export default defineComponent({
 
     const checkHeight = (height: number) => {
       if (height > 30 && height < 300) {
-        userDataStore.heightCm = height;
+        dataUserStore.heightCm = height;
         return true;
       }
       return 'Invalid height value';
@@ -115,14 +115,14 @@ export default defineComponent({
 
     const checkWeight = (weight: number) => {
       if (weight > 10 && weight < 300) {
-        userDataStore.weightKg = weight;
+        dataUserStore.weightKg = weight;
         return true;
       }
       return 'Invalid weight value';
     };
 
     return {
-      userDataStore,
+      dataUserStore,
       checkPostcode,
       checkId,
       checkAge,

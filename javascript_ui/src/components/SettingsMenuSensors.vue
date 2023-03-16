@@ -29,14 +29,14 @@
 </template>
 
 <script lang="ts">
-import { useSensorDataStore } from 'src/stores/sensorData';
+import { useDataSensorStore } from 'src/stores/dataSensor';
 import { defineComponent } from 'vue';
 import InputKeyboard from './InputKeyboard.vue';
 
 export default defineComponent({
   components: { InputKeyboard },
   setup() {
-    const { allSensorData } = useSensorDataStore();
+    const { allSensorData } = useDataSensorStore();
 
     const checkSensorName = (newName: string) => {
       if (newName?.length > 0) {

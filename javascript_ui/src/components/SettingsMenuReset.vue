@@ -24,7 +24,11 @@
         </q-card-section>
         <q-card-actions align="right">
           <q-btn label="No go back" color="primary" v-close-popup />
-          <q-btn label="Yes delete everything" color="negative" />
+          <q-btn
+            label="Yes delete everything"
+            color="negative"
+            @click="resetData"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -32,12 +36,21 @@
 </template>
 
 <script lang="ts">
+import { useDataSensorStore } from 'src/stores/dataSensor';
+import { useDataUserStore } from 'src/stores/dataUser';
 import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
   setup() {
     const isShowWarning = ref(false);
-    return { isShowWarning };
+
+    const dataUserStore = useDataUserStore();
+    const dataSensorStore = useDataSensorStore();
+
+    const resetData = () => {
+      return;
+    };
+    return { isShowWarning, resetData };
   },
 });
 </script>

@@ -5,18 +5,18 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
-import { useSensorDataStore } from 'stores/sensorData';
-import { useForecastDataStore } from 'stores/forecastData';
+import { useDataSensorStore } from 'stores/dataSensor';
+import { useForecastStore } from 'stores/forecast';
 
 export default defineComponent({
   name: 'App',
   // Setup store connections here
   setup() {
-    const sensorDataStore = useSensorDataStore();
-    sensorDataStore.setup();
+    const dataSensorStore = useDataSensorStore();
+    dataSensorStore.setup();
 
-    const forecastDataStore = useForecastDataStore();
-    forecastDataStore.setup();
+    const forecastStore = useForecastStore();
+    forecastStore.setup();
   },
 });
 </script>

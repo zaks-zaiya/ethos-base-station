@@ -2,8 +2,8 @@
   <q-card class="full-height" :class="backgroundColor">
     <q-card-section class="q-pa-sm">
       <div class="text-h6">
-        {{ sensorData.name ? sensorData.name : 'Undefined' }}
-        {{ sensorData.id ? '' : '(ID Undefined)' }}
+        {{ sensor.name ? sensor.name : 'Undefined' }}
+        {{ sensor.id ? '' : '(ID Undefined)' }}
         <span v-if="isOffline">(Offline)</span>
       </div>
     </q-card-section>
@@ -11,13 +11,11 @@
     <q-separator />
 
     <q-card-section class="full-height q-pa-sm">
-      <div class="text-h3">{{ sensorData.temperature }}°C</div>
-      <div class="text-h4 q-pb-md">{{ sensorData.humidity }}% RH</div>
+      <div class="text-h3">{{ sensor.temperature }}°C</div>
+      <div class="text-h4 q-pb-md">{{ sensor.humidity }}% RH</div>
       <div class="text-italic">
         Last seen:
-        {{
-          sensorData.lastSeen ? sensorData.lastSeen.toLocaleString() : 'Never'
-        }}
+        {{ sensor.lastSeen ? sensor.lastSeen.toLocaleString() : 'Never' }}
       </div>
     </q-card-section>
   </q-card>
@@ -37,7 +35,7 @@ import { SensorData } from 'components/models';
 export default defineComponent({
   name: 'DisplaySensor',
   props: {
-    sensorData: {
+    sensor: {
       type: Object as PropType<SensorData>,
       required: true,
     },
@@ -65,7 +63,7 @@ export default defineComponent({
 
     // Calculate whether the sensor is offline using currentTime and lastSeen
     let isOffline = computed(() => {
-      const lastSeen = props.sensorData.lastSeen?.getTime();
+      const lastSeen = props.sensor.lastSeen?.getTime();
       if (!lastSeen) {
         return true;
       }
@@ -76,15 +74,15 @@ export default defineComponent({
 
     // Check whether the sensor name or id is undefined
     let isUndefined = computed(() => {
-      return !props.sensorData.id || !props.sensorData.name;
+      return !props.sensor.id || !props.sensor.name;
     });
 
     // Calculate the WBGT for risk level
     let wetBulbTemperature = computed(() => {
       // Equation taken from:
       // https://physicscalc.com/physics/wet-bulb-calculator/
-      let temperature = props.sensorData.temperature;
-      let humidity = props.sensorData.humidity;
+      let temperature = props.sensor.temperature;
+      let humidity = props.sensor.humidity;
       if (!temperature || !humidity) {
         return undefined;
       }
@@ -123,8 +121,8 @@ export default defineComponent({
     let backgroundColor = computed(() => {
       if (
         isUndefined.value ||
-        !props.sensorData.temperature ||
-        !props.sensorData.humidity
+        !props.sensor.temperature ||
+        !props.sensor.humidity
       ) {
         // Sensor is undefined
         return 'bg-grey-8 text-grey';

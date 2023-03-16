@@ -5,11 +5,11 @@
         <div>
           <img
             :src="iconUrl"
-            :alt="store.weatherDescription"
+            :alt="forecastStore.weatherDescription"
             style="width: 75px"
           />
           <div class="text-capitalize text-center">
-            {{ store.weatherDescription }}
+            {{ forecastStore.weatherDescription }}
           </div>
         </div>
       </q-card-section>
@@ -19,7 +19,9 @@
       <div class="full-width">
         <q-card-section class="q-pa-sm">
           <div class="text-h6">
-            <span v-if="store.stationName"> {{ store.stationName }} - </span>
+            <span v-if="forecastStore.stationName">
+              {{ forecastStore.stationName }} -
+            </span>
             <span>Weather Station</span>
           </div>
         </q-card-section>
@@ -27,21 +29,23 @@
         <q-separator dark />
 
         <q-card-section class="q-pa-sm">
-          <div v-if="store.errorMessage">
+          <div v-if="forecastStore.errorMessage">
             Weather Station Offline <br />
-            Reason: {{ store.errorMessage }}
+            Reason: {{ forecastStore.errorMessage }}
           </div>
           <div v-else class="row" style="font-size: 22px">
             <div class="col-7">
-              <div>Temperature: {{ store.currentTemp?.toFixed(1) }}°C</div>
-              <div>Humidity: {{ store.currentHumidity }}% RH</div>
+              <div>
+                Temperature: {{ forecastStore.currentTemp?.toFixed(1) }}°C
+              </div>
+              <div>Humidity: {{ forecastStore.currentHumidity }}% RH</div>
               <q-btn class="q-mt-sm" color="secondary"
                 >View Detailed Forecast</q-btn
               >
             </div>
             <!-- <div class="col"> -->
-            <!-- <div>Min: {{ store.minTemp?.toFixed(1) }}°C</div> -->
-            <!-- <div>Max: {{ store.maxTemp?.toFixed(1) }}°C</div> -->
+            <!-- <div>Min: {{ forecastStore.minTemp?.toFixed(1) }}°C</div> -->
+            <!-- <div>Max: {{ forecastStore.maxTemp?.toFixed(1) }}°C</div> -->
             <!-- </div> -->
           </div>
         </q-card-section>
@@ -52,21 +56,21 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import { useForecastDataStore } from 'stores/forecastData';
+import { useForecastStore } from 'stores/forecast';
 
 export default defineComponent({
   name: 'DisplayForecast',
   setup() {
-    const store = useForecastDataStore();
+    const forecastStore = useForecastStore();
 
     let iconUrl = computed(() => {
-      if (store.weatherIconId) {
-        return `https://openweathermap.org/img/w/${store.weatherIconId}.png`;
+      if (forecastStore.weatherIconId) {
+        return `https://openweathermap.org/img/w/${forecastStore.weatherIconId}.png`;
       }
       return '';
     });
 
-    return { store, iconUrl };
+    return { forecastStore, iconUrl };
   },
 });
 </script>

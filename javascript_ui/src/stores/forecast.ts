@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia';
 
 import axios, { AxiosError } from 'axios';
-import { useUserDataStore } from './userData';
+import { useDataUserStore } from './dataUser';
 
-export const useForecastDataStore = defineStore('forecastData', {
+export const useForecastStore = defineStore('forecast', {
   state: () => ({
     errorMessage: 'Updating data...',
     stationName: null as null | string,
@@ -20,9 +20,11 @@ export const useForecastDataStore = defineStore('forecastData', {
 
   actions: {
     setup() {
-      const { latitude, longitude } = useUserDataStore();
+      const dataUserStore = useDataUserStore();
 
       const updateWeather = async () => {
+        const latitude = dataUserStore.latitude;
+        const longitude = dataUserStore.longitude;
         console.log('Updating weather...');
         if (!(latitude && longitude)) {
           this.errorMessage =

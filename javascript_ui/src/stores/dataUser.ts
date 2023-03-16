@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { UserData } from '../components/models';
 
-export const useUserDataStore = defineStore('userData', {
+export const useDataUserStore = defineStore('dataUser', {
   persist: true,
 
   state: (): UserData => ({

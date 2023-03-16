@@ -2,10 +2,10 @@
   <q-page class="row">
     <div
       class="col-4 display-component"
-      v-for="sensorData in sortedSensorData"
-      :key="sensorData.id"
+      v-for="sensor in sortedSensorData"
+      :key="sensor.id"
     >
-      <DisplaySensor :sensor-data="sensorData"></DisplaySensor>
+      <DisplaySensor :sensor="sensor"></DisplaySensor>
     </div>
     <div class="col-8 display-component">
       <DisplayForecast />
@@ -18,13 +18,13 @@ import DisplaySensor from 'components/DisplaySensor.vue';
 import DisplayForecast from 'components/DisplayForecast.vue';
 
 import { defineComponent } from 'vue';
-import { useSensorDataStore } from 'src/stores/sensorData';
+import { useDataSensorStore } from 'src/stores/dataSensor';
 
 export default defineComponent({
   name: 'IndexPage',
   components: { DisplaySensor, DisplayForecast },
   setup() {
-    const sortedSensorData = useSensorDataStore().getSortedSensorData;
+    const sortedSensorData = useDataSensorStore().getSortedSensorData;
 
     return { sortedSensorData };
   },

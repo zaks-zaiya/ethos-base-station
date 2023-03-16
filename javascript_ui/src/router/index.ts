@@ -8,8 +8,8 @@ import {
 
 import routes from './routes';
 
-import { useSensorDataStore } from 'src/stores/sensorData';
-import { useUserDataStore } from 'src/stores/userData';
+import { useDataSensorStore } from 'src/stores/dataSensor';
+import { useDataUserStore } from 'src/stores/dataUser';
 
 /*
  * If not building with SSR mode, you can
@@ -38,15 +38,15 @@ export default route(function (/* { store, ssrContext } */) {
   });
 
   // Check whether data needs to be initialized
-  const userDataStore = useUserDataStore();
-  const sensorDataStore = useSensorDataStore();
+  const dataUserStore = useDataUserStore();
+  const dataSensorStore = useDataSensorStore();
   Router.beforeEach((to) => {
     const initializePath = '/initialize';
     console.log(to.path);
 
     if (
       // Any data is undefined
-      (userDataStore.containsUndefined || sensorDataStore.containsUndefined) &&
+      (dataUserStore.containsUndefined || dataSensorStore.containsUndefined) &&
       // Avoid an infinite redirect
       to.path !== initializePath
     ) {

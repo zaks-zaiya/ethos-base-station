@@ -15,14 +15,14 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
 
-import { useSensorDataStore } from 'stores/sensorData';
+import { useDataSensorStore } from 'stores/dataSensor';
 import ContactCard from './ContactCard.vue';
 
 export default defineComponent({
   name: 'ModalNoConnection',
   components: { ContactCard },
   setup() {
-    const store = useSensorDataStore();
+    const store = useDataSensorStore();
     return {
       isDisconnected: computed(() => !store.isConnected),
     };

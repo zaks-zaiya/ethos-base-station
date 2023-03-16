@@ -57,8 +57,8 @@ import { useRouter } from 'vue-router';
 import ContactCard from 'src/components/ContactCard.vue';
 import SettingsMenuUserData from 'src/components/SettingsMenuUserData.vue';
 import SettingsMenuSensors from 'src/components/SettingsMenuSensors.vue';
-import { useUserDataStore } from 'src/stores/userData';
-import { useSensorDataStore } from 'src/stores/sensorData';
+import { useDataUserStore } from 'src/stores/dataUser';
+import { useDataSensorStore } from 'src/stores/dataSensor';
 
 export default {
   setup() {
@@ -66,8 +66,8 @@ export default {
     const stepper = ref(null);
 
     const router = useRouter();
-    const userDataStore = useUserDataStore();
-    const sensorDataStore = useSensorDataStore();
+    const dataUserStore = useDataUserStore();
+    const dataSensorStore = useDataSensorStore();
 
     const isNextStepAvailable = computed(() => {
       // Info Page
@@ -75,11 +75,11 @@ export default {
         return true;
       }
       // User Data
-      else if (step.value === 2 && !userDataStore.containsUndefined) {
+      else if (step.value === 2 && !dataUserStore.containsUndefined) {
         return true;
       }
       // Sensor Data
-      else if (step.value === 3 && !sensorDataStore.containsUndefined) {
+      else if (step.value === 3 && !dataSensorStore.containsUndefined) {
         return true;
       }
       return false;
