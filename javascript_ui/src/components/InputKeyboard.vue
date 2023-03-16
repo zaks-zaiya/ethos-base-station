@@ -114,13 +114,14 @@ export default defineComponent({
       // Scroll input element into view
       setTimeout(() => {
         // Get parent div to be scrolled
-        const scrollParent = inputEl.value?.nativeEl.closest('.q-panel');
+        const scrollParent = inputEl.value?.nativeEl.closest('.auto-scroll');
         if (inputEl.value && scrollParent) {
           // Calculate where to scroll
-          const yOffset = -100;
+          const yOffset = -20; // number of pixels padding
           const y =
             inputEl.value.nativeEl.getBoundingClientRect().top +
-            scrollParent.scrollTop +
+            scrollParent.scrollTop -
+            scrollParent.getBoundingClientRect().top +
             yOffset;
           // Scroll to y location
           scrollParent.scrollTo({ top: y, behavior: 'smooth' });
