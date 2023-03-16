@@ -1,53 +1,64 @@
 <template>
-  <div class="q-px-md q-pb">
-    <q-stepper v-model="step" ref="stepper" color="primary" animated header-nav>
-      <q-step :name="1" title="Setup Wizard" icon="settings" :done="step > 1">
-        Looks like there may be some undefined data. This page will walk you
-        through setting everything up.
-        <div class="q-my-sm">
-          If you do not intend to be here please contact the Ethos team:
-        </div>
-        <ContactCard />
-      </q-step>
-
-      <q-step
-        :name="2"
-        title="Setup User Data"
-        icon="create_new_folder"
-        :done="step > 2"
+  <div class="q-px-md">
+    <KeyboardAutoScroll>
+      <q-stepper
+        v-model="step"
+        ref="stepper"
+        color="primary"
+        animated
+        header-nav
       >
-        <SettingsMenuUserData />
-      </q-step>
+        <q-step :name="1" title="Setup Wizard" icon="settings" :done="step > 1">
+          Looks like there may be some undefined data. This page will walk you
+          through setting everything up.
+          <div class="q-my-sm">
+            If you do not intend to be here please contact the Ethos team:
+          </div>
+          <ContactCard />
+        </q-step>
 
-      <q-step
-        :name="3"
-        title="Setup Sensor Data"
-        icon="assignment"
-        :done="step > 3"
-        :header-nav="step >= 2 && isNextStepAvailable"
-      >
-        <SettingsMenuSensors />
-      </q-step>
+        <q-step
+          :name="2"
+          title="Setup User Data"
+          icon="create_new_folder"
+          :done="step > 2"
+        >
+          <SettingsMenuUserData />
+        </q-step>
 
-      <template v-slot:navigation>
-        <q-stepper-navigation>
-          <q-btn
-            @click="nextStep"
-            color="primary"
-            :disable="!isNextStepAvailable"
-            :label="step === 3 ? 'Finish' : 'Continue'"
-          />
-          <q-btn
-            v-if="step > 1"
-            flat
-            color="primary"
-            @click="() => $refs.stepper.previous()"
-            label="Back"
-            class="q-ml-sm"
-          />
-        </q-stepper-navigation>
-      </template>
-    </q-stepper>
+        <q-step
+          :name="3"
+          title="Setup Sensor Data"
+          icon="assignment"
+          :done="step > 3"
+          :header-nav="step >= 2 && isNextStepAvailable"
+        >
+          <SettingsMenuSensors />
+        </q-step>
+
+        <template v-slot:navigation>
+          <q-stepper-navigation>
+            <div class="row items-center q-pb-none">
+              <q-btn
+                v-if="step > 1"
+                flat
+                color="primary"
+                @click="() => $refs.stepper.previous()"
+                label="Back"
+                class="q-ml-sm"
+              />
+              <q-space />
+              <q-btn
+                @click="nextStep"
+                color="primary"
+                :disable="!isNextStepAvailable"
+                :label="step === 3 ? 'Finish' : 'Continue'"
+              />
+            </div>
+          </q-stepper-navigation>
+        </template>
+      </q-stepper>
+    </KeyboardAutoScroll>
   </div>
 </template>
 
@@ -57,10 +68,17 @@ import { useRouter } from 'vue-router';
 import ContactCard from 'src/components/ContactCard.vue';
 import SettingsMenuUserData from 'src/components/SettingsMenuUserData.vue';
 import SettingsMenuSensors from 'src/components/SettingsMenuSensors.vue';
+import KeyboardAutoScroll from 'src/components/KeyboardAutoScroll.vue';
 import { useDataUserStore } from 'src/stores/dataUser';
 import { useDataSensorStore } from 'src/stores/dataSensor';
 
 export default {
+  components: {
+    ContactCard,
+    SettingsMenuUserData,
+    SettingsMenuSensors,
+    KeyboardAutoScroll,
+  },
   setup() {
     const step = ref(1);
     const stepper = ref(null);
@@ -101,6 +119,5 @@ export default {
       nextStep,
     };
   },
-  components: { ContactCard, SettingsMenuUserData, SettingsMenuSensors },
 };
 </script>
