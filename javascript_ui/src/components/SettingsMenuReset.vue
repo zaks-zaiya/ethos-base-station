@@ -38,18 +38,25 @@
 <script lang="ts">
 import { useDataSensorStore } from 'src/stores/dataSensor';
 import { useDataUserStore } from 'src/stores/dataUser';
+import { useRouter } from 'vue-router';
 import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
   setup() {
     const isShowWarning = ref(false);
 
+    const router = useRouter();
+
     const dataUserStore = useDataUserStore();
     const dataSensorStore = useDataSensorStore();
 
     const resetData = () => {
-      return;
+      dataUserStore.$reset();
+      dataSensorStore.$reset();
+      dataSensorStore.setup();
+      router.push('/');
     };
+
     return { isShowWarning, resetData };
   },
 });
