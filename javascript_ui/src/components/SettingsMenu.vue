@@ -5,6 +5,7 @@
         <q-tabs v-model="tab" vertical class="text-teal">
           <q-tab name="user-data" icon="person" label="User Data" />
           <q-tab name="sensors" icon="thermostat" label="Sensors" />
+          <q-tab name="reset" icon="warning" label="Reset App" />
         </q-tabs>
       </template>
 
@@ -24,6 +25,10 @@
           <q-tab-panel name="sensors">
             <SettingsMenuSensors />
           </q-tab-panel>
+
+          <q-tab-panel name="reset">
+            <SettingsMenuReset />
+          </q-tab-panel>
         </q-tab-panels>
       </template>
     </q-splitter>
@@ -33,11 +38,12 @@
 <script lang="ts">
 import { useKeyboardStore } from 'src/stores/keyboard';
 import { defineComponent, ref, computed } from 'vue';
+import SettingsMenuReset from './SettingsMenuReset.vue';
 import SettingsMenuSensors from './SettingsMenuSensors.vue';
 import SettingsMenuUserData from './SettingsMenuUserData.vue';
 
 export default defineComponent({
-  components: { SettingsMenuUserData, SettingsMenuSensors },
+  components: { SettingsMenuUserData, SettingsMenuSensors, SettingsMenuReset },
   setup() {
     const keyboardStore = useKeyboardStore();
     const heightClass = computed(() => {
