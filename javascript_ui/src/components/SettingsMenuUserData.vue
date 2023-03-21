@@ -102,23 +102,23 @@ export default defineComponent({
         dataUserStore.ageYears = age;
         return true;
       }
-      return 'Invalid age value';
+      return 'Invalid age value (1-199 years)';
     };
 
     const checkHeight = (height: number) => {
-      if (height > 30 && height < 300) {
+      if (height > 0 && height < 400) {
         dataUserStore.heightCm = height;
         return true;
       }
-      return 'Invalid height value';
+      return 'Invalid height value (1-399cm)';
     };
 
     const checkWeight = (weight: number) => {
-      if (weight > 10 && weight < 300) {
+      if (weight > 0 && weight < 400) {
         dataUserStore.weightKg = weight;
         return true;
       }
-      return 'Invalid weight value';
+      return 'Invalid weight value (1-399kg)';
     };
 
     return {
