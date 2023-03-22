@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 
 import axios, { AxiosError } from 'axios';
 import { useDataUserStore } from './dataUser';
+import { watch } from 'vue';
 
 export const useForecastStore = defineStore('forecast', {
   state: () => ({
@@ -21,6 +22,17 @@ export const useForecastStore = defineStore('forecast', {
   actions: {
     setup() {
       const dataUserStore = useDataUserStore();
+
+      // Update forecast if lat or long change
+      watch(
+        () => {
+          return { lat: dataUserStore.latitude, lon: dataUserStore.longitude };
+        },
+        () => {
+          console.log('Lat/lon updated, updating weather');
+          updateWeather();
+        }
+      );
 
       const updateWeather = async () => {
         const latitude = dataUserStore.latitude;
