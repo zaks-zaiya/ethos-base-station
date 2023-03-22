@@ -21,9 +21,10 @@ export const useForecastStore = defineStore('forecast', {
 
   actions: {
     setup() {
+      // Initialize user data for lat/lon
       const dataUserStore = useDataUserStore();
 
-      // Update forecast if lat or long change
+      // Update forecast if lat or lon change
       watch(
         () => {
           return { lat: dataUserStore.latitude, lon: dataUserStore.longitude };
@@ -34,6 +35,10 @@ export const useForecastStore = defineStore('forecast', {
         }
       );
 
+      /**
+       * Read the user latitude and longitude (based off postcode)
+       * and updates the weather forecast accordingly
+       */
       const updateWeather = async () => {
         const latitude = dataUserStore.latitude;
         const longitude = dataUserStore.longitude;
