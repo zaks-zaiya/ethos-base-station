@@ -21,4 +21,4 @@ if __name__ == '__main__':
   # Uncomment for RPI build
   # radio_thread = threading.Thread(target=radio_listen, args=[sio])
   # radio_thread.start()
-  web.run_app(app, port=5000)
+  web.run_app(app, port=5001)

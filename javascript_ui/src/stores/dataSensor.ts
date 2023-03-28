@@ -94,7 +94,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
   actions: {
     setup() {
       console.log('Setting up socket...');
-      const socket = io('ws://localhost:5000');
+      const socket = io('ws://localhost:5001');
 
       // Callbacks for socket
       socket.on('connect', () => {
