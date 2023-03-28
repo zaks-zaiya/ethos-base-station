@@ -6,4 +6,4 @@ cd ..
 :: Run python
 cd python_radio
 call .\env\Scripts\activate.bat
-python src\main.py
+python3 src\main.py
