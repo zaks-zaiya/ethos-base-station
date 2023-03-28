@@ -39,7 +39,10 @@
                 Temperature: {{ forecastStore.currentTemp?.toFixed(1) }}°C
               </div>
               <div>Humidity: {{ forecastStore.currentHumidity }}% RH</div>
-              <q-btn class="q-mt-sm" color="secondary"
+              <q-btn
+                class="q-mt-sm"
+                color="secondary"
+                @click="displayDetailedForecast"
                 >View Detailed Forecast</q-btn
               >
             </div>
@@ -70,7 +73,11 @@ export default defineComponent({
       return '';
     });
 
-    return { forecastStore, iconUrl };
+    let displayDetailedForecast = () => {
+      forecastStore.isShowDetailedForecast = true;
+    };
+
+    return { forecastStore, iconUrl, displayDetailedForecast };
   },
 });
 </script>

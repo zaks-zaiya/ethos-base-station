@@ -6,6 +6,7 @@ import { watch } from 'vue';
 
 export const useForecastStore = defineStore('forecast', {
   state: () => ({
+    isShowDetailedForecast: false,
     errorMessage: 'Updating data...',
     stationName: null as null | string,
     currentTemp: null as null | number,
