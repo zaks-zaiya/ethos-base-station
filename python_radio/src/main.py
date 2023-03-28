@@ -1,8 +1,8 @@
 from aiohttp import web
 import socketio
 
-import threading
-from radio import radio_listen
+# import threading
+# from radio import radio_listen
 
 # Allow web (9000) or electron (9300) apps to connect
 sio = socketio.AsyncServer(cors_allowed_origins='*')
@@ -19,6 +19,6 @@ def disconnect(sid):
 
 if __name__ == '__main__':
   # Uncomment for RPI build
-  radio_thread = threading.Thread(target=radio_listen, args=[sio])
-  radio_thread.start()
+  # radio_thread = threading.Thread(target=radio_listen, args=[sio])
+  # radio_thread.start()
   web.run_app(app, port=5000)
