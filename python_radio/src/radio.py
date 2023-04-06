@@ -31,7 +31,7 @@ def radio_listen(sio):
     print("Received signal strength: {0} dB".format(rssi))
 
     # Decode radio packet with temp sensor information
-    match = re.match("^I(\d+)T([\d\.]+)H([\d\.]+)$", packet_text)
+    match = re.match("^I(\d+)T([\d\.]+)H([\d\.]+)", packet_text)
 
     # If no regex match, radio must be coming from a different source
     if match is None:
