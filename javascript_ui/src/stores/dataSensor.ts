@@ -109,11 +109,11 @@ export const useDataSensorStore = defineStore('dataSensor', {
 
       // Callback to update sensor data when applicable
       socket.on('data', (data) => {
-        console.log('Received: ' + data);
-        const data_obj = JSON.parse(data.toString());
+        console.log('Received:');
+        console.log(data);
 
         // Check data
-        if (!(data_obj.id && data_obj.temperature && data_obj.humidity)) {
+        if (!(data.id && data.temperature && data.humidity)) {
           // Some of the data is missing
           console.error('Invalid socket data');
           return;
@@ -121,7 +121,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
 
         // Check it exists in the array
         const i = this.allSensorData.findIndex(
-          (dataSensor) => dataSensor.id == data_obj.id
+          (dataSensor) => dataSensor.id == data.id
         );
         if (i < 0) {
           // Could not find index
@@ -130,8 +130,8 @@ export const useDataSensorStore = defineStore('dataSensor', {
         }
 
         // Update array values
-        this.allSensorData[i].temperature = data_obj.temperature;
-        this.allSensorData[i].humidity = data_obj.humidity;
+        this.allSensorData[i].temperature = data.temperature;
+        this.allSensorData[i].humidity = data.humidity;
         this.allSensorData[i].lastSeen = new Date(Date.now());
       });
     },
