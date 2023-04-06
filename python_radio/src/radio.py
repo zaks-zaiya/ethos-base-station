@@ -51,4 +51,5 @@ def radio_listen(sio):
     rfm9x.send(acknowledgement_data)
 
     # Send socket event to main program with the data
+    print("Emitting data... id: {0}, temp: {1}, RH: {2}".format(id, temperature, humidity))
     sio.emit('data', {'id': id, 'temperature': temperature, 'humidity': humidity})
