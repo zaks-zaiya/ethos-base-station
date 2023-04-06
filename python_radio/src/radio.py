@@ -5,7 +5,7 @@ import adafruit_rfm9x
 
 import re
 
-def radio_listen(sio):
+async def radio_listen(sio):
   # Configure LoRa Radio
   RADIO_FREQ_MHZ = 915.0  # Frequency of the radio in Mhz
   CS = DigitalInOut(board.CE1)
@@ -52,4 +52,4 @@ def radio_listen(sio):
 
     # Send socket event to main program with the data
     print("Emitting data... id: {0}, temp: {1}, RH: {2}".format(id, temperature, humidity))
-    sio.emit('data', {'id': id, 'temperature': temperature, 'humidity': humidity})
+    await sio.emit('data', {'id': id, 'temperature': temperature, 'humidity': humidity})

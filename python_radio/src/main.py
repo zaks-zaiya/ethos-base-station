@@ -1,5 +1,6 @@
 from aiohttp import web
 import socketio
+import asyncio
 import sys
 
 import threading
@@ -21,6 +22,6 @@ def disconnect(sid):
 if __name__ == '__main__':
   production_arg = sys.argv[1] if len(sys.argv) > 1 else False
   if production_arg == 'prod' or production_arg == 'production':
-    radio_thread = threading.Thread(target=radio_listen, args=[sio])
+    radio_thread = threading.Thread(target=asyncio.run, args=(radio_listen(sio),))
     radio_thread.start()
   web.run_app(app, port=5000)
