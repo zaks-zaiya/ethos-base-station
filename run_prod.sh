@@ -1,7 +1,7 @@
 # Open quasar program in new window
 cd javascript_ui
 npm run build
-'./dist/electron/Packaged/Ethos Heat Monitor-linux-armv7l/Ethos Heat Monitor'
+'./dist/electron/Packaged/Ethos Heat Monitor-linux-armv7l/Ethos Heat Monitor' & # Ensure that process does not block python script
 cd ..
 
 # Run python
