@@ -17,4 +17,4 @@ To run development build run `sh run_dev.sh` (Mac/Linux) or `.\run_dev.bat` (Win
 
 ## Run prod build
 
-TODO
+To run development build run `sh run_prod.sh` (Linux)
