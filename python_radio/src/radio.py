@@ -3,9 +3,10 @@ import busio
 from digitalio import DigitalInOut
 import adafruit_rfm9x
 
+import socketio
 import re
 
-async def radio_listen(sio):
+async def radio_listen(sio: socketio.AsyncServer):
   # Configure LoRa Radio
   RADIO_FREQ_MHZ = 915.0  # Frequency of the radio in Mhz
   CS = DigitalInOut(board.CE1)
