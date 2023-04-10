@@ -71,13 +71,13 @@ export default defineComponent({
 
       // Handle shift press
       if (button === '{shift}' || button === '{lock}') {
-        handleShift();
+        toggleLayout('shift');
         return;
       }
 
       // Handle number mode
       if (button === '{numbers}' || button === '{abc}') {
-        handleNumbers();
+        toggleLayout('numbers');
         return;
       }
 
@@ -136,23 +136,22 @@ export default defineComponent({
       }
     };
 
-    // Toggle between capitalized layouts
-    const handleShift = () => {
+    /**
+     * Toggle between keyboard layout types
+     * @param type Whether to toggle between capitalised letters (shift) or numbers (numbers)
+     */
+    const toggleLayout = (type: 'shift' | 'numbers') => {
       let currentLayout = keyboard?.options.layoutName;
-      let shiftToggle = currentLayout === 'default' ? 'shift' : 'default';
-
+      let newLayout = 'default';
+      // Determine new layout
+      if (type === 'shift') {
+        newLayout = currentLayout === 'default' ? 'shift' : 'default';
+      } else if (type === 'numbers') {
+        newLayout = currentLayout !== 'numbers' ? 'numbers' : 'default';
+      }
+      // Set
       keyboard?.setOptions({
-        layoutName: shiftToggle,
-      });
-    };
-
-    // Toggle between numbers/letters
-    const handleNumbers = () => {
-      let currentLayout = keyboard?.options.layoutName;
-      let numbersToggle = currentLayout !== 'numbers' ? 'numbers' : 'default';
-
-      keyboard?.setOptions({
-        layoutName: numbersToggle,
+        layoutName: newLayout,
       });
     };
 
