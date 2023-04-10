@@ -112,6 +112,18 @@ export default defineComponent({
         // Restore cursor position
         restoreInputCursorToPosition(selectionStart + 1);
       }
+      // Is space
+      else if (button === '{space}') {
+        // Insert characters at position
+        keyboardStore.keyboardValue.value = insertCharFromSelection(
+          keyboardStore.keyboardValue.value,
+          ' ',
+          selectionStart,
+          selectionEnd
+        );
+        // Restore cursor position
+        restoreInputCursorToPosition(selectionStart + 1);
+      }
       // Is backspace
       else if (button === '{backspace}') {
         keyboardStore.keyboardValue.value = deleteCharFromSelection(
