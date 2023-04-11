@@ -62,6 +62,7 @@ export default defineComponent({
       }
     });
 
+    // Dispatcher to handle key press from keyboard
     const onKeyPress = (button: string) => {
       // Sanity check
       if (!keyboardStore.keyboardBinding || !keyboardStore.keyboardValue) {
@@ -155,7 +156,14 @@ export default defineComponent({
       });
     };
 
-    // Inserts char at cursor pos, replacing selection (if applicable)
+    /**
+     * Inserts char at cursor pos, replacing selection (if applicable)
+     * @param str The original string
+     * @param newChar The new character or string to insert
+     * @param selectionStart A number that represents the starting position of the selection
+     * @param selectionEnd A number that represents the ending position of the selection
+     * @returns The mutated string
+     */
     const insertCharFromSelection = (
       str: string,
       newChar: string,
@@ -165,7 +173,13 @@ export default defineComponent({
       return str.slice(0, selectionStart) + newChar + str.slice(selectionEnd);
     };
 
-    // If no chars are selected, delete the char before the cursor, otherwise replace the selection with ''
+    /**
+     * If no chars are selected, delete the char before the cursor, otherwise replace the selection with ''
+     * @param str The original string
+     * @param selectionStart A number that represents the starting position of the selection
+     * @param selectionEnd A number that represents the ending position of the selection
+     * @returns The mutated string
+     */
     const deleteCharFromSelection = (
       str: string,
       selectionStart: number,
