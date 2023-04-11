@@ -4,7 +4,10 @@ import asyncio
 import sys
 
 import threading
-from radio import radio_listen
+try:
+  from radio import radio_listen
+except:
+  print("Unable to import radio module, are you on RPi?")
 
 # Allow web (9000) or electron (9300) apps to connect
 sio = socketio.AsyncServer(cors_allowed_origins='*')
