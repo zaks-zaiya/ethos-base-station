@@ -2,6 +2,7 @@
   <q-layout view="lHh Lpr lFf" class="bg-blue-grey-2">
     <!-- Register Modals -->
     <modal-no-connection />
+    <modal-cooling-interventions v-model="isShowCoolingModal" />
     <!-- Main layout -->
     <q-header flat class="transparent">
       <q-toolbar>
@@ -20,18 +21,26 @@
           class="q-ml-md"
         />
         <q-toolbar-title></q-toolbar-title>
+
         <q-btn
-          v-if="isShowSettingsButton"
-          @click="hideSettingsButton"
-          class="q-mr-md"
-          color="secondary"
-          icon="settings"
-          to="settings"
+          v-if="$route.path !== '/settings'"
+          @click="isShowCoolingModal = true"
+          class="q-mr-lg"
+          color="primary"
+          label="i need to cool down"
         />
         <q-btn
           v-if="$route.path !== '/settings'"
           color="secondary"
-          label="help"
+          label="help me use the app"
+        />
+        <q-btn
+          v-if="isShowSettingsButton"
+          @click="hideSettingsButton"
+          class="q-ml-md"
+          color="info"
+          icon="settings"
+          to="settings"
         />
       </q-toolbar>
     </q-header>
@@ -56,14 +65,16 @@ import { defineComponent, ref } from 'vue';
 import { useKeyboardStore } from 'src/stores/keyboard';
 
 import ModalNoConnection from 'components/ModalNoConnection.vue';
+import ModalCoolingInterventions from 'components/ModalCoolingInterventions.vue';
 import SimpleKeyboard from 'src/components/SimpleKeyboard.vue';
 
 export default defineComponent({
   name: 'MainLayout',
-  components: { ModalNoConnection, SimpleKeyboard },
+  components: { ModalNoConnection, ModalCoolingInterventions, SimpleKeyboard },
   setup() {
     const keyboardStore = useKeyboardStore();
     let isShowSettingsButton = ref(false);
+    let isShowCoolingModal = ref(false);
 
     let timeoutShowSettingsButton: null | number = null;
     let showSettingsPressedCount = 0;
@@ -95,6 +106,7 @@ export default defineComponent({
     return {
       keyboardStore,
       isShowSettingsButton,
+      isShowCoolingModal,
       showSettingsButton,
       hideSettingsButton,
     };
