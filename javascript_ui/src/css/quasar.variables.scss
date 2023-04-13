@@ -25,10 +25,10 @@ $info: #31ccec;
 $warning: #f2c037;
 
 @function fluid-font-size(
-  $minimumSize: 12,
-  $maximumSize: 40,
-  $minimumViewportWidth: 300,
-  $maximumViewportWidth: 1800
+  $minimumSize,
+  $maximumSize,
+  $minimumViewportWidth,
+  $maximumViewportWidth
 ) {
   @return calc(
     #{$minimumSize}px + (#{$maximumSize} - #{$minimumSize}) *
@@ -41,6 +41,6 @@ $warning: #f2c037;
 
 @for $num from 10 through 40 {
   .fontsize-#{$num} {
-    font-size: fluid-font-size($num, ($num * 2 + 2), 300, 1800);
+    font-size: fluid-font-size($num, ($num * 2 + 2), 800, 1800);
   }
 }
