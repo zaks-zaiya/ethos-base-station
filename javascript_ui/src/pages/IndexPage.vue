@@ -33,7 +33,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .display-component {
-  height: 215px;
+  height: calc((100vh - 50px) / 2);
   padding: 10px;
 }
 </style>
