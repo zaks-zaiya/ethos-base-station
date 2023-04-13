@@ -3,6 +3,7 @@
     <!-- Register Modals -->
     <modal-no-connection />
     <modal-cooling-interventions v-model="isShowCoolingModal" />
+    <modal-help v-model="isShowHelpModal" />
     <!-- Main layout -->
     <q-header flat class="transparent">
       <q-toolbar>
@@ -31,6 +32,7 @@
         />
         <q-btn
           v-if="$route.path !== '/settings'"
+          @click="isShowHelpModal = true"
           color="secondary"
           label="help me use the app"
         />
@@ -67,14 +69,21 @@ import { useKeyboardStore } from 'src/stores/keyboard';
 import ModalNoConnection from 'components/ModalNoConnection.vue';
 import ModalCoolingInterventions from 'components/ModalCoolingInterventions.vue';
 import SimpleKeyboard from 'src/components/SimpleKeyboard.vue';
+import ModalHelp from 'src/components/ModalHelp.vue';
 
 export default defineComponent({
   name: 'MainLayout',
-  components: { ModalNoConnection, ModalCoolingInterventions, SimpleKeyboard },
+  components: {
+    ModalNoConnection,
+    ModalCoolingInterventions,
+    SimpleKeyboard,
+    ModalHelp,
+  },
   setup() {
     const keyboardStore = useKeyboardStore();
     let isShowSettingsButton = ref(false);
     let isShowCoolingModal = ref(false);
+    let isShowHelpModal = ref(false);
 
     let timeoutShowSettingsButton: null | number = null;
     let showSettingsPressedCount = 0;
@@ -107,6 +116,7 @@ export default defineComponent({
       keyboardStore,
       isShowSettingsButton,
       isShowCoolingModal,
+      isShowHelpModal,
       showSettingsButton,
       hideSettingsButton,
     };
