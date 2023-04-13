@@ -1,13 +1,13 @@
 <template>
   <q-page class="row">
     <div
-      class="col-4 display-component"
+      class="col-xs-6 col-sm-4 display-component"
       v-for="sensor in sortedSensorData"
       :key="sensor.id"
     >
       <DisplaySensor :sensor="sensor"></DisplaySensor>
     </div>
-    <div class="col-8 display-component">
+    <div class="col-xs-12 col-sm-8 display-component">
       <DisplayForecast />
     </div>
   </q-page>
