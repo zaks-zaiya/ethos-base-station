@@ -6,9 +6,9 @@
           <img
             :src="iconUrl"
             :alt="forecastStore.weatherDescription"
-            style="width: 75px"
+            style="width: 100px"
           />
-          <div class="text-capitalize text-center">
+          <div class="fontsize-16 text-capitalize text-center">
             {{ forecastStore.weatherDescription }}
           </div>
         </div>
@@ -18,7 +18,7 @@
 
       <div class="full-width">
         <q-card-section class="q-pa-sm">
-          <div class="text-h6">
+          <div class="fontsize-22 text-bold">
             <span v-if="forecastStore.stationName">
               {{ forecastStore.stationName }} -
             </span>
@@ -28,18 +28,18 @@
 
         <q-separator dark />
 
-        <q-card-section class="q-pa-sm">
+        <q-card-section class="q-pa-sm fontsize-26">
           <div v-if="forecastStore.errorMessage">
             Weather Station Offline <br />
             Reason: {{ forecastStore.errorMessage }}
           </div>
-          <div v-else class="row" style="font-size: 22px">
-            <div class="col-7">
+          <div v-else class="row">
+            <div class="col">
               <div>
                 Temperature: {{ forecastStore.currentTemp?.toFixed(1) }}°C
               </div>
               <div>Humidity: {{ forecastStore.currentHumidity }}% RH</div>
-              <q-btn class="q-mt-sm" color="secondary"
+              <q-btn class="q-mt-sm fontsize-14" color="secondary"
                 >View Detailed Forecast</q-btn
               >
             </div>
