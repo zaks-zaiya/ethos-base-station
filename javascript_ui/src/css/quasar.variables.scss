@@ -23,3 +23,24 @@ $positive: #21ba45;
 $negative: #c10015;
 $info: #31ccec;
 $warning: #f2c037;
+
+@function fluid-font-size(
+  $minimumSize: 12,
+  $maximumSize: 36,
+  $minimumViewportWidth: 300,
+  $maximumViewportWidth: 1600
+) {
+  @return calc(
+    #{$minimumSize}px + (#{$maximumSize} - #{$minimumSize}) *
+      (
+        (100vw - #{$minimumViewportWidth}px) /
+          (#{$maximumViewportWidth} - #{$minimumViewportWidth})
+      )
+  );
+}
+
+@for $num from 8 through 28 {
+  .fontsize-#{$num} {
+    font-size: fluid-font-size($num, ($num * 2 + 2), 300, 1800);
+  }
+}
