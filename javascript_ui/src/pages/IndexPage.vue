@@ -32,8 +32,16 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.display-component {
-  height: calc((100vh - 50px) / 2);
-  padding: 10px;
+@media screen and (min-width: 600px) {
+  .display-component {
+    height: calc((100vh - 50px) / 2);
+    padding: 10px;
+  }
+}
+@media screen and (max-width: 599px) {
+  .display-component {
+    height: calc((100vh - 50px) / 3);
+    padding: 10px;
+  }
 }
 </style>
