@@ -31,16 +31,19 @@ $warning: #f2c037;
   $maximumViewportWidth
 ) {
   @return calc(
-    #{$minimumSize}px + (#{$maximumSize} - #{$minimumSize}) *
-      (
-        (100vw - #{$minimumViewportWidth}px) /
-          (#{$maximumViewportWidth} - #{$minimumViewportWidth})
-      )
+    max(
+      #{$minimumSize}px,
+      #{$minimumSize}px + (#{$maximumSize} - #{$minimumSize}) *
+        (
+          (100vw - #{$minimumViewportWidth}px) /
+            (#{$maximumViewportWidth} - #{$minimumViewportWidth})
+        )
+    )
   );
 }
 
 @for $num from 10 through 40 {
   .fontsize-#{$num} {
-    font-size: fluid-font-size($num, ($num * 2 + 2), 800, 1800);
+    font-size: fluid-font-size($num, ($num * 2 + 2), 600, 1800);
   }
 }
