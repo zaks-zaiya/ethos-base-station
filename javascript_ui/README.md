@@ -2,6 +2,12 @@
 
 Project that displays temperature information and presents warnings/advice depending on the situation
 
+## Scaling font size with screen width
+
+To have reactive fonts, use the class fontsize-x where x is 8-28
+
+e.g. `<div class="fontsize-12"></div>`
+
 ## Install the dependencies
 
 ```bash
