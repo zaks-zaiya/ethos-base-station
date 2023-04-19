@@ -211,7 +211,13 @@ export default defineComponent({
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
+.hg-button {
+  height: calc(12vh) !important;
+  font-size: 24px;
+}
+
 .simple-keyboard {
+  height: calc(52vh);
   margin: 0 auto;
 }
 

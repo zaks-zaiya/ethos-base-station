@@ -21,7 +21,7 @@ import { useKeyboardStore } from 'src/stores/keyboard';
 import { QInput } from 'quasar';
 
 export default defineComponent({
-  name: 'InputPasscode',
+  name: 'InputKeyboard',
   props: {
     /**
      * Model value of component
@@ -145,9 +145,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style lang="scss" scoped>
-.passcode-row {
-  height: 70px;
-}
-</style>

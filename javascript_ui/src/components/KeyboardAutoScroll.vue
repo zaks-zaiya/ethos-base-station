@@ -27,10 +27,12 @@ export default defineComponent({
   overflow: scroll;
 }
 .height-keyboard-open {
-  height: calc(100vh - 240px);
+  // -60px for top toolbar
+  height: calc(48vh - 60px);
   transition: height 0.15s ease-out;
 }
 .height-keyboard-closed {
+  // -60px for top toolbar
   height: calc(100vh - 60px);
   transition: height 0.15s ease-in;
 }

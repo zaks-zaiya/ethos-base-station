@@ -19,15 +19,15 @@
             transition-prev="slide-down"
             transition-next="slide-up"
           >
-            <q-tab-panel name="user-data">
+            <q-tab-panel name="user-data" class="remaining-height">
               <SettingsMenuUserData />
             </q-tab-panel>
 
-            <q-tab-panel name="sensors">
+            <q-tab-panel name="sensors" class="remaining-height">
               <SettingsMenuSensors />
             </q-tab-panel>
 
-            <q-tab-panel name="reset">
+            <q-tab-panel name="reset" class="remaining-height">
               <SettingsMenuReset />
             </q-tab-panel>
           </q-tab-panels>
@@ -59,3 +59,9 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss" scoped>
+.remaining-height {
+  height: calc(100vh - 60px);
+}
+</style>
