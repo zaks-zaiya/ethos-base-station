@@ -6,7 +6,7 @@
     <modal-help v-model="isShowHelpModal" />
     <!-- Main layout -->
     <q-header flat class="transparent">
-      <q-toolbar>
+      <q-toolbar class="ethos-toolbar">
         <img
           v-if="$route.path !== '/settings'"
           src="ethos.svg"
@@ -123,3 +123,9 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss" scoped>
+.ethos-toolbar {
+  height: $toolbar-height;
+}
+</style>

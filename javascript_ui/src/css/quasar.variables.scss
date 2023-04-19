@@ -25,7 +25,10 @@ $info: #31ccec;
 $warning: #f2c037;
 
 // -60px for toolbar (50px) + extra room (10px)
-$remaining-height: calc(100vh - 60px);
+
+$toolbar-height: 50px;
+
+$remaining-height: calc(100vh - #{$toolbar-height} - 10px);
 
 $keyboard-height: calc(#{$remaining-height} * 0.52);
 
