@@ -5,6 +5,7 @@
         v-model="step"
         ref="stepper"
         color="primary"
+        @transition="keyboardStore.unbindKeyboard()"
         animated
         header-nav
       >
@@ -71,6 +72,7 @@ import SettingsMenuSensors from 'src/components/SettingsMenuSensors.vue';
 import KeyboardAutoScroll from 'src/components/KeyboardAutoScroll.vue';
 import { useDataUserStore } from 'src/stores/dataUser';
 import { useDataSensorStore } from 'src/stores/dataSensor';
+import { useKeyboardStore } from 'src/stores/keyboard';
 
 export default {
   components: {
@@ -86,6 +88,7 @@ export default {
     const router = useRouter();
     const dataUserStore = useDataUserStore();
     const dataSensorStore = useDataSensorStore();
+    const keyboardStore = useKeyboardStore();
 
     const isNextStepAvailable = computed(() => {
       // Info Page
@@ -116,6 +119,7 @@ export default {
       step,
       stepper,
       isNextStepAvailable,
+      keyboardStore,
       nextStep,
     };
   },
