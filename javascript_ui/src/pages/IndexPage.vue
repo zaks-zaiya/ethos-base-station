@@ -34,13 +34,13 @@ export default defineComponent({
 <style lang="scss" scoped>
 @media screen and (min-width: 600px) {
   .display-component {
-    height: calc((100vh - 50px) / 2);
+    height: calc(#{$remaining-height} / 2);
     padding: 10px;
   }
 }
 @media screen and (max-width: 599px) {
   .display-component {
-    height: calc((100vh - 50px) / 3);
+    height: calc(#{$remaining-height} / 3);
     padding: 10px;
   }
 }

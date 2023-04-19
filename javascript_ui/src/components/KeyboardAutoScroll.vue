@@ -27,13 +27,13 @@ export default defineComponent({
   overflow: scroll;
 }
 .height-keyboard-open {
-  // -60px for top toolbar
-  height: calc(48vh - 60px);
+  // -10px for top toolbar
+  height: $remaining-height-keyboard-open;
   transition: height 0.15s ease-out;
 }
 .height-keyboard-closed {
-  // -60px for top toolbar
-  height: calc(100vh - 60px);
+  // -10px a bit of extra room
+  height: $remaining-height;
   transition: height 0.15s ease-in;
 }
 </style>

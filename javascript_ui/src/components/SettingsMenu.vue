@@ -61,7 +61,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.remaining-height {
-  height: calc(100vh - 60px);
+.settings-tab-panel {
+  height: $remaining-height;
 }
 </style>

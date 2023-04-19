@@ -24,6 +24,15 @@ $negative: #c10015;
 $info: #31ccec;
 $warning: #f2c037;
 
+// -60px for toolbar (50px) + extra room (10px)
+$remaining-height: calc(100vh - 60px);
+
+$keyboard-height: calc(#{$remaining-height} * 0.52);
+
+$remaining-height-keyboard-open: calc(
+  #{$remaining-height} - #{$keyboard-height}
+);
+
 @function fluid-font-size(
   $minimumSize,
   $maximumSize,

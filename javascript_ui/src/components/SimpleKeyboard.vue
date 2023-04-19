@@ -210,14 +210,15 @@ export default defineComponent({
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
+<style lang="scss">
 .hg-button {
-  height: calc(12vh) !important;
+  // Height of keyboard / 4 (for 4 rows) + padding room
+  height: calc(#{$keyboard-height} * 0.24) !important;
   font-size: 24px;
 }
 
 .simple-keyboard {
-  height: calc(52vh);
+  height: $keyboard-height;
   margin: 0 auto;
 }
 

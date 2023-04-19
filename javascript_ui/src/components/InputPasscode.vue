@@ -181,6 +181,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .passcode-row {
-  height: calc((100vh - 50px) / 6);
+  height: calc(#{$remaining-height} / 6);
 }
 </style>
