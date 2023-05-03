@@ -13,42 +13,20 @@
             to do it (click on a intervention for more info):
           </div>
           <div class="row">
-            <div
-              class="cooling-intervention col-4 q-pa-md"
+            <CoolingInterventionCard
               v-for="(item, index) in coolingStrategies"
               :key="index"
+              :strategy="item"
               @click="showInfo(item)"
-            >
-              <!-- Add @click event listener -->
-              <q-card flat bordered class="full-height">
-                <q-card-section
-                  class="bg-no-repeat full-height flex items-center justify-center"
-                  :style="{
-                    'background-image': `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${item.imageUrl})`,
-                    'background-size': 'cover',
-                  }"
-                >
-                  <div class="text-h3 text-white text-center">
-                    {{ item.text }}
-                  </div>
-                </q-card-section>
-              </q-card>
-            </div>
+            />
           </div>
         </q-card-section>
       </q-card>
       <q-card v-else flat bordered class="full-width">
-        <q-card-section>
-          <q-btn
-            icon="arrow_back"
-            flat
-            round
-            dense
-            @click="displayInfo = null"
-          />
-          <div class="text-h4">{{ displayInfo.text }}</div>
-          <div>{{ displayInfo.description }}</div>
-        </q-card-section>
+        <CoolingInterventionInfo
+          :strategy="displayInfo"
+          @back="displayInfo = null"
+        />
       </q-card>
     </q-slide-transition>
   </q-dialog>
@@ -56,6 +34,8 @@
 
 <script lang="ts">
 import { defineComponent, ref, Ref, toRefs, computed } from 'vue';
+import CoolingInterventionCard from './CoolingInterventionCard.vue';
+import CoolingInterventionInfo from './CoolingInterventionInfo.vue';
 
 interface CoolingStrategy {
   text: string;
@@ -65,7 +45,10 @@ interface CoolingStrategy {
 
 export default defineComponent({
   name: 'ModalNoConnection',
-  components: {},
+  components: {
+    CoolingInterventionCard,
+    CoolingInterventionInfo,
+  },
   emits: ['update:modelValue'],
   props: {
     modelValue: {
@@ -83,7 +66,6 @@ export default defineComponent({
         emit('update:modelValue', newValue);
       },
     });
-
     const coolingStrategies: Array<CoolingStrategy> = [
       {
         text: 'Turn on a Fan',
