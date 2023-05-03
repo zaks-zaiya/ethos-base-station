@@ -1,4 +1,3 @@
-<!-- CoolingStrategyCard.vue -->
 <template>
   <div
     class="cooling-intervention col-4 q-pa-md"

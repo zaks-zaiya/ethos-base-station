@@ -1,9 +1,8 @@
-<!-- CoolingStrategyInfo.vue -->
 <template>
   <q-card-section>
     <q-btn icon="arrow_back" flat round dense @click="$emit('back')" />
     <div class="text-h4">{{ strategy.text }}</div>
-    <div>{{ strategy.description }}</div>
+    <div v-html="strategy.description"></div>
   </q-card-section>
 </template>
 
