@@ -15,3 +15,9 @@ export interface UserData {
   heightCm: undefined | number;
   weightKg: undefined | number;
 }
+
+export interface CoolingStrategy {
+  text: string;
+  imageUrl: string;
+  description: string;
+}
