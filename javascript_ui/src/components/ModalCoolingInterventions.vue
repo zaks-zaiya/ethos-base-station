@@ -21,12 +21,11 @@
         </div>
       </q-card-section>
     </q-card>
-    <q-card v-else flat bordered class="full-width">
-      <CoolingInterventionInfo
-        :strategy="displayInfo"
-        @back="displayInfo = null"
-      />
-    </q-card>
+    <CoolingInterventionInfo
+      v-else
+      :strategy="displayInfo"
+      @back="displayInfo = null"
+    />
   </q-dialog>
 </template>
 
