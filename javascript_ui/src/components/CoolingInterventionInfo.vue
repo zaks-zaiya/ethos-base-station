@@ -6,7 +6,9 @@
       </q-btn>
       <div class="text-h4 q-ml-md">{{ strategy.text }}</div>
     </div>
-    <div v-html="strategy.description"></div>
+    <q-scroll-area style="height: 70vh" visible>
+      <div v-html="strategy.description"></div>
+    </q-scroll-area>
   </q-card-section>
 </template>
 

@@ -1,34 +1,32 @@
 <template>
   <q-dialog v-model="showModal" full-width persistent>
-    <q-slide-transition appear>
-      <q-card v-if="displayInfo === null">
-        <q-card-section class="row items-center q-pb-none">
-          <div class="text-h6 fontsize-14">Cooling Strategies</div>
-          <q-space />
-          <q-btn icon="close" color="primary" v-close-popup>Close</q-btn>
-        </q-card-section>
-        <q-card-section>
-          <div class="fontsize-12">
-            If you need to lower your body temperature, here are the best ways
-            to do it (click on a intervention for more info):
-          </div>
-          <div class="row">
-            <CoolingInterventionCard
-              v-for="(item, index) in coolingStrategies"
-              :key="index"
-              :strategy="item"
-              @click="showInfo(item)"
-            />
-          </div>
-        </q-card-section>
-      </q-card>
-      <q-card v-else flat bordered class="full-width">
-        <CoolingInterventionInfo
-          :strategy="displayInfo"
-          @back="displayInfo = null"
-        />
-      </q-card>
-    </q-slide-transition>
+    <q-card v-if="displayInfo === null">
+      <q-card-section class="row items-center q-pb-none">
+        <div class="text-h6 fontsize-14">Cooling Strategies</div>
+        <q-space />
+        <q-btn icon="close" color="primary" v-close-popup>Close</q-btn>
+      </q-card-section>
+      <q-card-section>
+        <div class="fontsize-12">
+          If you need to lower your body temperature, here are the best ways to
+          do it (click on a intervention for more info):
+        </div>
+        <div class="row">
+          <CoolingInterventionCard
+            v-for="(item, index) in coolingStrategies"
+            :key="index"
+            :strategy="item"
+            @click="showInfo(item)"
+          />
+        </div>
+      </q-card-section>
+    </q-card>
+    <q-card v-else flat bordered class="full-width">
+      <CoolingInterventionInfo
+        :strategy="displayInfo"
+        @back="displayInfo = null"
+      />
+    </q-card>
   </q-dialog>
 </template>
 
