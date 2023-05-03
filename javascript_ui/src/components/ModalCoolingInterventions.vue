@@ -1,43 +1,67 @@
 <template>
   <q-dialog v-model="showModal" full-width>
-    <q-card>
-      <q-card-section class="row items-center q-pb-none">
-        <div class="text-h6 fontsize-14">Cooling Strategies</div>
-        <q-space />
-        <q-btn icon="close" flat round dense v-close-popup />
-      </q-card-section>
-      <q-card-section>
-        <div class="fontsize-12">
-          If you need to lower your body temperature, here are the best ways to
-          do it:
-        </div>
-        <div class="row">
-          <div
-            class="cooling-intervention col-4 q-pa-md"
-            v-for="(item, index) in coolingStrategies"
-            :key="index"
-          >
-            <q-card flat bordered class="full-height">
-              <q-card-section
-                class="bg-no-repeat full-height flex items-center justify-center"
-                :style="{
-                  'background-image': `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${item.imageUrl})`,
-                  'background-size': 'cover',
-                }"
-              >
-                <div class="text-h3 text-white text-center">
-                  {{ item.text }}
-                </div>
-              </q-card-section>
-            </q-card>
+    <q-slide-transition appear>
+      <q-card v-if="displayInfo === null">
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6 fontsize-14">Cooling Strategies</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+        <q-card-section>
+          <div class="fontsize-12">
+            If you need to lower your body temperature, here are the best ways
+            to do it (click on a intervention for more info):
           </div>
-        </div>
-      </q-card-section>
-    </q-card>
+          <div class="row">
+            <div
+              class="cooling-intervention col-4 q-pa-md"
+              v-for="(item, index) in coolingStrategies"
+              :key="index"
+              @click="showInfo(item)"
+            >
+              <!-- Add @click event listener -->
+              <q-card flat bordered class="full-height">
+                <q-card-section
+                  class="bg-no-repeat full-height flex items-center justify-center"
+                  :style="{
+                    'background-image': `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${item.imageUrl})`,
+                    'background-size': 'cover',
+                  }"
+                >
+                  <div class="text-h3 text-white text-center">
+                    {{ item.text }}
+                  </div>
+                </q-card-section>
+              </q-card>
+            </div>
+          </div>
+        </q-card-section>
+      </q-card>
+      <q-card v-else flat bordered class="full-width">
+        <q-card-section>
+          <q-btn
+            icon="arrow_back"
+            flat
+            round
+            dense
+            @click="displayInfo = null"
+          />
+          <div class="text-h4">{{ displayInfo.text }}</div>
+          <div>{{ displayInfo.description }}</div>
+        </q-card-section>
+      </q-card>
+    </q-slide-transition>
   </q-dialog>
 </template>
+
 <script lang="ts">
-import { defineComponent, toRefs, computed } from 'vue';
+import { defineComponent, ref, Ref, toRefs, computed } from 'vue';
+
+interface CoolingStrategy {
+  text: string;
+  imageUrl: string;
+  description: string;
+}
 
 export default defineComponent({
   name: 'ModalNoConnection',
@@ -51,7 +75,6 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const { modelValue } = toRefs(props);
-
     const showModal = computed({
       get() {
         return modelValue.value;
@@ -61,37 +84,51 @@ export default defineComponent({
       },
     });
 
-    const coolingStrategies = [
+    const coolingStrategies: Array<CoolingStrategy> = [
       {
         text: 'Turn on a Fan',
         imageUrl: 'images/fan.jpg',
+        description: '',
       },
       {
         text: 'Hand/Foot Immersion',
         imageUrl: 'images/foot-immersion.jpg',
+        description: '',
       },
       {
         text: 'Sit Down Quietly',
         imageUrl: 'images/sitting-quietly.jpg',
+        description: '',
       },
       {
         text: 'Drink Cool Fluids',
         imageUrl: 'images/ice-water.jpg',
+        description: '',
       },
       {
         text: 'Drape a Wet Towel',
         imageUrl: 'images/tea-towel.jpg',
+        description: '',
       },
       {
         text: 'Remove Unnecessary Clothing',
         imageUrl: '/images/clothing.jpg',
+        description: '',
       },
     ];
+
+    const displayInfo: Ref<null | CoolingStrategy> = ref(null);
+
+    function showInfo(item: CoolingStrategy) {
+      displayInfo.value = item;
+    }
 
     return {
       showModal,
       isTemperatureRisk: computed(() => true),
       coolingStrategies,
+      displayInfo,
+      showInfo,
     };
   },
 });
