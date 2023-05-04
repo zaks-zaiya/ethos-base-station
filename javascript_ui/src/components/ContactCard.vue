@@ -27,6 +27,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .contact-card {
-  width: 250px;
+  width: 400px;
 }
 </style>
