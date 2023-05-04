@@ -17,7 +17,12 @@ export interface UserData {
 }
 
 export interface CoolingStrategy {
-  text: string;
+  name: string;
+  shortName: string;
   imageUrl: string;
-  description: string;
+  extraInfo: {
+    bestUse: Array<string>;
+    whenUse: Array<string>;
+    whenNotUse: Array<string>;
+  };
 }

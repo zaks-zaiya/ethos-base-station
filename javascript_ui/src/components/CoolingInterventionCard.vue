@@ -12,7 +12,7 @@
         }"
       >
         <div class="text-h3 text-white text-center">
-          {{ strategy.text }}
+          {{ strategy.name }}
         </div>
       </q-card-section>
     </q-card>
