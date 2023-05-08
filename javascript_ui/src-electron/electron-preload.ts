@@ -27,3 +27,11 @@
  *   }
  * }
  */
+import { contextBridge } from 'electron';
+import { app } from '@electron/remote';
+
+contextBridge.exposeInMainWorld('myElectronAPI', {
+  quit() {
+    app.quit();
+  },
+});
