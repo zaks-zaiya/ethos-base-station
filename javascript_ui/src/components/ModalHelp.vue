@@ -16,7 +16,6 @@
           </p>
 
           <h4>Support</h4>
-          For any help, you can contact the team via:
           <contact-card />
 
           <h4>Dashboard Components</h4>
