@@ -21,14 +21,15 @@ function createWindow() {
    */
   mainWindow = new BrowserWindow({
     icon: path.resolve(__dirname, 'icons/icon.png'), // tray icon
-    width: 854,
-    height: 480,
+    width: 1280,
+    height: 800,
     useContentSize: true,
     webPreferences: {
       contextIsolation: true,
       // More info: https://v2.quasar.dev/quasar-cli-vite/developing-electron-apps/electron-preload-script
       preload: path.resolve(__dirname, process.env.QUASAR_ELECTRON_PRELOAD),
     },
+    kiosk: process.env.NODE_ENV === 'production' ? true : false, // kiosk mode 'locks' the window
   });
 
   mainWindow.loadURL(process.env.APP_URL);
