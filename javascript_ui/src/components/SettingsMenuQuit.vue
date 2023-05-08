@@ -7,21 +7,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
-// Patch window to include myElectronAPI
-// this is defined in `/src-electron/electron-preload.ts`
-declare global {
-  interface Window {
-    myElectronAPI?: {
-      quit: () => void;
-    };
-  }
-}
-
 export default defineComponent({
   methods: {
     quitApp() {
-      if (process.env.MODE === 'electron') {
-        window.myElectronAPI?.quit();
+      if (process.env.MODE === 'electron' && window.myElectronAPI) {
+        window.myElectronAPI.quit();
       } else {
         window.close();
       }
