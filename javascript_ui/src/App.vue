@@ -46,7 +46,7 @@ export default defineComponent({
   height: 50px;
   width: 50px;
   border-radius: 50%;
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.5);
   pointer-events: none;
   animation: click-effect 1s ease-out;
 }
