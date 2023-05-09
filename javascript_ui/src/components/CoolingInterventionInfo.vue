@@ -14,50 +14,24 @@
         :bar-style="barStyle"
         visible
       >
-        <q-card bordered flat class="q-mt-sm">
-          <q-chip class="q-mt-md fontsize-14 text-bold">
-            How to best use {{ strategy.shortName }}:
-          </q-chip>
-          <ul class="q-mt-none fontsize-12">
-            <li
-              v-for="(text, index) in strategy.extraInfo.bestUse"
-              :key="index"
-            >
-              {{ text }}
-            </li>
-          </ul>
-        </q-card>
+        <CoolingInterventionInfoSection
+          :headingText="`How to best use ${strategy.shortName}`"
+          :strategyPoints="strategy.extraInfo.bestUse"
+        />
 
-        <q-card bordered flat class="border-positive q-my-sm">
-          <q-chip color="positive" class="q-mt-md fontsize-14 text-bold">
-            When {{ strategy.shortName }} should be used:
-          </q-chip>
-          <ul class="q-mt-none fontsize-12 tick-list">
-            <li
-              v-for="(text, index) in strategy.extraInfo.whenUse"
-              :key="index"
-            >
-              {{ text }}
-            </li>
-          </ul>
-        </q-card>
+        <CoolingInterventionInfoSection
+          :headingText="`When ${strategy.shortName} should be used`"
+          :strategyPoints="strategy.extraInfo.whenUse"
+          color="positive"
+          bullet-style="tick"
+        />
 
-        <q-card bordered flat class="border-negative">
-          <q-chip
-            color="negative"
-            class="text-white q-mt-md fontsize-14 text-bold"
-          >
-            When {{ strategy.shortName }} should not be used:
-          </q-chip>
-          <ul class="q-mt-none fontsize-12 cross-list">
-            <li
-              v-for="(text, index) in strategy.extraInfo.whenNotUse"
-              :key="index"
-            >
-              {{ text }}
-            </li>
-          </ul>
-        </q-card>
+        <CoolingInterventionInfoSection
+          :headingText="`When ${strategy.shortName} should not be used`"
+          :strategyPoints="strategy.extraInfo.whenNotUse"
+          color="negative"
+          bullet-style="cross"
+        />
       </q-scroll-area>
     </q-card-section>
   </q-card>
@@ -65,6 +39,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import CoolingInterventionInfoSection from './CoolingInterventionInfoSection.vue';
 
 export default defineComponent({
   name: 'CoolingStrategyInfo',
@@ -73,6 +48,9 @@ export default defineComponent({
       type: Object,
       required: true,
     },
+  },
+  components: {
+    CoolingInterventionInfoSection,
   },
   setup() {
     return {
@@ -95,39 +73,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped lang="scss">
-.border-positive {
-  border-color: $positive;
-}
-
-.border-negative {
-  border-color: $negative;
-}
-
-.tick-list li {
-  list-style-type: none;
-  position: relative;
-  padding-left: 1.5em;
-}
-
-.tick-list li::before {
-  content: '✔';
-  position: absolute;
-  left: 0;
-  color: green;
-}
-
-.cross-list li {
-  list-style-type: none;
-  position: relative;
-  padding-left: 1.5em;
-}
-
-.cross-list li::before {
-  content: '✖';
-  position: absolute;
-  left: 0;
-  color: red;
-}
-</style>
