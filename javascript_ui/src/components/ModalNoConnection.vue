@@ -1,6 +1,5 @@
 <template>
-  <!-- TODO: Set :persistent="true" and have a secret way of closing -->
-  <q-dialog v-model="isDisconnected">
+  <q-dialog v-model="isDisconnected" :persistent="true">
     <q-card class="bg-negative text-white text-h6">
       <q-card-section>
         <div>
