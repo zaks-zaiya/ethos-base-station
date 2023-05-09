@@ -8,5 +8,5 @@ source ./env/bin/activate
 pip3 install -r requirements.txt
 # Install adafruit blinka
 cd install_scripts
-python3 raspi-blinka.py
+sudo python3 raspi-blinka.py
 echo Installation complete!
