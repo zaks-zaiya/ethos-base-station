@@ -1,6 +1,6 @@
 # cd javascript_ui
 # Need to use absolute path to work from rc.local for startup
-cd ~/Documents/GitHub/javascript_ui
+cd ~/Documents/GitHub/ethos-raspberry-pi/javascript_ui
 './dist/electron/Packaged/Ethos Heat Monitor-linux-armv7l/Ethos Heat Monitor' & # Ensure that process does not block python script
 cd ..
 
