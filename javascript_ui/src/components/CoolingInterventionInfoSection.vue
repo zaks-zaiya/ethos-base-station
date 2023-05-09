@@ -17,33 +17,16 @@
   </q-card>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+import { defineProps, toRefs } from 'vue';
 
-export default defineComponent({
-  name: 'CoolingStrategyInfoSection',
-  props: {
-    headingText: {
-      type: String,
-      required: true,
-    },
-    strategyPoints: {
-      type: Array,
-      required: true,
-    },
-    color: {
-      type: String,
-      required: false,
-    },
-    bulletStyle: {
-      type: String,
-      required: false,
-    },
-  },
-  setup() {
-    return {};
-  },
-});
+const props = defineProps<{
+  headingText: string;
+  strategyPoints: string[];
+  color?: 'positive' | 'negative';
+  bulletStyle?: string;
+}>();
+const { headingText, strategyPoints, color, bulletStyle } = toRefs(props);
 </script>
 
 <style scoped lang="scss">
