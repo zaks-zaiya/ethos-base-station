@@ -1,20 +1,8 @@
-import board
-import busio
-from digitalio import DigitalInOut
-import adafruit_rfm9x
-
+from adafruit_rfm9x import RFM9x
 import socketio
 import re
 
-async def radio_listen(sio: socketio.AsyncServer):
-  # Configure LoRa Radio
-  RADIO_FREQ_MHZ = 915.0  # Frequency of the radio in Mhz
-  CS = DigitalInOut(board.CE1)
-  RESET = DigitalInOut(board.D25)
-  spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
-  rfm9x = adafruit_rfm9x.RFM9x(spi, CS, RESET, RADIO_FREQ_MHZ)
-  rfm9x.tx_power = 23
-
+async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x):
   # Radio listen loop
   while True:
     try:
