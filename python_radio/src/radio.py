@@ -17,40 +17,55 @@ async def radio_listen(sio: socketio.AsyncServer):
 
   # Radio listen loop
   while True:
-    packet = rfm9x.receive(timeout=5.0)
+    try:
+      radio_packet = rfm9x.receive(timeout=5.0)
+    except Exception as e:
+      print(f"Error receiving packet: {e}")
+      continue
 
-    # If no packet was received during the timeout then None is returned.
-    if packet is None:
+    if radio_packet is None:
       print("Nothing received, trying again...")
       continue
 
-    # Received a packet!
-    packet_text = str(packet, "ascii")
-    print("Received (ASCII): {0}".format(packet_text))
-    # Also read the RSSI (signal strength) of the last received message and print it.
     rssi = rfm9x.last_rssi
     print("Received signal strength: {0} dB".format(rssi))
 
-    # Decode radio packet with temp sensor information
-    match = re.match("^I(\d+)T([\d\.]+)H([\d\.]+)", packet_text)
-
-    # If no regex match, radio must be coming from a different source
-    if match is None:
-      print("Incorrect radio message, trying again...")
+    try:
+      radio_data = process_packet(radio_packet)
+    except Exception as e:
+      print(f"Error processing packet: {e}")
       continue
 
-    # Decode message
-    id = match[1]
-    temperature = match[2]
-    humidity = match[3]
+    if radio_data is None:
+      continue
 
-    # TODO: Check if sensor id is one of the ones tied to the house
+    try:
+      acknowledgement_data = bytes("R" + radio_data["id"] + "\r\n","utf-8")
+      rfm9x.send(acknowledgement_data)
+    except Exception as e:
+      print(f"Error sending acknowledgement: {e}")
 
-    # Send acknowledgement to let sensor know
-    # we received the message
-    acknowledgement_data = bytes("R" + id + "\r\n","utf-8")
-    rfm9x.send(acknowledgement_data)
+    print("Emitting data... id: {0}, temp: {1}, RH: {2}".format(radio_data["id"], radio_data["temperature"], radio_data["humidity"]))
+    try:
+      await sio.emit('data', radio_data)
+    except Exception as e:
+      print(f"Error emitting data: {e}")
 
-    # Send socket event to main program with the data
-    print("Emitting data... id: {0}, temp: {1}, RH: {2}".format(id, temperature, humidity))
-    await sio.emit('data', {'id': id, 'temperature': temperature, 'humidity': humidity})
+
+def process_packet(packet: bytearray):
+  try:
+    packet_text = str(packet, "ascii")
+    print("Received (ASCII): {0}".format(packet_text))
+
+    match = re.match("^I(\d+)T([\d\.]+)H([\d\.]+)", packet_text)
+    if match is None:
+      print("Incorrect radio message!")
+      return None
+
+    return {
+      "id": match[1],
+      "temperature": match[2],
+      "humidity": match[3]
+    }
+  except Exception as e:
+    print(f"Error processing packet: {e}")
