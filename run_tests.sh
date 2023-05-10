@@ -1,2 +1,5 @@
-cd python_radio/src
-python -m unittest discover tests
+cd python_radio
+. ./env/bin/activate
+cd src
+python3 -m unittest discover tests
+cd ../..
