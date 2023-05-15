@@ -6,7 +6,9 @@ import { watch } from 'vue';
 
 export const useForecastStore = defineStore('forecast', {
   state: () => ({
+    // add annother variable here to show or hdie the modal
     isShowDetailedForecast: false,
+
     errorMessage: 'Updating data...',
     stationName: null as null | string,
     currentTemp: null as null | number,
