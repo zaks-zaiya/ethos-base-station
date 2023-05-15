@@ -1,7 +1,7 @@
 <template>
   <q-card class="full-height" :class="backgroundColor">
     <q-card-section class="q-pa-sm">
-      <div class="text-h6">
+      <div class="fontsize-22 text-bold">
         {{ sensor.name ? sensor.name : 'Undefined' }}
         {{ sensor.id ? '' : '(ID Undefined)' }}
         <span v-if="isOffline">(Offline)</span>
@@ -11,9 +11,9 @@
     <q-separator />
 
     <q-card-section class="full-height q-pa-sm">
-      <div class="text-h3">{{ sensor.temperature }}°C</div>
-      <div class="text-h4 q-pb-md">{{ sensor.humidity }}% RH</div>
-      <div class="text-italic">
+      <div class="fontsize-40">{{ sensor.temperature }}°C</div>
+      <div class="fontsize-30">{{ sensor.humidity }}% RH</div>
+      <div class="fontsize-18 text-italic">
         Last seen:
         {{ sensor.lastSeen ? sensor.lastSeen.toLocaleString() : 'Never' }}
       </div>

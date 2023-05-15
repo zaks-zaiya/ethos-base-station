@@ -1,9 +1,6 @@
 <template>
-  <div
-    class="justify-center items-center text-center"
-    style="margin: 20px 200px"
-  >
-    <b
+  <div class="justify-center items-center text-center" style="margin: 20px 10%">
+    <b class="fontsize-14"
       >If you are a researcher, enter passcode to go to settings page, otherwise
       click the "GO BACK" button</b
     >
@@ -184,6 +181,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .passcode-row {
-  height: 70px;
+  height: calc(#{$remaining-height} / 6);
 }
 </style>

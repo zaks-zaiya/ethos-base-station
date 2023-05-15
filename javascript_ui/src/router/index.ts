@@ -42,13 +42,16 @@ export default route(function (/* { store, ssrContext } */) {
   const dataSensorStore = useDataSensorStore();
   Router.beforeEach((to) => {
     const initializePath = '/initialize';
+    const settingsPath = '/settings';
     console.log(to.path);
 
     if (
       // Any data is undefined
       (dataUserStore.containsUndefined || dataSensorStore.containsUndefined) &&
       // Avoid an infinite redirect
-      to.path !== initializePath
+      to.path !== initializePath &&
+      // Allow navigation to settings
+      to.path !== settingsPath
     ) {
       // redirect the user to the initialize page
       return initializePath;

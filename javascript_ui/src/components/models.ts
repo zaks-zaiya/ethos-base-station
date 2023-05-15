@@ -15,3 +15,14 @@ export interface UserData {
   heightCm: undefined | number;
   weightKg: undefined | number;
 }
+
+export interface CoolingStrategy {
+  name: string;
+  shortName: string;
+  imageUrl: string;
+  extraInfo: {
+    bestUse: Array<string>;
+    whenUse: Array<string>;
+    whenNotUse: Array<string>;
+  };
+}

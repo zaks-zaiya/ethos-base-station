@@ -5,10 +5,14 @@ import os from 'os';
 // needed in case process is undefined under Linux
 const platform = process.platform || os.platform();
 
+// add electron remote for app.quit()
+import { initialize, enable } from '@electron/remote/main';
+initialize();
+
 try {
   if (platform === 'win32' && nativeTheme.shouldUseDarkColors === true) {
     require('fs').unlinkSync(
-      path.join(app.getPath('dataUser'), 'DevTools Extensions')
+      path.join(app.getPath('userData'), 'DevTools Extensions')
     );
   }
 } catch (_) {}
@@ -21,15 +25,19 @@ function createWindow() {
    */
   mainWindow = new BrowserWindow({
     icon: path.resolve(__dirname, 'icons/icon.png'), // tray icon
-    width: 854,
-    height: 480,
+    width: 1280,
+    height: 800,
     useContentSize: true,
     webPreferences: {
       contextIsolation: true,
+      sandbox: false, // <-- to be able to import @electron/remote in preload script
       // More info: https://v2.quasar.dev/quasar-cli-vite/developing-electron-apps/electron-preload-script
       preload: path.resolve(__dirname, process.env.QUASAR_ELECTRON_PRELOAD),
     },
+    kiosk: process.env.NODE_ENV === 'production' ? true : false, // kiosk mode 'locks' the window
   });
+
+  enable(mainWindow.webContents);
 
   mainWindow.loadURL(process.env.APP_URL);
 

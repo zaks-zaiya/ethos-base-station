@@ -5,6 +5,7 @@
         v-model="step"
         ref="stepper"
         color="primary"
+        @transition="keyboardStore.unbindKeyboard()"
         animated
         header-nav
       >
@@ -43,7 +44,7 @@
                 v-if="step > 1"
                 flat
                 color="primary"
-                @click="() => $refs.stepper.previous()"
+                @click="() => stepper?.previous()"
                 label="Back"
                 class="q-ml-sm"
               />
@@ -62,8 +63,8 @@
   </div>
 </template>
 
-<script>
-import { ref, computed } from 'vue';
+<script lang="ts">
+import { defineComponent, Ref, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import ContactCard from 'src/components/ContactCard.vue';
 import SettingsMenuUserData from 'src/components/SettingsMenuUserData.vue';
@@ -71,8 +72,10 @@ import SettingsMenuSensors from 'src/components/SettingsMenuSensors.vue';
 import KeyboardAutoScroll from 'src/components/KeyboardAutoScroll.vue';
 import { useDataUserStore } from 'src/stores/dataUser';
 import { useDataSensorStore } from 'src/stores/dataSensor';
+import { useKeyboardStore } from 'src/stores/keyboard';
+import { QStepper } from 'quasar';
 
-export default {
+export default defineComponent({
   components: {
     ContactCard,
     SettingsMenuUserData,
@@ -80,14 +83,15 @@ export default {
     KeyboardAutoScroll,
   },
   setup() {
-    const step = ref(1);
-    const stepper = ref(null);
+    const step: Ref<number> = ref(1);
+    const stepper: Ref<QStepper | null> = ref(null);
 
     const router = useRouter();
     const dataUserStore = useDataUserStore();
     const dataSensorStore = useDataSensorStore();
+    const keyboardStore = useKeyboardStore();
 
-    const isNextStepAvailable = computed(() => {
+    const isNextStepAvailable = computed<boolean>(() => {
       // Info Page
       if (step.value === 1) {
         return true;
@@ -109,15 +113,17 @@ export default {
         router.push('/');
       } else {
         // Move to next step of setup
-        stepper.value.next();
+        stepper.value?.next();
       }
     };
+
     return {
       step,
       stepper,
       isNextStepAvailable,
+      keyboardStore,
       nextStep,
     };
   },
-};
+});
 </script>

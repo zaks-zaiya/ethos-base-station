@@ -3,9 +3,9 @@
     <q-card class="bg-negative text-white text-h6">
       <q-card-section>
         <div>
-          Error, unable to connect to temperature sensors (socket issue)
+          Error, unable to connect to temperature sensors (socket issue). This
+          indicates that the app has crashed and will need to be relaunched.
         </div>
-        <div>Please contact the ethos team at:</div>
         <ContactCard />
       </q-card-section>
     </q-card>

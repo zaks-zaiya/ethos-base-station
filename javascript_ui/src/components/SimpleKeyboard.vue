@@ -62,6 +62,7 @@ export default defineComponent({
       }
     });
 
+    // Dispatcher to handle key press from keyboard
     const onKeyPress = (button: string) => {
       // Sanity check
       if (!keyboardStore.keyboardBinding || !keyboardStore.keyboardValue) {
@@ -71,13 +72,13 @@ export default defineComponent({
 
       // Handle shift press
       if (button === '{shift}' || button === '{lock}') {
-        handleShift();
+        toggleLayout('shift');
         return;
       }
 
       // Handle number mode
       if (button === '{numbers}' || button === '{abc}') {
-        handleNumbers();
+        toggleLayout('numbers');
         return;
       }
 
@@ -112,6 +113,18 @@ export default defineComponent({
         // Restore cursor position
         restoreInputCursorToPosition(selectionStart + 1);
       }
+      // Is space
+      else if (button === '{space}') {
+        // Insert characters at position
+        keyboardStore.keyboardValue.value = insertCharFromSelection(
+          keyboardStore.keyboardValue.value,
+          ' ',
+          selectionStart,
+          selectionEnd
+        );
+        // Restore cursor position
+        restoreInputCursorToPosition(selectionStart + 1);
+      }
       // Is backspace
       else if (button === '{backspace}') {
         keyboardStore.keyboardValue.value = deleteCharFromSelection(
@@ -124,27 +137,33 @@ export default defineComponent({
       }
     };
 
-    // Toggle between capitalized layouts
-    const handleShift = () => {
+    /**
+     * Toggle between keyboard layout types
+     * @param type Whether to toggle between capitalised letters (shift) or numbers (numbers)
+     */
+    const toggleLayout = (type: 'shift' | 'numbers') => {
       let currentLayout = keyboard?.options.layoutName;
-      let shiftToggle = currentLayout === 'default' ? 'shift' : 'default';
-
+      let newLayout = 'default';
+      // Determine new layout
+      if (type === 'shift') {
+        newLayout = currentLayout === 'default' ? 'shift' : 'default';
+      } else if (type === 'numbers') {
+        newLayout = currentLayout !== 'numbers' ? 'numbers' : 'default';
+      }
+      // Set
       keyboard?.setOptions({
-        layoutName: shiftToggle,
+        layoutName: newLayout,
       });
     };
 
-    // Toggle between numbers/letters
-    const handleNumbers = () => {
-      let currentLayout = keyboard?.options.layoutName;
-      let numbersToggle = currentLayout !== 'numbers' ? 'numbers' : 'default';
-
-      keyboard?.setOptions({
-        layoutName: numbersToggle,
-      });
-    };
-
-    // Inserts char at cursor pos, replacing selection (if applicable)
+    /**
+     * Inserts char at cursor pos, replacing selection (if applicable)
+     * @param str The original string
+     * @param newChar The new character or string to insert
+     * @param selectionStart A number that represents the starting position of the selection
+     * @param selectionEnd A number that represents the ending position of the selection
+     * @returns The mutated string
+     */
     const insertCharFromSelection = (
       str: string,
       newChar: string,
@@ -154,7 +173,13 @@ export default defineComponent({
       return str.slice(0, selectionStart) + newChar + str.slice(selectionEnd);
     };
 
-    // If no chars are selected, delete the char before the cursor, otherwise replace the selection with ''
+    /**
+     * If no chars are selected, delete the char before the cursor, otherwise replace the selection with ''
+     * @param str The original string
+     * @param selectionStart A number that represents the starting position of the selection
+     * @param selectionEnd A number that represents the ending position of the selection
+     * @returns The mutated string
+     */
     const deleteCharFromSelection = (
       str: string,
       selectionStart: number,
@@ -185,8 +210,15 @@ export default defineComponent({
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
+<style lang="scss">
+.hg-button {
+  // Height of keyboard / 4 (for 4 rows) + padding room
+  height: calc(#{$keyboard-height} * 0.24) !important;
+  font-size: 24px;
+}
+
 .simple-keyboard {
+  height: $keyboard-height;
   margin: 0 auto;
 }
 

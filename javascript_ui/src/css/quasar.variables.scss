@@ -23,3 +23,39 @@ $positive: #21ba45;
 $negative: #c10015;
 $info: #31ccec;
 $warning: #f2c037;
+
+// -60px for toolbar (50px) + extra room (10px)
+
+$toolbar-height: 50px;
+
+$remaining-height: calc(100vh - #{$toolbar-height} - 10px);
+
+$keyboard-height: calc(#{$remaining-height} * 0.52);
+
+$remaining-height-keyboard-open: calc(
+  #{$remaining-height} - #{$keyboard-height}
+);
+
+@function fluid-font-size(
+  $minimumSize,
+  $maximumSize,
+  $minimumViewportWidth,
+  $maximumViewportWidth
+) {
+  @return calc(
+    max(
+      #{$minimumSize}px,
+      #{$minimumSize}px + (#{$maximumSize} - #{$minimumSize}) *
+        (
+          (100vw - #{$minimumViewportWidth}px) /
+            (#{$maximumViewportWidth} - #{$minimumViewportWidth})
+        )
+    )
+  );
+}
+
+@for $num from 10 through 40 {
+  .fontsize-#{$num} {
+    font-size: fluid-font-size($num, ($num * 2 + 2), 600, 1800);
+  }
+}

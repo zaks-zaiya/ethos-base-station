@@ -17,4 +17,7 @@ To run development build run `sh run_dev.sh` (Mac/Linux) or `.\run_dev.bat` (Win
 
 ## Run prod build
 
-TODO
+To run production build:
+
+1. Build production binary by running `sh run_build.sh`
+2. Run executable with `sh run_prod.sh` (Linux)

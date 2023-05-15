@@ -11,6 +11,7 @@
     "axios",
     "bksp",
     "eventlet",
+    "fontsize",
     "Persistedstate",
     "pinia",
     "SETTINGSPASSCODE",

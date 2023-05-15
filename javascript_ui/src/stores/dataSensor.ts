@@ -109,29 +109,46 @@ export const useDataSensorStore = defineStore('dataSensor', {
 
       // Callback to update sensor data when applicable
       socket.on('data', (data) => {
-        console.log('Received: ' + data);
-        const data_obj = JSON.parse(data.toString());
+        console.log('Received:');
+        console.log(data);
 
         // Check data
-        if (!(data_obj.id && data_obj.temperature && data_obj.humidity)) {
+        if (!(data.id && data.temperature && data.humidity)) {
           // Some of the data is missing
-          console.error('Invalid socket data');
+          console.error('Invalid/missing socket data');
+          console.log('ID:', data.id);
+          console.log('Temperature:', data.temperature);
+          console.log('Humidity:', data.humidity);
+          return;
+        }
+
+        // Parse strings to numbers
+        const id = parseInt(data.id);
+        const temperature = parseFloat(data.temperature);
+        const humidity = parseFloat(data.humidity);
+
+        // Check
+        if (isNaN(id) || isNaN(temperature) || isNaN(humidity)) {
+          console.error('Error parsing strings to numbers');
+          console.log('ID:', data.id);
+          console.log('Temperature:', data.temperature);
+          console.log('Humidity:', data.humidity);
           return;
         }
 
         // Check it exists in the array
         const i = this.allSensorData.findIndex(
-          (dataSensor) => dataSensor.id == data_obj.id
+          (dataSensor) => dataSensor.id == id
         );
         if (i < 0) {
           // Could not find index
-          console.error('Wrong sensor id');
+          console.error('Wrong sensor id:', id);
           return;
         }
 
         // Update array values
-        this.allSensorData[i].temperature = data_obj.temperature;
-        this.allSensorData[i].humidity = data_obj.humidity;
+        this.allSensorData[i].temperature = temperature;
+        this.allSensorData[i].humidity = humidity;
         this.allSensorData[i].lastSeen = new Date(Date.now());
       });
     },

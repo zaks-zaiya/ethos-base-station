@@ -7,6 +7,7 @@
             <q-tab name="user-data" icon="person" label="User Data" />
             <q-tab name="sensors" icon="thermostat" label="Sensors" />
             <q-tab name="reset" icon="warning" label="Reset App" />
+            <q-tab name="quit" icon="power_settings_new" label="Quit" />
           </q-tabs>
         </template>
 
@@ -19,16 +20,20 @@
             transition-prev="slide-down"
             transition-next="slide-up"
           >
-            <q-tab-panel name="user-data">
+            <q-tab-panel name="user-data" class="remaining-height">
               <SettingsMenuUserData />
             </q-tab-panel>
 
-            <q-tab-panel name="sensors">
+            <q-tab-panel name="sensors" class="remaining-height">
               <SettingsMenuSensors />
             </q-tab-panel>
 
-            <q-tab-panel name="reset">
+            <q-tab-panel name="reset" class="remaining-height">
               <SettingsMenuReset />
+            </q-tab-panel>
+
+            <q-tab-panel name="quit" class="remaining-height">
+              <SettingsMenuQuit />
             </q-tab-panel>
           </q-tab-panels>
         </template>
@@ -42,6 +47,7 @@ import { defineComponent, ref } from 'vue';
 import SettingsMenuReset from './SettingsMenuReset.vue';
 import SettingsMenuSensors from './SettingsMenuSensors.vue';
 import SettingsMenuUserData from './SettingsMenuUserData.vue';
+import SettingsMenuQuit from './SettingsMenuQuit.vue';
 import KeyboardAutoScroll from 'src/components/KeyboardAutoScroll.vue';
 
 export default defineComponent({
@@ -49,6 +55,7 @@ export default defineComponent({
     SettingsMenuUserData,
     SettingsMenuSensors,
     SettingsMenuReset,
+    SettingsMenuQuit,
     KeyboardAutoScroll,
   },
   setup() {
@@ -59,3 +66,9 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss" scoped>
+.settings-tab-panel {
+  height: $remaining-height;
+}
+</style>

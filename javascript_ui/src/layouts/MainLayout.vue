@@ -2,9 +2,11 @@
   <q-layout view="lHh Lpr lFf" class="bg-blue-grey-2">
     <!-- Register Modals -->
     <modal-no-connection />
+    <modal-cooling-interventions v-model="isShowCoolingModal" />
+    <modal-help v-model="isShowHelpModal" />
     <!-- Main layout -->
     <q-header flat class="transparent">
-      <q-toolbar>
+      <q-toolbar class="ethos-toolbar">
         <img
           v-if="$route.path !== '/settings'"
           src="ethos.svg"
@@ -20,18 +22,27 @@
           class="q-ml-md"
         />
         <q-toolbar-title></q-toolbar-title>
+
         <q-btn
-          v-if="isShowSettingsButton"
-          @click="hideSettingsButton"
-          class="q-mr-md"
-          color="secondary"
-          icon="settings"
-          to="settings"
+          v-if="$route.path !== '/settings'"
+          @click="isShowCoolingModal = true"
+          class="q-mr-lg"
+          color="primary"
+          label="i need to cool down"
         />
         <q-btn
           v-if="$route.path !== '/settings'"
+          @click="isShowHelpModal = true"
           color="secondary"
-          label="help"
+          label="help me use the app"
+        />
+        <q-btn
+          v-if="isShowSettingsButton"
+          @click="hideSettingsButton"
+          class="q-ml-md"
+          color="info"
+          icon="settings"
+          to="settings"
         />
       </q-toolbar>
     </q-header>
@@ -56,14 +67,23 @@ import { defineComponent, ref } from 'vue';
 import { useKeyboardStore } from 'src/stores/keyboard';
 
 import ModalNoConnection from 'components/ModalNoConnection.vue';
+import ModalCoolingInterventions from 'components/ModalCoolingInterventions.vue';
 import SimpleKeyboard from 'src/components/SimpleKeyboard.vue';
+import ModalHelp from 'src/components/ModalHelp.vue';
 
 export default defineComponent({
   name: 'MainLayout',
-  components: { ModalNoConnection, SimpleKeyboard },
+  components: {
+    ModalNoConnection,
+    ModalCoolingInterventions,
+    SimpleKeyboard,
+    ModalHelp,
+  },
   setup() {
     const keyboardStore = useKeyboardStore();
     let isShowSettingsButton = ref(false);
+    let isShowCoolingModal = ref(false);
+    let isShowHelpModal = ref(false);
 
     let timeoutShowSettingsButton: null | number = null;
     let showSettingsPressedCount = 0;
@@ -95,9 +115,17 @@ export default defineComponent({
     return {
       keyboardStore,
       isShowSettingsButton,
+      isShowCoolingModal,
+      isShowHelpModal,
       showSettingsButton,
       hideSettingsButton,
     };
   },
 });
 </script>
+
+<style lang="scss" scoped>
+.ethos-toolbar {
+  height: $toolbar-height;
+}
+</style>
