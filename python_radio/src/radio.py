@@ -41,9 +41,10 @@ async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x):
 
 
 def process_packet(packet: bytearray):
+  print("Packet received:", packet)
   try:
     packet_text = str(packet, "ascii")
-    print("Received (ASCII): {0}".format(packet_text))
+    print("(ASCII): {0}".format(packet_text))
 
     match = re.match("^I(\d+)T([\d\.]+)H([\d\.]+)", packet_text)
     if match is None:
