@@ -43,6 +43,9 @@ async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x):
 def process_packet(packet: bytearray):
   print("Packet received:", packet)
   try:
+    # Slice packet to the first 14 bytes
+    # The radio actually sends 15 bytes, however the last byte is \x00 and can be ignored
+    packet = packet[:14]
     packet_text = str(packet, "ascii")
     print("(ASCII): {0}".format(packet_text))
 
