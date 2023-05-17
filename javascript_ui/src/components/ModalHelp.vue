@@ -7,7 +7,7 @@
         <q-btn icon="close" color="primary" v-close-popup>Close</q-btn>
       </q-card-section>
       <q-card-section class="fontsize-14">
-        <q-scroll-area style="height: 70vh" visible>
+        <BaseScrollArea>
           <p>
             Welcome to the Ethos app help page. This guide will walk you through
             the different components and functionalities of the Ethos app. The
@@ -134,7 +134,7 @@
             </li>
             <li>Ensure that your internet connection is stable.</li>
           </ul>
-        </q-scroll-area>
+        </BaseScrollArea>
       </q-card-section>
     </q-card>
   </q-dialog>
@@ -143,10 +143,11 @@
 <script lang="ts">
 import { defineComponent, toRefs, computed } from 'vue';
 import ContactCard from './ContactCard.vue';
+import BaseScrollArea from './BaseScrollArea.vue';
 
 export default defineComponent({
   name: 'ModalNoConnection',
-  components: { ContactCard },
+  components: { ContactCard, BaseScrollArea },
   emits: ['update:modelValue'],
   props: {
     modelValue: {
