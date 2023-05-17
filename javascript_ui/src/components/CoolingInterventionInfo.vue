@@ -8,7 +8,9 @@
         <div class="text-h4 q-ml-md">{{ strategy.name }}</div>
       </div>
       <q-scroll-area
-        style="height: 70vh"
+        @scroll="checkScroll"
+        :class="{ 'scroll-shadow': showShadow }"
+        style="height: 70vh; position: relative"
         class="q-pr-md"
         :thumb-style="thumbStyle"
         :bar-style="barStyle"
@@ -38,8 +40,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import CoolingInterventionInfoSection from './CoolingInterventionInfoSection.vue';
+import { QScrollArea } from 'quasar';
 
 export default defineComponent({
   name: 'CoolingStrategyInfo',
@@ -53,7 +56,15 @@ export default defineComponent({
     CoolingInterventionInfoSection,
   },
   setup() {
+    const showShadow = ref(false);
+
+    const checkScroll = (scrollInfo: ReturnType<QScrollArea['getScroll']>) => {
+      showShadow.value = scrollInfo.verticalPercentage < 1;
+    };
+
     return {
+      showShadow,
+      checkScroll,
       thumbStyle: {
         right: '4px',
         borderRadius: '5px',
@@ -73,3 +84,19 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.scroll-shadow::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(0, 0, 0, 0.2) 100%
+  );
+}
+</style>
