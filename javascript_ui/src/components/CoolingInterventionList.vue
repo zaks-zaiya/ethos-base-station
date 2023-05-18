@@ -54,10 +54,10 @@ export default defineComponent({
           ],
           whenUse: [
             "During the day when it's too hot outside, and opening windows would let in hot air.",
-            'When humidity levels are moderate to low, as a fan can help evaporate sweat, making you feel cooler.',
+            'When humidity levels are high, as a fan can help evaporate sweat, making you feel cooler.',
           ],
           whenNotUse: [
-            'In extremely high humidity levels, as a fan may not provide much cooling effect.',
+            'In extremely high temperature levels, as a fan may not provide much cooling effect and may actually make things worse by blowing hot air on you.',
           ],
         },
       },
