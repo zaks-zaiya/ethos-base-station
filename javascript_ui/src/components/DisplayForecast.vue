@@ -39,7 +39,7 @@
                 Temperature: {{ forecastStore.currentTemp?.toFixed(1) }}°C
               </div>
               <div>Humidity: {{ forecastStore.currentHumidity }}% RH</div>
-              <q-btn class="q-mt-sm fontsize-14" color="secondary"
+              <q-btn class="q-mt-sm fontsize-16" color="secondary"
                 >View Detailed Forecast</q-btn
               >
             </div>

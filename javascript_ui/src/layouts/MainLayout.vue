@@ -10,7 +10,7 @@
         <img
           v-if="$route.path !== '/settings'"
           src="ethos.svg"
-          height="30"
+          height="50"
           @click="showSettingsButton"
         />
         <q-btn
@@ -19,27 +19,28 @@
           color="info"
           label="go back to home"
           icon="home"
-          class="q-ml-md"
+          class="q-ml-md fontsize-16"
         />
         <q-toolbar-title></q-toolbar-title>
 
         <q-btn
           v-if="$route.path !== '/settings'"
           @click="isShowCoolingModal = true"
-          class="q-mr-lg"
+          class="q-mr-lg fontsize-16"
           color="primary"
           label="i need to cool down"
         />
         <q-btn
           v-if="$route.path !== '/settings'"
           @click="isShowHelpModal = true"
+          class="fontsize-16"
           color="secondary"
           label="help me use the app"
         />
         <q-btn
           v-if="isShowSettingsButton"
           @click="hideSettingsButton"
-          class="q-ml-md"
+          class="q-ml-md fontsize-16"
           color="info"
           icon="settings"
           to="settings"

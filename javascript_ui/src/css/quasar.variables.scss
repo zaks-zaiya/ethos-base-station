@@ -26,7 +26,7 @@ $warning: #f2c037;
 
 // -60px for toolbar (50px) + extra room (10px)
 
-$toolbar-height: 50px;
+$toolbar-height: 80px;
 
 $remaining-height: calc(100vh - #{$toolbar-height} - 10px);
 
