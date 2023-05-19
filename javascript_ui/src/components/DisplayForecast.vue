@@ -39,9 +39,15 @@
                 Temperature: {{ forecastStore.currentTemp?.toFixed(1) }}°C
               </div>
               <div>Humidity: {{ forecastStore.currentHumidity }}% RH</div>
-              <q-btn class="q-mt-sm fontsize-14" color="secondary"
+              <q-btn
+                @click="displayDetailedForecast"
+                class="q-mt-sm fontsize-14"
+                color="secondary"
                 >View Detailed Forecast</q-btn
               >
+              <modal-detailed-forecast
+                v-if="forecastStore.isShowDetailedForecast"
+              />
             </div>
             <!-- <div class="col"> -->
             <!-- <div>Min: {{ forecastStore.minTemp?.toFixed(1) }}°C</div> -->
@@ -57,23 +63,23 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
 import { useForecastStore } from 'stores/forecast';
+import ModalDetailedForecast from './ModalDetailedForecast.vue';
 
 export default defineComponent({
   name: 'DisplayForecast',
+  components: { ModalDetailedForecast },
   setup() {
     const forecastStore = useForecastStore();
-
     let iconUrl = computed(() => {
       if (forecastStore.weatherIconId) {
         return `https://openweathermap.org/img/w/${forecastStore.weatherIconId}.png`;
       }
       return '';
     });
-
-    let displayDetailedForecast = () => {
+    const displayDetailedForecast = () => {
       forecastStore.isShowDetailedForecast = true;
+      // console.log('Clicked');
     };
-
     return { forecastStore, iconUrl, displayDetailedForecast };
   },
 });

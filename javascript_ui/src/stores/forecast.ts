@@ -60,6 +60,7 @@ export const useForecastStore = defineStore('forecast', {
           });
           // Update weather values
           const weatherObj = JSON.parse(result.data);
+          // console.log(weatherObj);
           this.stationName = weatherObj.name;
           this.currentTemp = weatherObj.main.temp;
           this.currentHumidity = weatherObj.main.humidity;
@@ -76,11 +77,74 @@ export const useForecastStore = defineStore('forecast', {
             this.errorMessage = 'An unknown error occurred';
           }
         }
+        try {
+          const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&units=metric&appid=${process.env.OPENWEATHERMAPSAPIKEY}`;
+          const result = await axios.get(url, {
+            timeout: 4000,
+            responseType: 'text',
+            maxContentLength: 65536,
+          });
+          // Update weather values
+          const weatherObj = JSON.parse(result.data);
+          console.log(weatherObj);
+        } catch (error: unknown) {
+          if (error instanceof AxiosError) {
+            this.errorMessage = error.message;
+          } else {
+            this.errorMessage = 'An unknown error occurred';
+          }
+        }
       };
 
       updateWeather();
       // Setup poll interval for every 10 min
       this.pollInterval = window.setInterval(updateWeather, 60000 * 10);
+    },
+    /**
+     * Read the user latitude and longitude (based off postcode)
+     * and updates the weather forecast accordingly
+     */
+    async getDetailedForecast() {
+      // Initialize user data for lat/lon
+      const dataUserStore = useDataUserStore();
+      const latitude = dataUserStore.latitude;
+      const longitude = dataUserStore.longitude;
+      console.log('Updating weather...');
+      if (!(latitude && longitude)) {
+        this.errorMessage =
+          'Unspecified latitude/longitude, is postcode specified in settings?';
+        return;
+      }
+      try {
+        const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&units=metric&appid=${process.env.OPENWEATHERMAPSAPIKEY}`;
+        const result = await axios.get(url, {
+          timeout: 4000,
+          responseType: 'text',
+          maxContentLength: 65536,
+        });
+        // Update weather values
+        const weatherObj = JSON.parse(result.data);
+        console.log(weatherObj);
+
+        // this.stationName = weatherObj.name;
+        // this.currentTemp = weatherObj.main.temp;
+        // this.currentHumidity = weatherObj.main.humidity;
+        // // this.minTemp = weatherObj.main.temp_min;
+        // // this.maxTemp = weatherObj.main.temp_max;
+        // this.weatherDescription = weatherObj.weather[0].description;
+        // this.weatherIconId = weatherObj.weather[0].icon;
+
+        // Clear error message
+        this.errorMessage = '';
+        return 'success';
+      } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+          this.errorMessage = error.message;
+        } else {
+          this.errorMessage = 'An unknown error occurred';
+        }
+        return this.errorMessage;
+      }
     },
   },
 });
