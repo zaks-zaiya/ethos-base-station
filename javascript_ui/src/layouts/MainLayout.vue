@@ -21,6 +21,9 @@
           icon="home"
           class="q-ml-md fontsize-16"
         />
+
+        <CurrentTime class="q-ml-lg fontsize-20" />
+
         <q-toolbar-title></q-toolbar-title>
 
         <q-btn
@@ -67,6 +70,7 @@ import { defineComponent, ref } from 'vue';
 
 import { useKeyboardStore } from 'src/stores/keyboard';
 
+import CurrentTime from 'components/CurrentTime.vue';
 import ModalNoConnection from 'components/ModalNoConnection.vue';
 import ModalCoolingInterventions from 'components/ModalCoolingInterventions.vue';
 import SimpleKeyboard from 'src/components/SimpleKeyboard.vue';
@@ -79,6 +83,7 @@ export default defineComponent({
     ModalCoolingInterventions,
     SimpleKeyboard,
     ModalHelp,
+    CurrentTime,
   },
   setup() {
     const keyboardStore = useKeyboardStore();
