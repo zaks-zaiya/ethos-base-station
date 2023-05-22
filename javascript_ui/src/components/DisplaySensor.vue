@@ -1,8 +1,7 @@
 <template>
   <q-card class="full-height" :class="backgroundColor">
     <q-icon
-      class="absolute-top-right q-ma-sm"
-      :class="{ 'flash-icon': riskLevel === 'high' }"
+      class="absolute-right q-ma-sm"
       name="warning"
       color="white"
       size="xl"
@@ -11,7 +10,7 @@
 
     <q-card-section
       class="q-pa-sm"
-      :class="{ 'flash-icon': riskLevel === 'high' }"
+      :class="{ 'flash-background': riskLevel === 'high' }"
     >
       <div class="fontsize-22 text-bold">
         {{ sensor.name ? sensor.name : 'Undefined' }}
@@ -148,7 +147,7 @@ export default defineComponent({
         return 'bg-warning text-white';
       } else if (riskLevel.value == 'high') {
         // High risk, background red
-        return 'bg-negative text-white';
+        return 'bg-flash text-white';
       } else {
         console.error('Unable to find correct background color');
         return 'bg-grey';
@@ -186,19 +185,19 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.flash-icon {
-  animation: flash 1.5s infinite;
+.bg-flash {
+  animation: flash 2s infinite;
 }
 
 @keyframes flash {
   0%,
   50%,
   100% {
-    opacity: 1;
+    background-color: $negative;
   }
   25%,
   75% {
-    opacity: 0.5;
+    background-color: #710101;
   }
 }
 </style>
