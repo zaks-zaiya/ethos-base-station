@@ -160,15 +160,10 @@ export default defineComponent({
         return 'Never';
       }
 
-      // Format time
-      let hours = lastSeen.getHours();
-      let minutes: number | string = lastSeen.getMinutes();
-      let ampm = hours >= 12 ? 'PM' : 'AM';
-
-      hours = hours % 12;
-      hours = hours ? hours : 12; // the hour '0' should be '12'
-      minutes = minutes < 10 ? '0' + minutes : minutes;
-      let strTime = hours + ':' + minutes + ' ' + ampm;
+      let strTime = lastSeen.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
 
       return strTime + ', ' + lastSeen.toLocaleDateString();
     });
