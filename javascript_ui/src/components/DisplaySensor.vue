@@ -9,7 +9,10 @@
       v-if="riskLevel === 'high' || riskLevel === 'medium'"
     />
 
-    <q-card-section class="q-pa-sm">
+    <q-card-section
+      class="q-pa-sm"
+      :class="{ 'flash-icon': riskLevel === 'high' }"
+    >
       <div class="fontsize-22 text-bold">
         {{ sensor.name ? sensor.name : 'Undefined' }}
         {{ sensor.id ? '' : '(ID Undefined)' }}
@@ -19,14 +22,13 @@
 
     <q-separator />
 
-    <q-card-section class="full-height q-pa-sm">
-      <div class="fontsize-40">{{ sensor.temperature }}°C</div>
-      <div class="fontsize-30">{{ sensor.humidity }}% RH</div>
-      <div class="fontsize-18 text-italic">
-        Last seen:
-        {{ sensor.lastSeen ? sensor.lastSeen.toLocaleString() : 'Never' }}
-      </div>
+    <q-card-section class="q-pa-sm">
+      <div class="fontsize-40 text-bold">{{ sensor.temperature }}°C</div>
+      <div class="fontsize-30 text-bold">{{ sensor.humidity }}% RH</div>
     </q-card-section>
+    <div class="fontsize-18 text-italic q-ma-sm absolute-bottom">
+      {{ formattedLastSeen }}
+    </div>
   </q-card>
 </template>
 
@@ -140,33 +142,52 @@ export default defineComponent({
         return 'bg-grey text-grey-8';
       } else if (riskLevel.value == 'low') {
         // Low risk, background green
-        return 'bg-positive';
+        return 'bg-positive text-white';
       } else if (riskLevel.value == 'medium') {
         // Medium risk, background yellow
-        return 'bg-warning';
+        return 'bg-warning text-white';
       } else if (riskLevel.value == 'high') {
         // High risk, background red
-        return 'bg-negative';
+        return 'bg-negative text-white';
       } else {
         console.error('Unable to find correct background color');
         return 'bg-grey';
       }
     });
 
-    return { isUndefined, isOffline, backgroundColor, riskLevel };
+    let formattedLastSeen = computed(() => {
+      const lastSeen = props.sensor.lastSeen;
+      if (!lastSeen) {
+        return 'Never';
+      }
+
+      // Format time
+      let hours = lastSeen.getHours();
+      let minutes: number | string = lastSeen.getMinutes();
+      let ampm = hours >= 12 ? 'PM' : 'AM';
+
+      hours = hours % 12;
+      hours = hours ? hours : 12; // the hour '0' should be '12'
+      minutes = minutes < 10 ? '0' + minutes : minutes;
+      let strTime = hours + ':' + minutes + ' ' + ampm;
+
+      return strTime + ', ' + lastSeen.toLocaleDateString();
+    });
+
+    return {
+      isUndefined,
+      isOffline,
+      backgroundColor,
+      riskLevel,
+      formattedLastSeen,
+    };
   },
 });
 </script>
 
-<style scoped>
-.absolute-top-right {
-  position: absolute;
-  top: 0;
-  right: 0;
-}
-
+<style lang="scss" scoped>
 .flash-icon {
-  animation: flash 1s infinite;
+  animation: flash 1.5s infinite;
 }
 
 @keyframes flash {
