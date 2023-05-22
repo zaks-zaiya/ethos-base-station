@@ -1,5 +1,14 @@
 <template>
   <q-card class="full-height" :class="backgroundColor">
+    <q-icon
+      class="absolute-top-right q-ma-sm"
+      :class="{ 'flash-icon': riskLevel === 'high' }"
+      name="warning"
+      color="white"
+      size="xl"
+      v-if="riskLevel === 'high' || riskLevel === 'medium'"
+    />
+
     <q-card-section class="q-pa-sm">
       <div class="fontsize-22 text-bold">
         {{ sensor.name ? sensor.name : 'Undefined' }}
@@ -144,7 +153,31 @@ export default defineComponent({
       }
     });
 
-    return { isUndefined, isOffline, backgroundColor };
+    return { isUndefined, isOffline, backgroundColor, riskLevel };
   },
 });
 </script>
+
+<style scoped>
+.absolute-top-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.flash-icon {
+  animation: flash 1s infinite;
+}
+
+@keyframes flash {
+  0%,
+  50%,
+  100% {
+    opacity: 1;
+  }
+  25%,
+  75% {
+    opacity: 0.5;
+  }
+}
+</style>
