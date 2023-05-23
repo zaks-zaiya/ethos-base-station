@@ -4,30 +4,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, computed } from 'vue';
+import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
-  name: 'ModalCoolingInterventions',
+  name: 'ModalHeatAlert',
   components: {},
-  emits: ['update:modelValue'],
-  props: {
-    modelValue: {
-      type: Boolean,
-      required: true,
-    },
-  },
-  setup(props, { emit }) {
-    const { modelValue } = toRefs(props);
-
-    const showModal = computed({
-      get() {
-        return modelValue.value;
-      },
-      set(newValue) {
-        emit('update:modelValue', newValue);
-      },
-    });
-
+  setup() {
+    let showModal = ref(false);
     return {
       showModal,
     };
@@ -35,8 +18,4 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.cooling-intervention {
-  height: calc(100vh / 3);
-}
-</style>
+<style lang="scss" scoped></style>
