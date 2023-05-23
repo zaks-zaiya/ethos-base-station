@@ -1,11 +1,12 @@
 <template>
   <q-card class="full-height" :class="backgroundColor">
     <q-icon
+      style="margin-top: 70px"
       class="absolute-right q-ma-sm"
-      name="warning"
+      :class="{ 'flash-icon': riskLevel === 'high' }"
+      :name="emoticonStyle"
       color="white"
-      size="xl"
-      v-if="riskLevel === 'high' || riskLevel === 'medium'"
+      size="150px"
     />
 
     <q-card-section
@@ -154,6 +155,19 @@ export default defineComponent({
       }
     });
 
+    let emoticonStyle = computed(() => {
+      switch (riskLevel.value) {
+        case 'low':
+          return 'sentiment_very_satisfied';
+        case 'medium':
+          return 'sentiment_neutral';
+        case 'high':
+          return 'sentiment_very_dissatisfied';
+        default:
+          return '';
+      }
+    });
+
     let formattedLastSeen = computed(() => {
       const lastSeen = props.sensor.lastSeen;
       if (!lastSeen) {
@@ -174,6 +188,7 @@ export default defineComponent({
       backgroundColor,
       riskLevel,
       formattedLastSeen,
+      emoticonStyle,
     };
   },
 });
