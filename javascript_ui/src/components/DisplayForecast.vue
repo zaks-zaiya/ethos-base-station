@@ -78,6 +78,7 @@ export default defineComponent({
     });
     const displayDetailedForecast = () => {
       forecastStore.isShowDetailedForecast = true;
+      forecastStore.getDetailedForecast();
       // console.log('Clicked');
     };
     return { forecastStore, iconUrl, displayDetailedForecast };
