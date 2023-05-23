@@ -3,7 +3,7 @@
   <q-dialog v-model="showModal" full-width persistent>
     <q-card>
       <q-card-section v-if="alertSensor">
-        <div class="fontsize-30">Heat Alert</div>
+        <div class="fontsize-30 text-bold">Heat Alert</div>
         <div class="fontsize-20">
           The {{ alertSensor.name }} has recorded temperature readings which
           indicate that your body may be beginning to overheat if you are

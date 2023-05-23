@@ -2,12 +2,28 @@
   <q-card>
     <q-card-section>
       <div class="row items-center">
-        <q-btn icon="arrow_back" color="primary" @click="$emit('back')">
+        <q-btn
+          class="fontsize-12"
+          icon="arrow_back"
+          color="primary"
+          @click="$emit('back')"
+        >
           back
         </q-btn>
-        <div class="text-h4 q-ml-md">{{ strategy.name }}</div>
+        <div class="fontsize-20 text-bold q-ml-md">{{ strategy.name }}</div>
+        <q-space />
+        <q-btn
+          icon="close"
+          color="primary"
+          class="fontsize-12"
+          @click="$emit('close')"
+        >
+          Close
+        </q-btn>
       </div>
-      <BaseScrollArea>
+    </q-card-section>
+    <BaseScrollArea>
+      <q-card-section class="q-pt-none">
         <CoolingInterventionInfoSection
           :headingText="`How to best use ${strategy.shortName}`"
           :strategyPoints="strategy.extraInfo.bestUse"
@@ -26,8 +42,8 @@
           color="negative"
           bullet-style="cross"
         />
-      </BaseScrollArea>
-    </q-card-section>
+      </q-card-section>
+    </BaseScrollArea>
   </q-card>
 </template>
 

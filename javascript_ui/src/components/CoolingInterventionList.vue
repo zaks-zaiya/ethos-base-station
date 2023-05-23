@@ -1,12 +1,14 @@
 <template>
   <q-card>
     <q-card-section class="row items-center q-pb-none">
-      <div class="text-h6 fontsize-14">Cooling Strategies</div>
+      <div class="text-bold fontsize-20">Cooling Strategies</div>
       <q-space />
-      <q-btn icon="close" color="primary" v-close-popup>Close</q-btn>
+      <q-btn icon="close" color="primary" class="fontsize-12" v-close-popup>
+        Close
+      </q-btn>
     </q-card-section>
     <q-card-section>
-      <div class="fontsize-12">
+      <div class="fontsize-16">
         If you need to lower your body temperature, here are the best ways to do
         it (click on a intervention for more info):
       </div>

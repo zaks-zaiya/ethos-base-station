@@ -2,13 +2,17 @@
 <template>
   <q-dialog v-model="showModal" full-width persistent>
     <CoolingInterventionList
-      v-if="displayInfo === null"
+      v-show="displayInfo === null"
       @show-info="showInfo"
     />
     <CoolingInterventionInfo
-      v-else
+      v-if="displayInfo !== null"
       :strategy="displayInfo"
       @back="displayInfo = null"
+      @close="
+        displayInfo = null;
+        showModal = false;
+      "
     />
   </q-dialog>
 </template>

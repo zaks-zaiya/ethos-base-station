@@ -7,11 +7,11 @@
       <q-card-section
         class="bg-no-repeat full-height flex items-center justify-center"
         :style="{
-          'background-image': `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${strategy.imageUrl})`,
+          'background-image': `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${strategy.imageUrl})`,
           'background-size': 'cover',
         }"
       >
-        <div class="text-h3 text-white text-center">
+        <div class="fontsize-30 text-bold text-white text-center">
           {{ strategy.name }}
         </div>
       </q-card-section>
