@@ -26,6 +26,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
 
   state: () => ({
     isConnected: false,
+    alertSensor: null as SensorData | null,
     allSensorData: [
       {
         id: undefined,
@@ -156,9 +157,15 @@ export const useDataSensorStore = defineStore('dataSensor', {
         sensorData.temperature = temperature;
         sensorData.humidity = humidity;
         sensorData.lastSeen = new Date(Date.now());
-        // Set risk level as undefined while we calculate new value
-        sensorData.riskLevel = undefined;
-        sensorData.riskLevel = getRiskLevel(sensorData);
+
+        const oldRiskLevel = sensorData.riskLevel;
+        sensorData.riskLevel = undefined; // While we calculate new value
+        const newRiskLevel = getRiskLevel(sensorData);
+        sensorData.riskLevel = newRiskLevel;
+        if (oldRiskLevel && newRiskLevel && newRiskLevel > oldRiskLevel) {
+          // Risk level has gone up
+          this.alertSensor = { ...sensorData }; // Shallow copy
+        }
       });
     },
   },

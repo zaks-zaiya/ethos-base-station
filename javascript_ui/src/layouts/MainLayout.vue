@@ -1,9 +1,10 @@
 <template>
   <q-layout view="lHh Lpr lFf" class="bg-blue-grey-2">
     <!-- Register Modals -->
-    <modal-no-connection />
-    <modal-cooling-interventions v-model="isShowCoolingModal" />
-    <modal-help v-model="isShowHelpModal" />
+    <ModalNoConnection />
+    <ModalHeatAlert @open-cooling-modal="isShowCoolingModal = true" />
+    <ModalCoolingInterventions v-model="isShowCoolingModal" />
+    <ModalHelp v-model="isShowHelpModal" />
     <!-- Main layout -->
     <q-header flat class="transparent">
       <q-toolbar class="ethos-toolbar">
@@ -75,14 +76,16 @@ import ModalNoConnection from 'components/ModalNoConnection.vue';
 import ModalCoolingInterventions from 'components/ModalCoolingInterventions.vue';
 import SimpleKeyboard from 'src/components/SimpleKeyboard.vue';
 import ModalHelp from 'src/components/ModalHelp.vue';
+import ModalHeatAlert from 'src/components/ModalHeatAlert.vue';
 
 export default defineComponent({
   name: 'MainLayout',
   components: {
     ModalNoConnection,
     ModalCoolingInterventions,
-    SimpleKeyboard,
     ModalHelp,
+    ModalHeatAlert,
+    SimpleKeyboard,
     CurrentTime,
   },
   setup() {
