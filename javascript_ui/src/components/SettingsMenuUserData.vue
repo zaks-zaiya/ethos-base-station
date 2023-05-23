@@ -42,7 +42,7 @@
 import { useDataUserStore } from 'src/stores/dataUser';
 import { defineComponent } from 'vue';
 
-import postcodeArrayString from '../assets/australian_postcodes.js';
+import postcodeArrayString from 'assets/australian_postcodes.js';
 import InputKeyboard from './InputKeyboard.vue';
 
 export default defineComponent({

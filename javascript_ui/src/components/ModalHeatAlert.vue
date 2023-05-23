@@ -1,12 +1,12 @@
 <!-- ModalHeatAlert.vue -->
 <template>
   <q-dialog v-model="showModal" full-width persistent>
-    <q-card>
+    <q-card :class="flashClass">
       <q-card-section v-if="alertSensor">
         <div class="fontsize-30 text-bold">Heat Alert</div>
         <div class="fontsize-20">
-          The {{ alertSensor.name }} has recorded temperature readings which
-          indicate that your body may be beginning to overheat if you are
+          The <b>{{ alertSensor.name }}</b> has recorded temperature readings
+          which indicate that your body may be beginning to overheat if you are
           located in that area.
         </div>
         <div class="fontsize-20 text-bold q-mt-md">
@@ -40,7 +40,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import { useDataSensorStore } from 'stores/dataSensor'; // assuming the store file is in the same directory
+import { useDataSensorStore } from 'stores/dataSensor';
 import { RiskLevel } from './models';
 
 export default defineComponent({
@@ -51,6 +51,17 @@ export default defineComponent({
 
     const alertSensor = computed(() => store.alertSensor);
     const showModal = computed(() => store.alertSensor !== null);
+
+    const flashClass = computed(() => {
+      switch (store.alertSensor?.riskLevel) {
+        case RiskLevel.MEDIUM:
+          return 'flash-yellow';
+        case RiskLevel.HIGH:
+          return 'flash-red';
+        default:
+          return '';
+      }
+    });
 
     const riskLevelText = computed(() => {
       switch (store.alertSensor?.riskLevel) {
@@ -88,6 +99,7 @@ export default defineComponent({
       alertSensor,
       showModal,
       riskLevelText,
+      flashClass,
       notLocatedAt,
       coolDown,
       dismiss,
@@ -96,4 +108,48 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.flash-yellow {
+  animation: flash-yellow 3s infinite;
+}
+
+@keyframes flash-yellow {
+  0%,
+  50%,
+  100% {
+    background-color: white;
+  }
+  25%,
+  75% {
+    background-color: #ffe291;
+  }
+}
+
+.flash-red {
+  animation: flash-red 3s infinite;
+}
+
+@keyframes flash-red {
+  0%,
+  50%,
+  100% {
+    background-color: white;
+  }
+  25%,
+  75% {
+    background-color: #b35959;
+  }
+}
+
+@keyframes flash {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+</style>

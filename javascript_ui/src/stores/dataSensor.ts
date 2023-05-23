@@ -165,6 +165,10 @@ export const useDataSensorStore = defineStore('dataSensor', {
         if (oldRiskLevel && newRiskLevel && newRiskLevel > oldRiskLevel) {
           // Risk level has gone up
           this.alertSensor = { ...sensorData }; // Shallow copy
+          // Send alert sound
+          // TODO: Different severities/options
+          const audio = new Audio('/placeholder-alert.mp3');
+          audio.play();
         }
       });
     },
