@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { io } from 'socket.io-client';
 import { SensorData } from 'src/components/models';
+import { getRiskLevel } from 'src/helper/riskLevel';
 
 const deserializeSensorData = (sensorDataString: string) => {
   // Parse the JSON string
@@ -32,6 +33,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
         temperature: undefined,
         humidity: undefined,
         lastSeen: undefined,
+        riskLevel: undefined,
       },
       {
         id: undefined,
@@ -39,6 +41,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
         temperature: undefined,
         humidity: undefined,
         lastSeen: undefined,
+        riskLevel: undefined,
       },
       {
         id: undefined,
@@ -46,6 +49,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
         temperature: undefined,
         humidity: undefined,
         lastSeen: undefined,
+        riskLevel: undefined,
       },
       {
         id: undefined,
@@ -53,6 +57,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
         temperature: undefined,
         humidity: undefined,
         lastSeen: undefined,
+        riskLevel: undefined,
       },
     ] as Array<SensorData>, // sensor data
   }),
@@ -147,9 +152,13 @@ export const useDataSensorStore = defineStore('dataSensor', {
         }
 
         // Update array values
-        this.allSensorData[i].temperature = temperature;
-        this.allSensorData[i].humidity = humidity;
-        this.allSensorData[i].lastSeen = new Date(Date.now());
+        const sensorData = this.allSensorData[i];
+        sensorData.temperature = temperature;
+        sensorData.humidity = humidity;
+        sensorData.lastSeen = new Date(Date.now());
+        // Set risk level as undefined while we calculate new value
+        sensorData.riskLevel = undefined;
+        sensorData.riskLevel = getRiskLevel(sensorData);
       });
     },
   },

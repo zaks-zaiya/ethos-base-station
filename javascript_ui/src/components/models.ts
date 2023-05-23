@@ -1,9 +1,16 @@
+export enum RiskLevel {
+  LOW = 1,
+  MEDIUM = 2,
+  HIGH = 3,
+}
+
 export interface SensorData {
   name: string | undefined;
   id: number | undefined;
   temperature: number | undefined;
   humidity: number | undefined;
   lastSeen: Date | undefined;
+  riskLevel: RiskLevel | undefined;
 }
 
 export interface UserData {

@@ -3,16 +3,12 @@
     <q-icon
       style="margin-top: 70px"
       class="absolute-right q-ma-sm"
-      :class="{ 'flash-icon': riskLevel === 'high' }"
       :name="emoticonStyle"
       color="white"
       size="150px"
     />
 
-    <q-card-section
-      class="q-pa-sm"
-      :class="{ 'flash-background': riskLevel === 'high' }"
-    >
+    <q-card-section class="q-pa-sm">
       <div class="fontsize-22 text-bold">
         {{ sensor.name ? sensor.name : 'Undefined' }}
         {{ sensor.id ? '' : '(ID Undefined)' }}
@@ -41,7 +37,7 @@ import {
   onMounted,
   onUnmounted,
 } from 'vue';
-import { SensorData } from 'components/models';
+import { SensorData, RiskLevel } from 'components/models';
 
 export default defineComponent({
   name: 'DisplaySensor',
@@ -88,46 +84,6 @@ export default defineComponent({
       return !props.sensor.id || !props.sensor.name;
     });
 
-    // Calculate the WBGT for risk level
-    let wetBulbTemperature = computed(() => {
-      // Equation taken from:
-      // https://physicscalc.com/physics/wet-bulb-calculator/
-      let temperature = props.sensor.temperature;
-      let humidity = props.sensor.humidity;
-      if (!temperature || !humidity) {
-        return undefined;
-      }
-      let wetBulbTemperature =
-        temperature *
-          Math.atan(0.151977 * Math.pow(humidity + 8.313659, 1 / 2)) +
-        Math.atan(temperature + humidity) -
-        Math.atan(humidity - 1.676331) +
-        0.00391838 *
-          Math.pow(humidity, 3 / 2) *
-          Math.atan(0.023101 * humidity) -
-        4.686035;
-      return wetBulbTemperature;
-    });
-
-    // Return the risk level as 'high', 'medium', low' or '' (undefined)
-    let riskLevel = computed(() => {
-      // Check undefined
-      if (!wetBulbTemperature.value) {
-        console.log('Unable to find correct risk level (no WBGT defined)');
-        return '';
-      }
-      if (wetBulbTemperature.value >= 30) {
-        return 'high';
-      } else if (wetBulbTemperature.value >= 25) {
-        return 'medium';
-      } else if (wetBulbTemperature.value < 25) {
-        return 'low';
-      } else {
-        console.log('Unable to find correct risk level (unknown error)');
-        return '';
-      }
-    });
-
     // Calculate what background color to use for the form card
     let backgroundColor = computed(() => {
       if (
@@ -140,30 +96,37 @@ export default defineComponent({
       } else if (isOffline.value) {
         // Sensor is offline
         return 'bg-grey text-grey-8';
-      } else if (riskLevel.value == 'low') {
-        // Low risk, background green
-        return 'bg-positive text-white';
-      } else if (riskLevel.value == 'medium') {
-        // Medium risk, background yellow
-        return 'bg-warning text-white';
-      } else if (riskLevel.value == 'high') {
-        // High risk, background red
-        return 'bg-flash text-white';
-      } else {
-        console.error('Unable to find correct background color');
-        return 'bg-grey';
+      }
+      // Check risk level
+      switch (props.sensor.riskLevel) {
+        case RiskLevel.LOW:
+          // Low risk, background green
+          return 'bg-positive text-white';
+        case RiskLevel.MEDIUM:
+          // Medium risk, background yellow
+          return 'bg-warning text-white';
+        case RiskLevel.HIGH:
+          // High risk, background red
+          return 'bg-flash text-white';
+        case undefined:
+          // Still calculating, grey for now
+          return 'bg-grey';
+        default:
+          console.error('Unable to find correct background color');
+          return 'bg-grey';
       }
     });
 
     let emoticonStyle = computed(() => {
-      switch (riskLevel.value) {
-        case 'low':
+      switch (props.sensor.riskLevel) {
+        case RiskLevel.LOW:
           return 'sentiment_very_satisfied';
-        case 'medium':
+        case RiskLevel.MEDIUM:
           return 'sentiment_neutral';
-        case 'high':
+        case RiskLevel.HIGH:
           return 'sentiment_very_dissatisfied';
         default:
+          // No emoticon
           return '';
       }
     });
@@ -186,7 +149,6 @@ export default defineComponent({
       isUndefined,
       isOffline,
       backgroundColor,
-      riskLevel,
       formattedLastSeen,
       emoticonStyle,
     };
