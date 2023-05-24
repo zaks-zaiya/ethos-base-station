@@ -4,12 +4,7 @@ import axios, { AxiosError } from 'axios';
 import { useDataUserStore } from './dataUser';
 import { watch } from 'vue';
 import { date } from 'quasar';
-type DayOfWeek = {
-  hour?: number;
-  ampm?: string;
-  temp?: number;
-};
-const apikey = '32a22cf1a4a420d85105239549955464';
+
 export const useForecastStore = defineStore('forecast', {
   state: () => ({
     // add annother variable here to show or hdie the modal
@@ -24,6 +19,8 @@ export const useForecastStore = defineStore('forecast', {
     weatherDescription: undefined as undefined | string,
     weatherIconId: null as null | string,
     pollInterval: null as null | number,
+    // Map with forecast temps
+    forecastTemps: null as null | Map<string, number>,
   }),
 
   getters: {},
@@ -32,6 +29,8 @@ export const useForecastStore = defineStore('forecast', {
     setup() {
       // Initialize user data for lat/lon
       const dataUserStore = useDataUserStore();
+      // intialize forecastTemps map
+      this.forecastTemps = new Map();
 
       // Update forecast if lat or lon change
       watch(
@@ -85,56 +84,6 @@ export const useForecastStore = defineStore('forecast', {
             this.errorMessage = 'An unknown error occurred';
           }
         }
-        /**
-         * Get 5 day forecast weather
-         */
-        // try {
-        //   const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&units=metric&appid=${process.env.OPENWEATHERMAPSAPIKEY}`;
-        //   const result = await axios.get(url, {
-        //     timeout: 4000,
-        //     responseType: 'text',
-        //     maxContentLength: 65536,
-        //   });
-        //   // Update weather values
-        //   const weatherObj = JSON.parse(result.data);
-        //   // console.log(weatherObj);
-        //   // build an JS object with 5 days of the week, max and min temps, and has 3 hour window
-
-        //   const forecastObj: {
-        //     [key: string]: [{ hour: number; ampm: string; temp: number }];
-        //   } = {};
-        //   const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-        //   for (const w of weatherObj.list) {
-        //     // console.log(w);
-        //     const dateAndHour = w.dt_txt.split(' ');
-        //     // console.log(dateAndHour);
-        //     if (
-        //       // if forecast object is empty, add new item
-        //       Object.keys(forecastObj).length === 0
-        //     ) {
-        //       // forecastObj = {};
-        //       const hour = parseInt(dateAndHour[1].split(':')[0]);
-        //       const period = hour < 12 ? 'am' : 'pm';
-        //       const ampmHour = hour % 12 || 12;
-        //       // forecastObj.dateAndHour[0].ampm = period;
-        //       // forecastObj.dateAndHour[0].hour = ampmHour;
-        //       // forecastObj.dateAndHour[0].temp = w.main.temp;
-
-        //       // } else if (forecastObj.includes(dateAndHour[0])) {
-        //       // forecastObj[dateAndHour[0]][
-        //       //   parseInt(dateAndHour[1].split(':')[0]) % 12 || 12
-        //       // ] = w.main.temp;
-        //     }
-        //   }
-        //   console.log(forecastObj);
-        // } catch (error: unknown) {
-        //   if (error instanceof AxiosError) {
-        //     this.errorMessage = error.message;
-        //   } else {
-        //     this.errorMessage = 'An unknown error occurred';
-        //   }
-        // }
       };
 
       updateWeather();
@@ -169,35 +118,19 @@ export const useForecastStore = defineStore('forecast', {
 
         // build an JS object with 5 days of the week, max and min temps, and has 3 hour window
 
-        const forecastObj: {
-          [key: string]: [{ hour: number; ampm: string; temp: number }];
-        } = {};
         const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
+        // clear the map
+        this.forecastTemps?.clear();
         for (const w of weatherObj.list) {
-          // console.log(w);
-          const dateAndHour = w.dt_txt.split(' ');
-          // console.log(dateAndHour);
-          if (
-            // if forecast object is empty, add new item
-            Object.keys(forecastObj).length === 0
-          ) {
-            // forecastObj = {};
-            const hour = parseInt(dateAndHour[1].split(':')[0]);
-            const period = hour < 12 ? 'am' : 'pm';
-            const ampmHour = hour % 12 || 12;
-
-            // } else if (forecastObj.includes(dateAndHour[0])) {
-            // forecastObj[dateAndHour[0]][
-            //   parseInt(dateAndHour[1].split(':')[0]) % 12 || 12
-            // ] = w.main.temp;
-          }
+          // const dateAndHour = w.dt_txt.split(' ');
+          //   const hour = parseInt(dateAndHour[1].split(':')[0]);
+          //   const period = hour < 12 ? 'am' : 'pm';
+          //   const ampmHour = hour % 12 || 12;
+          this.forecastTemps?.set(w.dt_txt, w.main.temp);
         }
-        console.log(forecastObj);
-
+        console.log(this.forecastTemps);
         // Clear error message
         this.errorMessage = '';
-        return 'success';
       } catch (error: unknown) {
         if (error instanceof AxiosError) {
           this.errorMessage = error.message;
