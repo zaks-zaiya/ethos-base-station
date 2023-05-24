@@ -114,8 +114,6 @@ export const useForecastStore = defineStore('forecast', {
         });
         // Update weather values
         const weatherObj = JSON.parse(result.data);
-        console.log(weatherObj);
-
         // build an JS object with 5 days of the week, max and min temps, and has 3 hour window
 
         const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];

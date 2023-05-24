@@ -24,6 +24,8 @@
           Humidity: {{ forecastStore.currentHumidity }}% RH
         </div>
       </q-card-section>
+      <BarChart />
+      <q-card-section class="q-pt-none"> </q-card-section>
     </q-card>
   </q-dialog>
 </template>
@@ -32,9 +34,11 @@
 import { defineComponent } from 'vue';
 
 import { useForecastStore } from 'stores/forecast';
-
+import BarChart from './BarChart.vue';
+import { Bar } from 'vue-chartjs';
 export default defineComponent({
-  name: 'ModalNoConnection',
+  name: 'ModalDetailedForecast',
+  components: { BarChart },
   setup() {
     const forecastStore = useForecastStore();
     return {
