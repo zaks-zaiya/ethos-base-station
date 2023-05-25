@@ -5,7 +5,7 @@
     full-width
     :persistent="true"
   >
-    <q-card class="bg-dark q-pb-none text-white">
+    <q-card class="bg-primary q-pb-none text-white">
       <q-card-section>
         <!-- TODO: Content here -->
         <div class="row justify-between">
@@ -18,14 +18,24 @@
         </div>
       </q-card-section>
       <q-separator dark />
-      <q-card-section class="q-pt-none">
+      <q-card-section class="q-pt-s">
         <div class="text-h3">{{ forecastStore.currentTemp?.toFixed(1) }}°C</div>
         <div class="fontsize-18">
           Humidity: {{ forecastStore.currentHumidity }}% RH
         </div>
       </q-card-section>
-      <BarChart />
-      <q-card-section class="q-pt-none"> </q-card-section>
+
+      <q-card-section class="q-pt-none"> <LineGraph /></q-card-section>
+      <q-card-section class="q-pt-none">
+        <span class="row justify-space-between"
+          ><DayOfWeekCard />
+          <DayOfWeekCard />
+          <DayOfWeekCard />
+          <DayOfWeekCard />
+          <DayOfWeekCard />
+          <DayOfWeekCard />
+        </span>
+      </q-card-section>
     </q-card>
   </q-dialog>
 </template>
@@ -34,11 +44,12 @@
 import { defineComponent } from 'vue';
 
 import { useForecastStore } from 'stores/forecast';
-import BarChart from './BarChart.vue';
-import { Bar } from 'vue-chartjs';
+import LineGraph from './LineChart.vue';
+import DayOfWeekCard from './DayOfWeekCard.vue';
+
 export default defineComponent({
   name: 'ModalDetailedForecast',
-  components: { BarChart },
+  components: { LineGraph, DayOfWeekCard },
   setup() {
     const forecastStore = useForecastStore();
     return {

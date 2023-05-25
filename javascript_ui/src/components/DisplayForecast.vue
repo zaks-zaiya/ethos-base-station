@@ -78,7 +78,15 @@ export default defineComponent({
     });
     const displayDetailedForecast = () => {
       forecastStore.isShowDetailedForecast = true;
-      forecastStore.getDetailedForecast();
+      // forecastStore
+      //   .getDetailedForecast()
+      //   .then((message) => {
+      //     if (message === 'success') {
+      //       forecastStore.isShowDetailedForecast = true;
+      //     }
+      //   })
+      //   .catch((message) => console.log(message));
+
       // console.log('Clicked');
     };
     return { forecastStore, iconUrl, displayDetailedForecast };

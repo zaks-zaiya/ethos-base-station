@@ -20,7 +20,9 @@ export const useForecastStore = defineStore('forecast', {
     weatherIconId: null as null | string,
     pollInterval: null as null | number,
     // Map with forecast temps
-    forecastTemps: null as null | Map<string, number>,
+    forecastTemps: null as null | [string, number][],
+    // store an array with day of week, max temp and min temp
+    dayOfWeekForecast: null as null | [string, number, number][],
   }),
 
   getters: {},
@@ -29,8 +31,6 @@ export const useForecastStore = defineStore('forecast', {
     setup() {
       // Initialize user data for lat/lon
       const dataUserStore = useDataUserStore();
-      // intialize forecastTemps map
-      this.forecastTemps = new Map();
 
       // Update forecast if lat or lon change
       watch(
@@ -76,8 +76,10 @@ export const useForecastStore = defineStore('forecast', {
           this.weatherIconId = weatherObj.weather[0].icon;
           // Clear error message
           this.errorMessage = '';
+
+          // if api call succeeded then call get detailed forecast\
+          this.getDetailedForecast();
         } catch (error: unknown) {
-          console.log(error);
           if (error instanceof AxiosError) {
             this.errorMessage = error.message;
           } else {
@@ -85,8 +87,8 @@ export const useForecastStore = defineStore('forecast', {
           }
         }
       };
-
       updateWeather();
+
       // Setup poll interval for every 10 min
       this.pollInterval = window.setInterval(updateWeather, 60000 * 10);
     },
@@ -99,7 +101,7 @@ export const useForecastStore = defineStore('forecast', {
       const dataUserStore = useDataUserStore();
       const latitude = dataUserStore.latitude;
       const longitude = dataUserStore.longitude;
-      console.log('Updating weather...');
+
       if (!(latitude && longitude)) {
         this.errorMessage =
           'Unspecified latitude/longitude, is postcode specified in settings?';
@@ -112,28 +114,64 @@ export const useForecastStore = defineStore('forecast', {
           responseType: 'text',
           maxContentLength: 65536,
         });
+
         // Update weather values
         const weatherObj = JSON.parse(result.data);
-        // build an JS object with 5 days of the week, max and min temps, and has 3 hour window
 
-        const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        // clear the map
-        this.forecastTemps?.clear();
+        // clear forecastTemps and dayofweek forecast array
+        this.forecastTemps = [];
+        this.dayOfWeekForecast = [];
         for (const w of weatherObj.list) {
           // const dateAndHour = w.dt_txt.split(' ');
           //   const hour = parseInt(dateAndHour[1].split(':')[0]);
           //   const period = hour < 12 ? 'am' : 'pm';
           //   const ampmHour = hour % 12 || 12;
-          this.forecastTemps?.set(w.dt_txt, w.main.temp);
+          this.forecastTemps.push([w.dt_txt, w.main.temp]);
         }
+
+        console.log('success forecast data API');
         console.log(this.forecastTemps);
+        // separate out dayOfWeek max and min temp to a separate array
+        const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+        const tempList: string[] = [];
+        // filter to get a list of days of week
+        for (const [dateAndTime, temp] of this.forecastTemps) {
+          const currentDay = weekday[new Date(dateAndTime).getDay()];
+          if (!tempList.includes(currentDay)) {
+            tempList.push(currentDay);
+          }
+        }
+        console.log(tempList);
+        // loop thru each day in tempList
+        // get a single day with all the temps
+        // find max and min
+        for (const element of tempList) {
+          const listOfTemps = this.forecastTemps
+            .filter((item) => {
+              return (
+                weekday[new Date(item[0]).getDay()].localeCompare(element) == 0
+              );
+            })
+            .map(function (value) {
+              return value[1];
+            });
+          // console.log(listOfTemps);
+          this.dayOfWeekForecast.push([
+            element,
+            Math.max(...listOfTemps),
+            Math.min(...listOfTemps),
+          ]);
+        }
+        // console.log(JSON.stringify(this.dayOfWeekForecast));
         // Clear error message
         this.errorMessage = '';
+        return 'success';
       } catch (error: unknown) {
         if (error instanceof AxiosError) {
           this.errorMessage = error.message;
         } else {
-          this.errorMessage = 'An unknown error occurred';
+          this.errorMessage = 'unable to fetch forecast api';
         }
         return this.errorMessage;
       }
