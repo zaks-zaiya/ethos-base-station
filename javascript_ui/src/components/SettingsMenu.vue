@@ -6,6 +6,7 @@
           <q-tabs v-model="tab" vertical class="text-teal">
             <q-tab name="user-data" icon="person" label="User Data" />
             <q-tab name="sensors" icon="thermostat" label="Sensors" />
+            <q-tab name="preferences" icon="assignment" label="Preferences" />
             <q-tab name="reset" icon="warning" label="Reset App" />
             <q-tab name="quit" icon="power_settings_new" label="Quit" />
           </q-tabs>
