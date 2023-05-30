@@ -1,5 +1,5 @@
 <template>
-  <q-card class="full-height" :class="backgroundColor">
+  <q-card class="full-height" :class="backgroundColor" @click="readSensorData">
     <q-icon
       style="margin-top: 70px"
       class="absolute-right q-ma-sm"
@@ -145,12 +145,46 @@ export default defineComponent({
       return strTime + ', ' + lastSeen.toLocaleDateString();
     });
 
+    let readRiskLevel = () => {
+      switch (props.sensor.riskLevel) {
+        case RiskLevel.LOW:
+          return 'low';
+        case RiskLevel.MEDIUM:
+          return 'medium';
+        case RiskLevel.HIGH:
+          return 'high';
+        default:
+          // No emoticon
+          return '';
+      }
+    };
+
+    const readSensorData = () => {
+      console.log('HERE');
+      var utter = new SpeechSynthesisUtterance();
+
+      utter.text = `The ${props.sensor.name} is ${
+        props.sensor.temperature
+      } degrees celsius, with a relative humidity of ${
+        props.sensor.humidity
+      }%. Your risk level in this room is ${readRiskLevel()}`;
+
+      utter.rate = 0.9;
+
+      utter.onend = function () {
+        console.log('Speech complete');
+      };
+
+      speechSynthesis.speak(utter);
+    };
+
     return {
       isUndefined,
       isOffline,
       backgroundColor,
       formattedLastSeen,
       emoticonStyle,
+      readSensorData,
     };
   },
 });
