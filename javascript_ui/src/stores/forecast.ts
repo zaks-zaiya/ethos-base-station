@@ -130,7 +130,7 @@ export const useForecastStore = defineStore('forecast', {
         }
 
         console.log('success forecast data API');
-        console.log(this.forecastTemps);
+        // console.log(this.forecastTemps);
         // separate out dayOfWeek max and min temp to a separate array
         const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -142,7 +142,8 @@ export const useForecastStore = defineStore('forecast', {
             tempList.push(currentDay);
           }
         }
-        console.log(tempList);
+        // console.log(tempList);
+
         // loop thru each day in tempList
         // get a single day with all the temps
         // find max and min
@@ -163,7 +164,7 @@ export const useForecastStore = defineStore('forecast', {
             Math.min(...listOfTemps),
           ]);
         }
-        // console.log(JSON.stringify(this.dayOfWeekForecast));
+        console.log(JSON.stringify(this.dayOfWeekForecast));
         // Clear error message
         this.errorMessage = '';
         return 'success';

@@ -25,15 +25,18 @@
         </div>
       </q-card-section>
 
-      <q-card-section class="q-pt-none"> <LineGraph /></q-card-section>
       <q-card-section class="q-pt-none">
-        <span class="row justify-space-between"
-          ><DayOfWeekCard />
-          <DayOfWeekCard />
-          <DayOfWeekCard />
-          <DayOfWeekCard />
-          <DayOfWeekCard />
-          <DayOfWeekCard />
+        <LineGraph day="Tue"
+      /></q-card-section>
+      <q-card-section class="q-pt-none">
+        <span class="row justify-space-between">
+          <div v-for="item in forecastStore.dayOfWeekForecast" :key="item[0]">
+            <DayOfWeekCard
+              :day="item[0]"
+              :maxTemp="item[1]"
+              :minTemp="item[2]"
+            />
+          </div>
         </span>
       </q-card-section>
     </q-card>
@@ -44,7 +47,7 @@
 import { defineComponent } from 'vue';
 
 import { useForecastStore } from 'stores/forecast';
-import LineGraph from './LineChart.vue';
+import LineGraph from './LineGraph.vue';
 import DayOfWeekCard from './DayOfWeekCard.vue';
 
 export default defineComponent({
