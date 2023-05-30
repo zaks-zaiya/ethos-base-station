@@ -1,7 +1,9 @@
 import { defineStore } from 'pinia';
 import { io } from 'socket.io-client';
-import { RiskLevel, SensorData } from 'src/components/models';
+import { SensorData } from 'src/components/models';
 import { getRiskLevel } from 'src/helper/riskLevel';
+import { playAudio } from 'src/helper/audioAlertDispatcher';
+import { useDataPreferencesStore } from 'src/stores/dataPreferences';
 
 const deserializeSensorData = (sensorDataString: string) => {
   // Parse the JSON string
@@ -165,13 +167,14 @@ export const useDataSensorStore = defineStore('dataSensor', {
         if (oldRiskLevel && newRiskLevel && newRiskLevel > oldRiskLevel) {
           // Risk level has gone up
           this.alertSensor = { ...sensorData }; // Shallow copy
+          // Get audio type preferences
+          const dataPreferencesStore = useDataPreferencesStore();
           // Send alert sound
-          // TODO: Different options
-          let audio = new Audio('/medium-priority-alert.mp3');
-          if (newRiskLevel === RiskLevel.HIGH) {
-            audio = new Audio('/high-priority-alert.mp3');
-          }
-          audio.play();
+          playAudio(
+            dataPreferencesStore.audioType,
+            newRiskLevel,
+            this.alertSensor
+          );
         }
       });
     },

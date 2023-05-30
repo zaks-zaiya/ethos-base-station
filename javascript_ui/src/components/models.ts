@@ -1,9 +1,3 @@
-export enum RiskLevel {
-  LOW = 1,
-  MEDIUM = 2,
-  HIGH = 3,
-}
-
 export interface SensorData {
   name: string | undefined;
   id: number | undefined;
@@ -32,4 +26,15 @@ export interface CoolingStrategy {
     whenUse: Array<string>;
     whenNotUse: Array<string>;
   };
+}
+
+export enum RiskLevel {
+  LOW = 1,
+  MEDIUM = 2,
+  HIGH = 3,
+}
+
+export enum AudioType {
+  TONE = 'tone',
+  TTS = 'text-to-speech',
 }

@@ -28,6 +28,10 @@
               <SettingsMenuSensors />
             </q-tab-panel>
 
+            <q-tab-panel name="preferences" class="remaining-height">
+              <SettingsMenuPreferences />
+            </q-tab-panel>
+
             <q-tab-panel name="reset" class="remaining-height">
               <SettingsMenuReset />
             </q-tab-panel>
@@ -46,6 +50,7 @@
 import { defineComponent, ref } from 'vue';
 import SettingsMenuReset from './SettingsMenuReset.vue';
 import SettingsMenuSensors from './SettingsMenuSensors.vue';
+import SettingsMenuPreferences from './SettingsMenuPreferences.vue';
 import SettingsMenuUserData from './SettingsMenuUserData.vue';
 import SettingsMenuQuit from './SettingsMenuQuit.vue';
 import KeyboardAutoScroll from 'src/components/KeyboardAutoScroll.vue';
@@ -54,6 +59,7 @@ export default defineComponent({
   components: {
     SettingsMenuUserData,
     SettingsMenuSensors,
+    SettingsMenuPreferences,
     SettingsMenuReset,
     SettingsMenuQuit,
     KeyboardAutoScroll,

@@ -38,6 +38,7 @@ import {
   onUnmounted,
 } from 'vue';
 import { SensorData, RiskLevel } from 'components/models';
+import { playTextToSpeech } from 'src/helper/audioAlertDispatcher';
 
 export default defineComponent({
   name: 'DisplaySensor',
@@ -160,22 +161,13 @@ export default defineComponent({
     };
 
     const readSensorData = () => {
-      console.log('HERE');
-      var utter = new SpeechSynthesisUtterance();
-
-      utter.text = `The ${props.sensor.name} is ${
+      const text = `The ${props.sensor.name} is ${
         props.sensor.temperature
       } degrees celsius, with a relative humidity of ${
         props.sensor.humidity
       }%. Your risk level in this room is ${readRiskLevel()}`;
 
-      utter.rate = 0.9;
-
-      utter.onend = function () {
-        console.log('Speech complete');
-      };
-
-      speechSynthesis.speak(utter);
+      playTextToSpeech(text);
     };
 
     return {
