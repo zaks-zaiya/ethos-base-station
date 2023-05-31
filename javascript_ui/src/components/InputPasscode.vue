@@ -9,9 +9,9 @@
       <q-input
         filled
         bottom-slots
-        class="full-width"
+        class="full-width large-font fontsize-20"
         v-model="passcode"
-        label="passcode"
+        placeholder="passcode"
         type="password"
         counter
         maxlength="4"
@@ -19,7 +19,14 @@
         error-message="Incorrect passcode, try again"
       >
         <template v-slot:append>
-          <q-btn round dense flat @click="backspacePasscode" icon="backspace" />
+          <q-btn
+            round
+            dense
+            flat
+            @click="backspacePasscode"
+            icon="backspace"
+            class="fontsize-18"
+          />
         </template>
       </q-input>
     </div>
@@ -32,21 +39,21 @@
       <div class="col q-pa-sm" v-for="key in row" :key="key">
         <q-btn
           v-if="key == 'go back'"
-          class="full-width full-height"
+          class="full-width full-height fontsize-14"
           color="info"
           :label="key"
           to="/"
         ></q-btn>
         <q-btn
           v-else-if="key == 'submit'"
-          class="full-width full-height"
+          class="full-width full-height fontsize-14"
           color="positive"
           :label="key"
           @click="checkPasscode"
         ></q-btn>
         <q-btn
           v-else
-          class="full-width full-height"
+          class="full-width full-height fontsize-14"
           color="primary"
           @click="appendPasscode(key)"
           :label="key"
