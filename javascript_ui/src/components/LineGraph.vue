@@ -19,11 +19,13 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Line as LineChart } from 'vue-chartjs';
 import { useForecastStore } from 'src/stores/forecast';
 
 ChartJS.register(
   Filler,
+  ChartDataLabels,
   CategoryScale,
   LinearScale,
   PointElement,
@@ -86,7 +88,10 @@ export default {
           ],
         },
         options: {
-          plugins: { legend: { display: false } },
+          plugins: {
+            legend: { display: false },
+            ChartDataLabels: true,
+          },
           responsive: true,
           maintainAspectRatio: true,
         },
