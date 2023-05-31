@@ -24,110 +24,32 @@
       </q-input>
     </div>
 
-    <div class="row passcode-row">
-      <div class="col q-pa-sm">
+    <div
+      class="row passcode-row"
+      v-for="(row, index) in passcodeInputLayout"
+      :key="index"
+    >
+      <div class="col q-pa-sm" v-for="key in row" :key="key">
         <q-btn
-          class="full-width full-height"
-          color="primary"
-          @click="appendPasscode('1')"
-          label="1"
-        ></q-btn>
-      </div>
-      <div class="col q-pa-sm">
-        <q-btn
-          class="full-width full-height"
-          color="primary"
-          @click="appendPasscode('2')"
-          label="2"
-        ></q-btn>
-      </div>
-      <div class="col q-pa-sm">
-        <q-btn
-          class="full-width full-height"
-          color="primary"
-          @click="appendPasscode('3')"
-          label="3"
-        ></q-btn>
-      </div>
-    </div>
-
-    <div class="row passcode-row">
-      <div class="col q-pa-sm">
-        <q-btn
-          class="full-width full-height"
-          color="primary"
-          @click="appendPasscode('4')"
-          label="4"
-        ></q-btn>
-      </div>
-      <div class="col q-pa-sm">
-        <q-btn
-          class="full-width full-height"
-          color="primary"
-          @click="appendPasscode('5')"
-          label="5"
-        ></q-btn>
-      </div>
-      <div class="col q-pa-sm">
-        <q-btn
-          class="full-width full-height"
-          color="primary"
-          @click="appendPasscode('6')"
-          label="6"
-        ></q-btn>
-      </div>
-    </div>
-
-    <div class="row passcode-row">
-      <div class="col q-pa-sm">
-        <q-btn
-          class="full-width full-height"
-          color="primary"
-          @click="appendPasscode('7')"
-          label="7"
-        ></q-btn>
-      </div>
-      <div class="col q-pa-sm">
-        <q-btn
-          class="full-width full-height"
-          color="primary"
-          @click="appendPasscode('8')"
-          label="8"
-        ></q-btn>
-      </div>
-      <div class="col q-pa-sm">
-        <q-btn
-          class="full-width full-height"
-          color="primary"
-          @click="appendPasscode('9')"
-          label="9"
-        ></q-btn>
-      </div>
-    </div>
-
-    <div class="row passcode-row">
-      <div class="col q-pa-sm">
-        <q-btn
+          v-if="key == 'go back'"
           class="full-width full-height"
           color="info"
-          label="Go Back"
+          :label="key"
           to="/"
         ></q-btn>
-      </div>
-      <div class="col q-pa-sm">
         <q-btn
-          class="full-width full-height"
-          color="primary"
-          @click="appendPasscode('0')"
-          label="0"
-        ></q-btn>
-      </div>
-      <div class="col q-pa-sm">
-        <q-btn
+          v-else-if="key == 'submit'"
           class="full-width full-height"
           color="positive"
-          label="Submit"
+          :label="key"
           @click="checkPasscode"
+        ></q-btn>
+        <q-btn
+          v-else
+          class="full-width full-height"
+          color="primary"
+          @click="appendPasscode(key)"
+          :label="key"
         ></q-btn>
       </div>
     </div>
@@ -141,6 +63,13 @@ export default defineComponent({
   name: 'InputPasscode',
   setup(props, { emit }) {
     const passcode = ref('');
+
+    const passcodeInputLayout = [
+      ['1', '2', '3'],
+      ['4', '5', '6'],
+      ['7', '8', '9'],
+      ['go back', '0', 'submit'],
+    ];
     const isIncorrectPasscode = ref(false);
 
     const backspacePasscode = () => {
@@ -170,6 +99,7 @@ export default defineComponent({
 
     return {
       passcode,
+      passcodeInputLayout,
       isIncorrectPasscode,
       backspacePasscode,
       appendPasscode,
