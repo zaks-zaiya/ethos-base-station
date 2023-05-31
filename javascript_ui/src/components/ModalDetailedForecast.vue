@@ -5,7 +5,7 @@
     full-width
     :persistent="true"
   >
-    <q-card class="bg-primary q-pb-none text-white">
+    <q-card class="bg-dark q-pb-none text-white">
       <q-card-section>
         <!-- TODO: Content here -->
         <div class="row justify-between">
@@ -26,7 +26,7 @@
       </q-card-section>
 
       <q-card-section class="q-pt-none">
-        <LineGraph day="Tue"
+        <LineGraph day="Wed"
       /></q-card-section>
       <q-card-section class="q-pt-none">
         <span class="row justify-space-between">
@@ -53,8 +53,14 @@ import DayOfWeekCard from './DayOfWeekCard.vue';
 export default defineComponent({
   name: 'ModalDetailedForecast',
   components: { LineGraph, DayOfWeekCard },
+  data: function () {
+    return {
+      pickedDay: String,
+    };
+  },
   setup() {
     const forecastStore = useForecastStore();
+    // this.pickedDay
     return {
       forecastStore,
     };

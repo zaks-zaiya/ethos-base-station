@@ -65,16 +65,33 @@ export default defineComponent({
           keys.push('' + ampmHour + period);
           values.push(e[1]);
         });
-
+      // console.log('keys ' + keys);
+      // console.log('values ' + values);
       this.chartData = {
         data: {
           labels: keys,
           datasets: [
             {
-              borderColor: 'rgb(75, 192, 192)',
-              backgroundColor: 'transparent',
+              borderColor: 'rgb(242,206,52,1)',
+              backgroundColor: 'white',
               data: values,
               lineTension: 0.2,
+              radius: 0,
+              borderWidth: 3,
+              fill: 0,
+            },
+            {
+              label: 'Fill',
+              data: [
+                { x: keys[0], y: 3 },
+                { x: keys[1], y: 5 },
+                { x: keys[2], y: 7 },
+              ],
+              borderColor: 'rgb(242,206,52)',
+              borderWidth: 10,
+              radius: 0,
+              backgroundColor: 'red',
+              fill: 30,
             },
           ],
         },

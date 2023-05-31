@@ -130,7 +130,7 @@ export const useForecastStore = defineStore('forecast', {
         }
 
         console.log('success forecast data API');
-        // console.log(this.forecastTemps);
+        // console.log(JSON.stringify(this.forecastTemps));
         // separate out dayOfWeek max and min temp to a separate array
         const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
