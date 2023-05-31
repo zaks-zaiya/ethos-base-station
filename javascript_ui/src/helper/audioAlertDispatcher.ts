@@ -36,7 +36,7 @@ const playAudioTone = (riskLevel: RiskLevel): Promise<void> => {
   });
 };
 
-const playTextToSpeech = (text: string): Promise<void> => {
+export const playTextToSpeech = (text: string): Promise<void> => {
   return new Promise((resolve) => {
     const utter = new SpeechSynthesisUtterance();
     utter.text = text;
