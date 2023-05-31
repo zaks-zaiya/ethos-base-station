@@ -47,6 +47,7 @@ export default defineComponent({
   data: () => ({
     loaded: false,
     chartData: null,
+    currentDay: 0,
   }),
   async mounted() {
     this.loaded = true;
@@ -57,13 +58,14 @@ export default defineComponent({
       const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       this.forecastStore.forecastTemps
         .filter(
-          (e) => weekday[new Date(e[0]).getDay()].localeCompare(this.day) == 0
+          (e) =>
+            weekday[e[0].getDay()].localeCompare(this.day) == this.currentDay
         )
         .forEach((e) => {
-          const dateAndHour = e[0].split(' ');
-          const hour = parseInt(dateAndHour[1].split(':')[0]);
-          const period = hour < 12 ? 'am' : 'pm';
-          const ampmHour = hour % 12 || 12;
+          const date = e[0];
+          console.log(date.getHours());
+          const ampmHour = date.getHours() % 12;
+          const period = date.getHours() >= 12 ? 'pm' : 'am';
           keys.push('' + ampmHour + period);
           values.push(e[1]);
         });
@@ -80,19 +82,6 @@ export default defineComponent({
               lineTension: 0.2,
               radius: 0,
               borderWidth: 3,
-              fill: 0,
-            },
-            {
-              label: 'Fill',
-              data: [
-                { x: keys[0], y: 3 },
-                { x: keys[1], y: 5 },
-                { x: keys[2], y: 7 },
-              ],
-              borderColor: 'rgb(242,206,52)',
-              borderWidth: 10,
-              radius: 0,
-              backgroundColor: 'red',
               fill: {
                 target: 'origin',
                 above: 'rgb(80,71,42,1)', // Area will be red above the origin

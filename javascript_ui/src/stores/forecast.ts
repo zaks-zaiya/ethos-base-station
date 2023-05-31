@@ -20,7 +20,7 @@ export const useForecastStore = defineStore('forecast', {
     weatherIconId: null as null | string,
     pollInterval: null as null | number,
     // Map with forecast temps
-    forecastTemps: null as null | [string, number][],
+    forecastTemps: null as null | [Date, number][],
     // store an array with day of week, max temp and min temp
     dayOfWeekForecast: null as null | [string, number, number][],
   }),
@@ -121,12 +121,10 @@ export const useForecastStore = defineStore('forecast', {
         // clear forecastTemps and dayofweek forecast array
         this.forecastTemps = [];
         this.dayOfWeekForecast = [];
+        console.log(weatherObj);
         for (const w of weatherObj.list) {
-          // const dateAndHour = w.dt_txt.split(' ');
-          //   const hour = parseInt(dateAndHour[1].split(':')[0]);
-          //   const period = hour < 12 ? 'am' : 'pm';
-          //   const ampmHour = hour % 12 || 12;
-          this.forecastTemps.push([w.dt_txt, w.main.temp]);
+          // Multiply by 1000 to convert seconds to ms
+          this.forecastTemps.push([new Date(w.dt * 1000), w.main.temp]);
         }
 
         console.log('success forecast data API');
@@ -137,7 +135,7 @@ export const useForecastStore = defineStore('forecast', {
         const tempList: string[] = [];
         // filter to get a list of days of week
         for (const [dateAndTime, temp] of this.forecastTemps) {
-          const currentDay = weekday[new Date(dateAndTime).getDay()];
+          const currentDay = weekday[dateAndTime.getDay()];
           if (!tempList.includes(currentDay)) {
             tempList.push(currentDay);
           }
