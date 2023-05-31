@@ -21,7 +21,7 @@
         <q-td :props="props">
           <q-btn
             color="teal"
-            icon="play_arrow"
+            :icon="isPlayingMedium[props.row.value  as AudioType] ? 'stop' : 'play_arrow'"
             @click.stop="playDemoAudio(props.row, RiskLevel.MEDIUM)"
           />
         </q-td>
@@ -30,7 +30,7 @@
         <q-td :props="props">
           <q-btn
             color="teal"
-            icon="play_arrow"
+            :icon="isPlayingHigh[props.row.value  as AudioType] ? 'stop' : 'play_arrow'"
             @click.stop="playDemoAudio(props.row, RiskLevel.HIGH)"
           />
         </q-td>
@@ -41,9 +41,9 @@
 
 <script lang="ts">
 import { QTableProps } from 'quasar';
-import { playAudio } from 'src/helper/audioAlertDispatcher';
+import { playAudio, stopAudio } from 'src/helper/audioAlertDispatcher';
 import { useDataPreferencesStore } from 'src/stores/dataPreferences';
-import { defineComponent } from 'vue';
+import { defineComponent, reactive } from 'vue';
 import { AudioType, RiskLevel } from './models';
 
 interface TableOptions {
@@ -55,6 +55,16 @@ export default defineComponent({
   components: {},
   setup() {
     const dataPreferencesStore = useDataPreferencesStore();
+
+    const isPlayingMedium = reactive<Record<AudioType, boolean>>({
+      [AudioType.TONE]: false,
+      [AudioType.TTS]: false,
+    });
+
+    const isPlayingHigh = reactive<Record<AudioType, boolean>>({
+      [AudioType.TONE]: false,
+      [AudioType.TTS]: false,
+    });
 
     let options: Array<TableOptions> = [
       {
@@ -96,8 +106,24 @@ export default defineComponent({
       dataPreferencesStore.audioType = row.value;
     };
 
-    const playDemoAudio = (row: TableOptions, riskLevel: RiskLevel) => {
-      playAudio(row.value, riskLevel);
+    const playDemoAudio = async (row: TableOptions, riskLevel: RiskLevel) => {
+      if (riskLevel === RiskLevel.MEDIUM) {
+        if (isPlayingMedium[row.value]) {
+          stopAudio();
+        } else {
+          isPlayingMedium[row.value] = !isPlayingMedium[row.value];
+          await playAudio(row.value, riskLevel);
+          isPlayingMedium[row.value] = !isPlayingMedium[row.value];
+        }
+      } else if (riskLevel === RiskLevel.HIGH) {
+        if (isPlayingHigh[row.value]) {
+          stopAudio();
+        } else {
+          isPlayingHigh[row.value] = !isPlayingHigh[row.value];
+          await playAudio(row.value, riskLevel);
+          isPlayingHigh[row.value] = !isPlayingHigh[row.value];
+        }
+      }
     };
 
     return {
@@ -107,6 +133,8 @@ export default defineComponent({
       columns,
       rowClick,
       playDemoAudio,
+      isPlayingMedium,
+      isPlayingHigh,
     };
   },
 });
