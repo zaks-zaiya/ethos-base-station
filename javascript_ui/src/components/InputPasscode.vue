@@ -7,6 +7,7 @@
 
     <div class="row">
       <q-input
+        ref="passcodeInputRef"
         filled
         bottom-slots
         class="full-width large-font fontsize-20"
@@ -64,12 +65,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, Ref, nextTick } from 'vue';
 
 export default defineComponent({
   name: 'InputPasscode',
   setup(props, { emit }) {
     const passcode = ref('');
+    const passcodeInputRef: Ref<null | HTMLInputElement> = ref(null);
 
     const passcodeInputLayout = [
       ['1', '2', '3'],
@@ -87,6 +89,13 @@ export default defineComponent({
     const appendPasscode = (char: string) => {
       // Append character to end of passcode
       passcode.value = passcode.value.concat(char);
+
+      // Set the focus back to the input
+      nextTick(() => {
+        if (passcodeInputRef.value) {
+          passcodeInputRef.value.focus();
+        }
+      });
     };
 
     const checkPasscode = () => {
@@ -106,6 +115,7 @@ export default defineComponent({
 
     return {
       passcode,
+      passcodeInputRef,
       passcodeInputLayout,
       isIncorrectPasscode,
       backspacePasscode,
