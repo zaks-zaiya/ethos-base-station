@@ -7,6 +7,7 @@
 </template>
 
 <script>
+import { ref, onMounted, computed } from 'vue';
 import {
   Chart as ChartJS,
   Filler,
@@ -19,8 +20,8 @@ import {
   Legend,
 } from 'chart.js';
 import { Line as LineChart } from 'vue-chartjs';
-import { defineComponent } from 'vue';
 import { useForecastStore } from 'src/stores/forecast';
+
 ChartJS.register(
   Filler,
   CategoryScale,
@@ -32,46 +33,40 @@ ChartJS.register(
   Legend
 );
 
-export default defineComponent({
+export default {
   props: {
     day: String,
   },
   name: 'LineGraph',
   components: { LineChart },
-  setup() {
+  setup(props) {
+    const loaded = ref(false);
+    const currentDay = ref(0);
     const forecastStore = useForecastStore();
-    return {
-      forecastStore,
-    };
-  },
-  data: () => ({
-    loaded: false,
-    chartData: null,
-    currentDay: 0,
-  }),
-  async mounted() {
-    this.loaded = true;
-    try {
+
+    const chartData = computed(() => {
+      // Check if weather data is avaliable yet
+      if (!forecastStore.forecastTemps) {
+        return {};
+      }
+
       let keys = [];
       let values = [];
-      // Get the picked day DayofWeek component
       const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-      this.forecastStore.forecastTemps
+      forecastStore.forecastTemps
         .filter(
           (e) =>
-            weekday[e[0].getDay()].localeCompare(this.day) == this.currentDay
+            weekday[e[0].getDay()].localeCompare(props.day) == currentDay.value
         )
         .forEach((e) => {
           const date = e[0];
-          console.log(date.getHours());
           const ampmHour = date.getHours() % 12;
           const period = date.getHours() >= 12 ? 'pm' : 'am';
           keys.push('' + ampmHour + period);
           values.push(e[1]);
         });
-      // console.log('keys ' + keys);
-      // console.log('values ' + values);
-      this.chartData = {
+
+      return {
         data: {
           labels: keys,
           datasets: [
@@ -84,8 +79,8 @@ export default defineComponent({
               borderWidth: 3,
               fill: {
                 target: 'origin',
-                above: 'rgb(80,71,42,1)', // Area will be red above the origin
-                below: 'rgb(0, 0, 255)', // And blue below the origin
+                above: 'rgb(80,71,42,1)',
+                below: 'rgb(0, 0, 255)',
               },
             },
           ],
@@ -96,9 +91,17 @@ export default defineComponent({
           maintainAspectRatio: true,
         },
       };
-    } catch (e) {
-      console.error(e);
-    }
+    });
+
+    onMounted(async () => {
+      loaded.value = true;
+    });
+
+    return {
+      loaded,
+      chartData,
+      currentDay,
+    };
   },
-});
+};
 </script>
