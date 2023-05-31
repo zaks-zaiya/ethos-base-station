@@ -9,6 +9,7 @@
 <script>
 import {
   Chart as ChartJS,
+  Filler,
   CategoryScale,
   LinearScale,
   PointElement,
@@ -21,6 +22,7 @@ import { Line as LineChart } from 'vue-chartjs';
 import { defineComponent } from 'vue';
 import { useForecastStore } from 'src/stores/forecast';
 ChartJS.register(
+  Filler,
   CategoryScale,
   LinearScale,
   PointElement,
@@ -91,7 +93,11 @@ export default defineComponent({
               borderWidth: 10,
               radius: 0,
               backgroundColor: 'red',
-              fill: 30,
+              fill: {
+                target: 'origin',
+                above: 'rgb(80,71,42,1)', // Area will be red above the origin
+                below: 'rgb(0, 0, 255)', // And blue below the origin
+              },
             },
           ],
         },
