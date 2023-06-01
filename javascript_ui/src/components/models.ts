@@ -21,6 +21,7 @@ export interface CoolingStrategy {
   name: string;
   shortName: string;
   imageUrl: string;
+  effectiveness: number;
   extraInfo: {
     bestUse: Array<string>;
     whenUse: Array<string>;

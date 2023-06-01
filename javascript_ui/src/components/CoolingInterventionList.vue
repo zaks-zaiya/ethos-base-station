@@ -44,6 +44,7 @@ export default defineComponent({
         name: 'Turn on a Fan',
         shortName: 'a fan',
         imageUrl: 'images/fan.jpg',
+        effectiveness: 0.7,
         extraInfo: {
           bestUse: [
             'Position the fan to create optimal airflow in the room.',
@@ -67,6 +68,7 @@ export default defineComponent({
         name: 'Hand/Foot Immersion',
         shortName: 'immersion',
         imageUrl: 'images/foot-immersion.jpg',
+        effectiveness: 0.6,
         extraInfo: {
           bestUse: [
             'Fill a basin or tub with cool or cold water, depending on your tolerance and desired cooling effect.',
@@ -91,6 +93,7 @@ export default defineComponent({
         name: 'Sit Down Quietly',
         shortName: 'sitting quietly',
         imageUrl: 'images/sitting-quietly.jpg',
+        effectiveness: 0.5,
         extraInfo: {
           bestUse: [
             'Find a cool, shaded, or well-ventilated area to sit down.',
@@ -111,9 +114,10 @@ export default defineComponent({
         },
       },
       {
-        name: 'Drink Cool Fluids',
+        name: 'Drink (Cool) Water',
         shortName: 'cool fluids',
         imageUrl: 'images/ice-water.jpg',
+        effectiveness: 0.4,
         extraInfo: {
           bestUse: [
             'Drinking fluids containing electrolytes, such as sports drinks, coconut water, or diluted fruit juice, to replace lost minerals and help maintain proper hydration levels.',
@@ -136,9 +140,10 @@ export default defineComponent({
         },
       },
       {
-        name: 'Drape a Wet Towel',
+        name: 'Drape a (Cold) Wet Towel or Wet Clothing',
         shortName: 'towel draping',
         imageUrl: 'images/tea-towel.jpg',
+        effectiveness: 0.7,
         extraInfo: {
           bestUse: [
             'Soak a towel or cloth in cold water, wring it out slightly, so it remains damp but not dripping wet.',
@@ -166,6 +171,7 @@ export default defineComponent({
         name: 'Remove Unnecessary Clothing',
         shortName: 'removing unnecessary clothing',
         imageUrl: '/images/clothing.jpg',
+        effectiveness: 0.7,
         extraInfo: {
           bestUse: [
             'Remove or loosen any tight-fitting clothing that may restrict airflow or trap heat.',
@@ -183,6 +189,50 @@ export default defineComponent({
             'In situations where removing clothing may be inappropriate, such as public settings or formal events.',
             'When exposure to direct sunlight may increase the risk of sunburn, consider wearing lightweight, long-sleeved clothing and a hat to protect your skin.',
           ],
+        },
+      },
+      {
+        name: 'Dousing',
+        shortName: 'removing unnecessary clothing',
+        imageUrl: '/images/clothing.jpg',
+        effectiveness: 0.8,
+        extraInfo: {
+          bestUse: [],
+          whenUse: [],
+          whenNotUse: [],
+        },
+      },
+      {
+        name: 'Ice pack application',
+        shortName: 'removing unnecessary clothing',
+        imageUrl: '/images/clothing.jpg',
+        effectiveness: 0.7,
+        extraInfo: {
+          bestUse: [],
+          whenUse: [],
+          whenNotUse: [],
+        },
+      },
+      {
+        name: 'Water immersion',
+        shortName: 'removing unnecessary clothing',
+        imageUrl: '/images/clothing.jpg',
+        effectiveness: 0.9,
+        extraInfo: {
+          bestUse: [],
+          whenUse: [],
+          whenNotUse: [],
+        },
+      },
+      {
+        name: 'Air conditioning',
+        shortName: 'removing unnecessary clothing',
+        imageUrl: '/images/clothing.jpg',
+        effectiveness: 1,
+        extraInfo: {
+          bestUse: [],
+          whenUse: [],
+          whenNotUse: [],
         },
       },
     ];
