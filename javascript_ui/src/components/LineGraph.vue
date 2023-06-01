@@ -4,10 +4,15 @@
     :data="chartData.data"
     :options="chartData.options"
   />
+  <!-- <span class="row justify-space-between">
+    <div v-for="item in forecastStore.dayOfWeekForecast" :key="item[0]">
+      <DayOfWeekCard :day="item[0]" :maxTemp="item[1]" :minTemp="item[2]" />
+    </div>
+  </span> -->
 </template>
 
 <script>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, defineComponent } from 'vue';
 import {
   Chart as ChartJS,
   Filler,
@@ -35,7 +40,7 @@ ChartJS.register(
   Legend
 );
 
-export default {
+export default defineComponent({
   props: {
     day: String,
   },
@@ -56,13 +61,10 @@ export default {
       let values = [];
       const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       forecastStore.forecastTemps
-        .filter(
-          (e) =>
-            weekday[e[0].getDay()].localeCompare(props.day) == currentDay.value
-        )
+        .filter((e) => weekday[e[0].getDay()].localeCompare(props.day) == 0)
         .forEach((e) => {
           const date = e[0];
-          const ampmHour = date.getHours() % 12;
+          const ampmHour = date.getHours() % 12 || 12;
           const period = date.getHours() >= 12 ? 'pm' : 'am';
           keys.push('' + ampmHour + period);
           values.push(e[1]);
@@ -108,5 +110,5 @@ export default {
       currentDay,
     };
   },
-};
+});
 </script>

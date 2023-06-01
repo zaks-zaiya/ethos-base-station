@@ -26,10 +26,10 @@
       </q-card-section>
 
       <q-card-section class="q-pt-none">
-        <LineGraph day="Wed"
+        <LineGraph day="Thu"
       /></q-card-section>
       <q-card-section class="q-pt-none">
-        <span class="row justify-space-between">
+        <span class="row">
           <div v-for="item in forecastStore.dayOfWeekForecast" :key="item[0]">
             <DayOfWeekCard
               :day="item[0]"

@@ -123,7 +123,7 @@ export const useForecastStore = defineStore('forecast', {
         this.dayOfWeekForecast = [];
         console.log(weatherObj);
         for (const w of weatherObj.list) {
-          // Multiply by 1000 to convert seconds to ms
+          // Multiply by 1000 to convert seconds to ms (unix to js time)
           this.forecastTemps.push([new Date(w.dt * 1000), w.main.temp]);
         }
 
