@@ -1,6 +1,6 @@
 <!-- ModalNoConnection.vue -->
 <template>
-  <q-dialog v-model="showModal" full-width persistent>
+  <q-dialog v-model="showModal" full-width full-height persistent>
     <CoolingInterventionList
       v-show="displayInfo === null"
       @show-info="showInfo"
@@ -60,9 +60,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style lang="scss" scoped>
-.cooling-intervention {
-  height: calc(100vh / 3);
-}
-</style>

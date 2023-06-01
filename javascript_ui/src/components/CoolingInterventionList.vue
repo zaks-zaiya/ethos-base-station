@@ -10,38 +10,77 @@
     <q-card-section>
       <div class="fontsize-16">
         If you need to lower your body temperature, here are the best ways to do
-        it (click on a intervention for more info):
+        it (click on a row for more info):
       </div>
-      <div class="row">
-        <CoolingInterventionCard
-          v-for="(item, index) in coolingStrategies"
-          :key="index"
-          :strategy="item"
-          @click="onCardClick(item)"
-        />
-      </div>
+      <q-table
+        :rows="coolingStrategies"
+        class="large-font my-sticky-header-table"
+        row-key="name"
+        :pagination="pagination"
+        :columns="columns"
+        @row-click="onRowClick"
+        hide-bottom
+      >
+        <template v-slot:body-cell-image="props">
+          <q-td :props="props">
+            <img
+              :src="props.row.imageUrl"
+              style="height: 70px; width: 70px; object-fit: cover"
+            />
+          </q-td>
+        </template>
+      </q-table>
     </q-card-section>
   </q-card>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import CoolingInterventionCard from './CoolingInterventionCard.vue';
 import { CoolingStrategy } from './models';
+import { QTableProps } from 'quasar';
 
 export default defineComponent({
   name: 'CoolingInterventionList',
-  components: {
-    CoolingInterventionCard,
-  },
   setup(props, { emit }) {
-    const onCardClick = (item: CoolingStrategy) => {
-      emit('show-info', item);
+    const onRowClick = (evt: Event, row: CoolingStrategy) => {
+      emit('show-info', row);
     };
+
+    const pagination = {
+      rowsPerPage: 0,
+      sortBy: 'effectiveness',
+      descending: true,
+    };
+
+    const columns: QTableProps['columns'] = [
+      {
+        name: 'image',
+        required: true,
+        label: '',
+        align: 'left',
+        field: 'imageUrl',
+        format: (val: string) => `<img src="${val}" alt="" />`,
+      },
+      {
+        name: 'name',
+        required: true,
+        label: 'Name',
+        align: 'left',
+        field: 'name',
+      },
+      {
+        name: 'effectiveness',
+        required: true,
+        sortable: true,
+        label: 'Potential Effectiveness',
+        align: 'left',
+        field: 'effectiveness',
+      },
+    ];
 
     const coolingStrategies: Array<CoolingStrategy> = [
       {
-        name: 'Turn on a Fan',
+        name: 'Turn on a fan',
         shortName: 'a fan',
         imageUrl: 'images/fan.jpg',
         effectiveness: 0.7,
@@ -65,10 +104,10 @@ export default defineComponent({
         },
       },
       {
-        name: 'Hand/Foot Immersion',
+        name: 'Water immersion',
         shortName: 'immersion',
         imageUrl: 'images/foot-immersion.jpg',
-        effectiveness: 0.6,
+        effectiveness: 1,
         extraInfo: {
           bestUse: [
             'Fill a basin or tub with cool or cold water, depending on your tolerance and desired cooling effect.',
@@ -90,7 +129,7 @@ export default defineComponent({
         },
       },
       {
-        name: 'Sit Down Quietly',
+        name: 'Sit down quietly',
         shortName: 'sitting quietly',
         imageUrl: 'images/sitting-quietly.jpg',
         effectiveness: 0.5,
@@ -114,7 +153,7 @@ export default defineComponent({
         },
       },
       {
-        name: 'Drink (Cool) Water',
+        name: 'Drink (cool) water',
         shortName: 'cool fluids',
         imageUrl: 'images/ice-water.jpg',
         effectiveness: 0.4,
@@ -140,7 +179,7 @@ export default defineComponent({
         },
       },
       {
-        name: 'Drape a (Cold) Wet Towel or Wet Clothing',
+        name: '(Cold) wet clothing',
         shortName: 'towel draping',
         imageUrl: 'images/tea-towel.jpg',
         effectiveness: 0.7,
@@ -168,10 +207,10 @@ export default defineComponent({
         },
       },
       {
-        name: 'Remove Unnecessary Clothing',
+        name: 'Remove excess clothing',
         shortName: 'removing unnecessary clothing',
         imageUrl: '/images/clothing.jpg',
-        effectiveness: 0.7,
+        effectiveness: 0.6,
         extraInfo: {
           bestUse: [
             'Remove or loosen any tight-fitting clothing that may restrict airflow or trap heat.',
@@ -192,7 +231,7 @@ export default defineComponent({
         },
       },
       {
-        name: 'Dousing',
+        name: 'Dousing/spraying',
         shortName: 'removing unnecessary clothing',
         imageUrl: '/images/clothing.jpg',
         effectiveness: 0.8,
@@ -214,7 +253,7 @@ export default defineComponent({
         },
       },
       {
-        name: 'Water immersion',
+        name: 'Air conditioning',
         shortName: 'removing unnecessary clothing',
         imageUrl: '/images/clothing.jpg',
         effectiveness: 0.9,
@@ -225,10 +264,10 @@ export default defineComponent({
         },
       },
       {
-        name: 'Air conditioning',
+        name: 'Open/close windows/blinds',
         shortName: 'removing unnecessary clothing',
         imageUrl: '/images/clothing.jpg',
-        effectiveness: 1,
+        effectiveness: 0.6,
         extraInfo: {
           bestUse: [],
           whenUse: [],
@@ -236,7 +275,43 @@ export default defineComponent({
         },
       },
     ];
-    return { onCardClick, coolingStrategies };
+
+    return { onRowClick, coolingStrategies, columns, pagination };
   },
 });
 </script>
+
+<style lang="scss">
+.large-font {
+  tbody td,
+  thead th {
+    font-size: 26px;
+  }
+}
+
+.my-sticky-header-table {
+  /* height or max-height is important */
+  height: calc(100vh / 1.5);
+
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th {
+    /* bg color is important for th; just specify one */
+    background-color: $grey-3;
+  }
+
+  thead tr th {
+    position: sticky;
+    z-index: 1;
+  }
+  thead tr:first-child th {
+    top: 0;
+  }
+
+  /* prevent scrolling behind sticky top row on focus */
+  tbody {
+    /* height of all previous header rows */
+    scroll-margin-top: 48px;
+  }
+}
+</style>
