@@ -1,6 +1,6 @@
 <template>
-  <q-card>
-    <q-card-section ref="header">
+  <BaseModalScroll>
+    <template #header>
       <div class="row items-center">
         <q-btn
           class="fontsize-12"
@@ -21,37 +21,35 @@
           Close
         </q-btn>
       </div>
-    </q-card-section>
-    <BaseScrollArea :height="scrollAreaHeight">
-      <q-card-section class="q-pt-none">
-        <CoolingInterventionInfoSection
-          :headingText="`How to best use ${strategy.shortName}`"
-          :strategyPoints="strategy.extraInfo.bestUse"
-        />
+    </template>
+    <template #main>
+      <CoolingInterventionInfoSection
+        :headingText="`How to best use ${strategy.shortName}`"
+        :strategyPoints="strategy.extraInfo.bestUse"
+      />
 
-        <CoolingInterventionInfoSection
-          :headingText="`When ${strategy.shortName} should be used`"
-          :strategyPoints="strategy.extraInfo.whenUse"
-          color="positive"
-          bullet-style="tick"
-        />
+      <CoolingInterventionInfoSection
+        :headingText="`When ${strategy.shortName} should be used`"
+        :strategyPoints="strategy.extraInfo.whenUse"
+        color="positive"
+        bullet-style="tick"
+      />
 
-        <CoolingInterventionInfoSection
-          :headingText="`When ${strategy.shortName} should not be used`"
-          :strategyPoints="strategy.extraInfo.whenNotUse"
-          color="negative"
-          bullet-style="cross"
-        />
-      </q-card-section>
-    </BaseScrollArea>
-  </q-card>
+      <CoolingInterventionInfoSection
+        :headingText="`When ${strategy.shortName} should not be used`"
+        :strategyPoints="strategy.extraInfo.whenNotUse"
+        color="negative"
+        bullet-style="cross"
+      />
+    </template>
+  </BaseModalScroll>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, computed, Ref } from 'vue';
 import CoolingInterventionInfoSection from './CoolingInterventionInfoSection.vue';
-import BaseScrollArea from './BaseScrollArea.vue';
 import { QCardSection } from 'quasar';
+import BaseModalScroll from './BaseModalScroll.vue';
 
 export default defineComponent({
   name: 'CoolingInterventionInfo',
@@ -63,7 +61,7 @@ export default defineComponent({
   },
   components: {
     CoolingInterventionInfoSection,
-    BaseScrollArea,
+    BaseModalScroll,
   },
   setup() {
     const header: Ref<null | QCardSection> = ref(null);
