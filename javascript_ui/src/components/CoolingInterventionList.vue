@@ -29,6 +29,14 @@
             />
           </q-td>
         </template>
+
+        <template v-slot:body-cell-effectiveness="props">
+          <q-td :props="props">
+            <CoolingInterventionEffectiveness
+              :effectiveness="props.row.effectiveness"
+            />
+          </q-td>
+        </template>
       </q-table>
     </q-card-section>
   </q-card>
@@ -38,20 +46,20 @@
 import { defineComponent } from 'vue';
 import { CoolingStrategy } from './models';
 import { QTableProps } from 'quasar';
+import CoolingInterventionEffectiveness from './CoolingInterventionEffectiveness.vue';
 
 export default defineComponent({
   name: 'CoolingInterventionList',
+  components: { CoolingInterventionEffectiveness },
   setup(props, { emit }) {
     const onRowClick = (evt: Event, row: CoolingStrategy) => {
       emit('show-info', row);
     };
-
     const pagination = {
       rowsPerPage: 0,
       sortBy: 'effectiveness',
       descending: true,
     };
-
     const columns: QTableProps['columns'] = [
       {
         name: 'image',
@@ -77,7 +85,6 @@ export default defineComponent({
         field: 'effectiveness',
       },
     ];
-
     const coolingStrategies: Array<CoolingStrategy> = [
       {
         name: 'Turn on a fan',
@@ -275,7 +282,6 @@ export default defineComponent({
         },
       },
     ];
-
     return { onRowClick, coolingStrategies, columns, pagination };
   },
 });
