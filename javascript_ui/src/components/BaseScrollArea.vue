@@ -59,10 +59,18 @@ export default defineComponent({
   },
   setup() {
     const scrollArea: Ref<null | QScrollArea> = ref(null);
-    const isContentBelow: Ref<boolean> = ref(true);
-    const isContentAbove: Ref<boolean> = ref(true);
+    const isContentBelow: Ref<boolean> = ref(false);
+    const isContentAbove: Ref<boolean> = ref(false);
 
+    /**
+     * Check what styling should be applied (if any) for scroll area
+     * @param scrollInfo Event passed with scroll area info
+     */
     const checkScroll = (scrollInfo: ReturnType<QScrollArea['getScroll']>) => {
+      if (scrollInfo.verticalSize === scrollInfo.verticalContainerSize) {
+        // There is no scrollable content
+        return;
+      }
       let topOpacity = 0.3;
       let bottomOpacity = 0.3;
 
@@ -89,6 +97,10 @@ export default defineComponent({
       isContentAbove.value = scrollInfo.verticalPercentage > 0.05;
     };
 
+    /**
+     * Scroll to a certain point in the scroll area, over 100ms
+     * @param percent A number between 0 and 1 which specifies how far to scroll
+     */
     const scrollToPercent = (percent: number) => {
       scrollArea.value?.setScrollPercentage('vertical', percent, 100);
     };
@@ -143,7 +155,7 @@ export default defineComponent({
   background: linear-gradient(
     to bottom,
     rgba(255, 255, 255, 0) 0%,
-    rgba(0, 0, 0, var(--shadow-bottom-opacity, 0.3)) 100%
+    rgba(0, 0, 0, var(--shadow-bottom-opacity, 0)) 100%
   );
 }
 </style>
