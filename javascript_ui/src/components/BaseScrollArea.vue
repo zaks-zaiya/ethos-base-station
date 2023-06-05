@@ -1,5 +1,6 @@
 <template>
   <q-scroll-area
+    @scroll="checkScroll"
     :style="{ height: height, position: 'relative' }"
     class="q-pr-md scroll-shadow"
     :thumb-style="thumbStyle"
