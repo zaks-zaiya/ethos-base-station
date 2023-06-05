@@ -1,15 +1,47 @@
 <template>
-  <q-scroll-area
-    @scroll="checkScroll"
-    :style="{ height: height, position: 'relative' }"
-    class="q-pr-md scroll-shadow"
-    :thumb-style="thumbStyle"
-    :bar-style="barStyle"
-    visible
-    ref="scrollArea"
-  >
-    <slot></slot>
-  </q-scroll-area>
+  <div style="position: relative">
+    <q-scroll-area
+      @scroll="checkScroll"
+      :style="{ height: height, position: 'relative' }"
+      class="q-pr-md scroll-shadow"
+      :thumb-style="thumbStyle"
+      :bar-style="barStyle"
+      visible
+      ref="scrollArea"
+    >
+      <slot></slot>
+    </q-scroll-area>
+
+    <q-avatar
+      icon="arrow_downward"
+      size="xl"
+      color="primary"
+      text-color="white"
+      style="
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+      "
+      v-show="isContentBelow"
+      @click="scrollToPercent(1)"
+    />
+
+    <q-avatar
+      icon="arrow_upward"
+      size="xl"
+      color="primary"
+      text-color="white"
+      style="
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+      "
+      v-show="isContentAbove"
+      @click="scrollToPercent(0)"
+    />
+  </div>
 </template>
 
 <script lang="ts">
@@ -18,6 +50,7 @@ import { QScrollArea } from 'quasar';
 
 export default defineComponent({
   name: 'BaseScrollArea',
+  components: {},
   props: {
     height: {
       type: String,
@@ -26,6 +59,8 @@ export default defineComponent({
   },
   setup() {
     const scrollArea: Ref<null | QScrollArea> = ref(null);
+    const isContentBelow: Ref<boolean> = ref(true);
+    const isContentAbove: Ref<boolean> = ref(true);
 
     const checkScroll = (scrollInfo: ReturnType<QScrollArea['getScroll']>) => {
       let topOpacity = 0.3;
@@ -49,11 +84,21 @@ export default defineComponent({
         '--shadow-bottom-opacity',
         bottomOpacity.toString()
       );
+
+      isContentBelow.value = scrollInfo.verticalPercentage < 0.95;
+      isContentAbove.value = scrollInfo.verticalPercentage > 0.05;
+    };
+
+    const scrollToPercent = (percent: number) => {
+      scrollArea.value?.setScrollPercentage('vertical', percent, 100);
     };
 
     return {
       checkScroll,
       scrollArea,
+      isContentBelow,
+      isContentAbove,
+      scrollToPercent,
       thumbStyle: {
         right: '4px',
         borderRadius: '5px',
