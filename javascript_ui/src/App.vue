@@ -34,10 +34,15 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style lang="scss">
 /* Hide cursor in program for touch screen use */
 * {
   cursor: none !important;
+}
+
+/* Extend all q-btn components with a larger font size */
+.q-btn {
+  @extend .fontsize-12;
 }
 
 /* Click effect for haptic feedback */
