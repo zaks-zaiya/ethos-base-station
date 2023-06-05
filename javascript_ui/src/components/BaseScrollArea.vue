@@ -98,11 +98,11 @@ export default defineComponent({
     };
 
     /**
-     * Scroll to a certain point in the scroll area, over 100ms
+     * Scroll to a certain point in the scroll area, over 200ms
      * @param percent A number between 0 and 1 which specifies how far to scroll
      */
     const scrollToPercent = (percent: number) => {
-      scrollArea.value?.setScrollPercentage('vertical', percent, 100);
+      scrollArea.value?.setScrollPercentage('vertical', percent, 200);
     };
 
     return {
