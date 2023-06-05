@@ -77,7 +77,7 @@ export default defineComponent({
         );
       } else {
         // Default height if header's height can't be calculated
-        return '100vh';
+        return '70vh';
       }
     });
 

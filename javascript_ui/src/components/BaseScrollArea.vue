@@ -54,7 +54,7 @@ export default defineComponent({
   props: {
     height: {
       type: String,
-      default: '100vh',
+      default: '70vh',
     },
   },
   setup() {
