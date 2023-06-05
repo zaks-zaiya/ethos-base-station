@@ -1,7 +1,6 @@
 <template>
   <q-scroll-area
-    @scroll="checkScroll"
-    style="height: 70vh; position: relative"
+    :style="{ height: height, position: 'relative' }"
     class="q-pr-md scroll-shadow"
     :thumb-style="thumbStyle"
     :bar-style="barStyle"
@@ -18,6 +17,12 @@ import { QScrollArea } from 'quasar';
 
 export default defineComponent({
   name: 'BaseScrollArea',
+  props: {
+    height: {
+      type: String,
+      default: '100vh',
+    },
+  },
   setup() {
     const scrollArea: Ref<null | QScrollArea> = ref(null);
 

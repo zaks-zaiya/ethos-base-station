@@ -1,6 +1,6 @@
 <template>
   <q-card>
-    <q-card-section>
+    <q-card-section ref="header">
       <div class="row items-center">
         <q-btn
           class="fontsize-12"
@@ -22,7 +22,7 @@
         </q-btn>
       </div>
     </q-card-section>
-    <BaseScrollArea>
+    <BaseScrollArea :height="scrollAreaHeight">
       <q-card-section class="q-pt-none">
         <CoolingInterventionInfoSection
           :headingText="`How to best use ${strategy.shortName}`"
@@ -48,12 +48,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref, computed, Ref } from 'vue';
 import CoolingInterventionInfoSection from './CoolingInterventionInfoSection.vue';
 import BaseScrollArea from './BaseScrollArea.vue';
+import { QCardSection } from 'quasar';
 
 export default defineComponent({
-  name: 'CoolingStrategyInfo',
+  name: 'CoolingInterventionInfo',
   props: {
     strategy: {
       type: Object,
@@ -63,6 +64,27 @@ export default defineComponent({
   components: {
     CoolingInterventionInfoSection,
     BaseScrollArea,
+  },
+  setup() {
+    const header: Ref<null | QCardSection> = ref(null);
+    const scrollAreaHeight = computed(() => {
+      if (header.value) {
+        // Subtract header's height from q-card height
+        return (
+          header.value.$el.parentElement.offsetHeight -
+          header.value.$el.offsetHeight +
+          'px'
+        );
+      } else {
+        // Default height if header's height can't be calculated
+        return '100vh';
+      }
+    });
+
+    return {
+      header,
+      scrollAreaHeight,
+    };
   },
 });
 </script>
