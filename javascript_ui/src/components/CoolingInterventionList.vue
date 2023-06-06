@@ -21,12 +21,9 @@
         @row-click="onRowClick"
         hide-bottom
       >
-        <template v-slot:body-cell-image="props">
+        <template v-slot:body-cell-icon="props">
           <q-td :props="props">
-            <img
-              :src="props.row.imageUrl"
-              style="height: 70px; width: 70px; object-fit: cover"
-            />
+            <q-icon :name="props.row.icon" size="60px" color="grey" />
           </q-td>
         </template>
 
@@ -62,11 +59,11 @@ export default defineComponent({
     };
     const columns: QTableProps['columns'] = [
       {
-        name: 'image',
+        name: 'icon',
         required: true,
         label: '',
         align: 'left',
-        field: 'imageUrl',
+        field: 'icon',
         format: (val: string) => `<img src="${val}" alt="" />`,
       },
       {
@@ -89,7 +86,7 @@ export default defineComponent({
       {
         name: 'Turn on a fan',
         shortName: 'a fan',
-        imageUrl: 'images/fan.jpg',
+        icon: 'air',
         effectiveness: 0.7,
         extraInfo: {
           bestUse: [
@@ -113,7 +110,7 @@ export default defineComponent({
       {
         name: 'Water immersion',
         shortName: 'immersion',
-        imageUrl: 'images/foot-immersion.jpg',
+        icon: 'bathtub',
         effectiveness: 1,
         extraInfo: {
           bestUse: [
@@ -138,7 +135,7 @@ export default defineComponent({
       {
         name: 'Sit down quietly',
         shortName: 'sitting quietly',
-        imageUrl: 'images/sitting-quietly.jpg',
+        icon: 'self_improvement',
         effectiveness: 0.5,
         extraInfo: {
           bestUse: [
@@ -162,7 +159,7 @@ export default defineComponent({
       {
         name: 'Drink (cool) water',
         shortName: 'cool fluids',
-        imageUrl: 'images/ice-water.jpg',
+        icon: 'local_drink',
         effectiveness: 0.4,
         extraInfo: {
           bestUse: [
@@ -187,8 +184,8 @@ export default defineComponent({
       },
       {
         name: '(Cold) wet clothing',
-        shortName: 'towel draping',
-        imageUrl: 'images/tea-towel.jpg',
+        shortName: 'wetting clothes',
+        icon: 'water_drop',
         effectiveness: 0.7,
         extraInfo: {
           bestUse: [
@@ -216,7 +213,7 @@ export default defineComponent({
       {
         name: 'Remove excess clothing',
         shortName: 'removing unnecessary clothing',
-        imageUrl: '/images/clothing.jpg',
+        icon: 'checkroom',
         effectiveness: 0.6,
         extraInfo: {
           bestUse: [
@@ -239,8 +236,8 @@ export default defineComponent({
       },
       {
         name: 'Dousing/spraying',
-        shortName: 'removing unnecessary clothing',
-        imageUrl: '/images/clothing.jpg',
+        shortName: 'dousing/spraying',
+        icon: 'bathroom',
         effectiveness: 0.8,
         extraInfo: {
           bestUse: [],
@@ -250,8 +247,8 @@ export default defineComponent({
       },
       {
         name: 'Ice pack application',
-        shortName: 'removing unnecessary clothing',
-        imageUrl: '/images/clothing.jpg',
+        shortName: 'ice pack application',
+        icon: 'kitchen',
         effectiveness: 0.7,
         extraInfo: {
           bestUse: [],
@@ -261,8 +258,8 @@ export default defineComponent({
       },
       {
         name: 'Air conditioning',
-        shortName: 'removing unnecessary clothing',
-        imageUrl: '/images/clothing.jpg',
+        shortName: 'air conditioning',
+        icon: 'ac_unit',
         effectiveness: 0.9,
         extraInfo: {
           bestUse: [],
@@ -272,8 +269,8 @@ export default defineComponent({
       },
       {
         name: 'Open/close windows/blinds',
-        shortName: 'removing unnecessary clothing',
-        imageUrl: '/images/clothing.jpg',
+        shortName: 'open/close windows/blinds',
+        icon: 'roller_shades',
         effectiveness: 0.6,
         extraInfo: {
           bestUse: [],
