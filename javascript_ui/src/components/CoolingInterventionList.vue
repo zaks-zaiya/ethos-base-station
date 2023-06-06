@@ -71,7 +71,7 @@ export default defineComponent({
   name: 'CoolingInterventionList',
   components: { CoolingInterventionEffectiveness },
   setup(props, { emit }) {
-    const showBottomScrollIndicator = ref(true);
+    const showBottomScrollIndicator = ref(false);
     const showTopScrollIndicator = ref(false);
     const tableRef: Ref<null | QTable> = ref(null);
     const pagination = {
@@ -109,7 +109,9 @@ export default defineComponent({
       const table = tableRef.value?.$el;
       if (table) {
         const tableBody = table.querySelector('.q-table__middle.scroll');
-        if (tableBody) {
+        if (tableBody && tableBody.clientHeight < tableBody.scrollHeight) {
+          // If there is scrollable content
+          showBottomScrollIndicator.value = true;
           tableBody.addEventListener('scroll', handleScroll);
         }
       }
