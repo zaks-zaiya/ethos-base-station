@@ -12,47 +12,68 @@
         If you need to lower your body temperature, here are the best ways to do
         it (click on a row for more info):
       </div>
-      <q-table
-        :rows="coolingStrategies"
-        class="large-font my-sticky-header-table"
-        row-key="name"
-        :pagination="pagination"
-        :columns="columns"
-        @row-click="onRowClick"
-        hide-bottom
-      >
-        <template v-slot:body-cell-icon="props">
-          <q-td :props="props">
-            <q-icon :name="props.row.icon" size="60px" color="grey" />
-          </q-td>
-        </template>
+      <div class="table-container">
+        <q-table
+          ref="tableRef"
+          :rows="coolingStrategies"
+          class="large-font my-sticky-header-table"
+          row-key="name"
+          :pagination="pagination"
+          :columns="columns"
+          @row-click="onRowClick"
+          hide-bottom
+        >
+          <template v-slot:body-cell-icon="props">
+            <q-td :props="props">
+              <q-icon :name="props.row.icon" size="60px" color="grey" />
+            </q-td>
+          </template>
 
-        <template v-slot:body-cell-effectiveness="props">
-          <q-td :props="props">
-            <CoolingInterventionEffectiveness
-              :effectiveness="props.row.effectiveness"
-            />
-          </q-td>
-        </template>
-      </q-table>
+          <template v-slot:body-cell-effectiveness="props">
+            <q-td :props="props">
+              <CoolingInterventionEffectiveness
+                :effectiveness="props.row.effectiveness"
+              />
+            </q-td>
+          </template>
+        </q-table>
+        <q-avatar
+          icon="arrow_upward"
+          size="xl"
+          color="primary"
+          text-color="white"
+          class="scroll-indicator-top"
+          v-show="showTopScrollIndicator"
+          @click="scrollTo(0)"
+        />
+        <q-avatar
+          icon="arrow_downward"
+          size="xl"
+          color="primary"
+          text-color="white"
+          class="scroll-indicator-bottom"
+          v-show="showBottomScrollIndicator"
+          @click="scrollTo(1)"
+        />
+      </div>
     </q-card-section>
   </q-card>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref, Ref, onMounted, onBeforeUnmount } from 'vue';
 import { CoolingStrategy } from 'src/components/models';
 import { coolingStrategies } from 'src/helper/coolingStrategies';
-import { QTableProps } from 'quasar';
+import { QTable, QTableProps } from 'quasar';
 import CoolingInterventionEffectiveness from './CoolingInterventionEffectiveness.vue';
 
 export default defineComponent({
   name: 'CoolingInterventionList',
   components: { CoolingInterventionEffectiveness },
   setup(props, { emit }) {
-    const onRowClick = (evt: Event, row: CoolingStrategy) => {
-      emit('show-info', row);
-    };
+    const showBottomScrollIndicator = ref(true);
+    const showTopScrollIndicator = ref(false);
+    const tableRef: Ref<null | QTable> = ref(null);
     const pagination = {
       rowsPerPage: 0,
       sortBy: 'effectiveness',
@@ -83,7 +104,82 @@ export default defineComponent({
         field: 'effectiveness',
       },
     ];
-    return { onRowClick, coolingStrategies, columns, pagination };
+
+    onMounted(() => {
+      const table = tableRef.value?.$el;
+      if (table) {
+        const tableBody = table.querySelector('.q-table__middle.scroll');
+        if (tableBody) {
+          tableBody.addEventListener('scroll', handleScroll);
+        }
+      }
+    });
+
+    onBeforeUnmount(() => {
+      const table = tableRef.value?.$el;
+      if (table) {
+        const tableBody = table.querySelector('.q-table__middle.scroll');
+        if (tableBody) {
+          tableBody.removeEventListener('scroll', handleScroll);
+        }
+      }
+    });
+
+    const handleScroll = (event: UIEvent) => {
+      const target = event.target as HTMLElement;
+      if (target) {
+        showBottomScrollIndicator.value =
+          target.scrollTop + target.clientHeight < target.scrollHeight - 10;
+        showTopScrollIndicator.value = target.scrollTop > 10;
+      }
+    };
+
+    const scrollTo = (percent: number) => {
+      const table = tableRef.value?.$el;
+      if (!table) {
+        return;
+      }
+      const tableBody = table.querySelector('.q-table__middle.scroll');
+      if (tableBody) {
+        const start = tableBody.scrollTop;
+        const end = percent * tableBody.scrollHeight;
+        const change = end - start;
+        const duration = 200; // Duration in ms
+        const startTime = performance.now();
+
+        const animateScroll = (currentTime: number) => {
+          const elapsedTime = currentTime - startTime;
+          const progress = elapsedTime / duration;
+
+          tableBody.scrollTop = start + change * easeInOutQuad(progress);
+
+          if (progress < 1) {
+            window.requestAnimationFrame(animateScroll);
+          }
+        };
+
+        const easeInOutQuad = (t: number) => {
+          return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+        };
+
+        window.requestAnimationFrame(animateScroll);
+      }
+    };
+
+    const onRowClick = (evt: Event, row: CoolingStrategy) => {
+      emit('show-info', row);
+    };
+
+    return {
+      coolingStrategies,
+      columns,
+      pagination,
+      tableRef,
+      showBottomScrollIndicator,
+      showTopScrollIndicator,
+      onRowClick,
+      scrollTo,
+    };
   },
 });
 </script>
@@ -94,6 +190,25 @@ export default defineComponent({
   thead th {
     font-size: 26px;
   }
+}
+
+.table-container {
+  position: relative; // This allows absolute positioning of children
+}
+
+.scroll-indicator-top,
+.scroll-indicator-bottom {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.scroll-indicator-bottom {
+  bottom: 10px;
+}
+
+.scroll-indicator-top {
+  top: 60px;
 }
 
 .my-sticky-header-table {
