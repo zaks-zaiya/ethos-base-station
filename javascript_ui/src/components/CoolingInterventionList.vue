@@ -109,7 +109,6 @@ export default defineComponent({
       const table = tableRef.value?.$el;
       if (table) {
         const tableBody = table.querySelector('.q-table__middle.scroll');
-        console.log(tableBody);
         if (tableBody && tableBody.clientHeight < tableBody.scrollHeight) {
           // If there is scrollable content
           showBottomScrollIndicator.value = true;
