@@ -109,6 +109,7 @@ export default defineComponent({
       const table = tableRef.value?.$el;
       if (table) {
         const tableBody = table.querySelector('.q-table__middle.scroll');
+        console.log(tableBody);
         if (tableBody && tableBody.clientHeight < tableBody.scrollHeight) {
           // If there is scrollable content
           showBottomScrollIndicator.value = true;
@@ -196,6 +197,19 @@ export default defineComponent({
 
 .table-container {
   position: relative; // This allows absolute positioning of children
+}
+
+.q-table__middle.scroll::-webkit-scrollbar {
+  width: 20px; /* barStyle width */
+  background-color: #027ae333; /* barStyle background color */
+  border-radius: 9px; /* barStyle border radius */
+}
+
+.q-table__middle.scroll::-webkit-scrollbar-thumb {
+  right: 4px; /* thumbStyle right */
+  border-radius: 9px; /* thumbStyle border radius */
+  background-color: #027ae3bf; /* thumbStyle background color */
+  width: 16px; /* thumbStyle width */
 }
 
 .scroll-indicator-top,
