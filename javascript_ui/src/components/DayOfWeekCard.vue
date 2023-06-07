@@ -1,11 +1,12 @@
 <template>
-  <q-card class="bg-primary no-shadow">
+  <q-card class="bg-dark no-shadow" @click="chooseDay">
     <q-card-section class="q-pt-none">
       <div class="column">
         <div class="row text-white justify-center">{{ day }}</div>
-        <div class="row justify-space=between">
+        <div class="row">
           <div>{{ Math.round(maxTemp) }}°</div>
-          <div>{{ Math.round(minTemp) }}°</div>
+          <div class="width10"></div>
+          <div class="low">{{ Math.round(minTemp) }}°</div>
         </div>
       </div>
     </q-card-section>
@@ -25,7 +26,18 @@ export default defineComponent({
   },
   setup() {
     const forecastStore = useForecastStore();
-    return { forecastStore };
+    const chooseDay = () => {
+      console.log('Picked ');
+    };
+    return { forecastStore, chooseDay };
   },
 });
 </script>
+<style>
+.width10 {
+  width: 8px;
+}
+.low {
+  color: gray;
+}
+</style>

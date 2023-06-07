@@ -94,6 +94,13 @@ export default defineComponent({
         },
         plugins: [ChartDataLabels],
         options: {
+          layout: {
+            padding: {
+              left: 10,
+              right: 10,
+            },
+          },
+          animation: false,
           plugins: {
             legend: { display: false },
             datalabels: {
@@ -118,7 +125,7 @@ export default defineComponent({
             y: {
               display: false,
               // min: 11,
-              grace: '5%',
+              grace: '1%',
               ticks: {
                 stepSize: 20,
               },
