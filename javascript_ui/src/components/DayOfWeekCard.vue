@@ -2,8 +2,8 @@
   <q-card class="bg-primary no-shadow">
     <q-card-section class="q-pt-none">
       <div class="column">
-        <div class="text-white justify-center">{{ day }}</div>
-        <div class="row justify-between">
+        <div class="row text-white justify-center">{{ day }}</div>
+        <div class="row justify-space=between">
           <div>{{ Math.round(maxTemp) }}°</div>
           <div>{{ Math.round(minTemp) }}°</div>
         </div>

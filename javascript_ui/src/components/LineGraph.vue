@@ -105,15 +105,23 @@ export default defineComponent({
             },
           },
           responsive: true,
-          maintainAspectRatio: true,
+          maintainAspectRatio: false,
           scales: {
             x: {
               ticks: {
                 color: 'white',
               },
+              grid: {
+                display: false,
+              },
             },
             y: {
               display: false,
+              // min: 11,
+              grace: '5%',
+              ticks: {
+                stepSize: 20,
+              },
             },
           },
         },
@@ -136,7 +144,11 @@ export default defineComponent({
 </script>
 <style>
 .chartBox {
-  height: 200px;
-  /* width: 300px; */
+  /* height: 200px; */
+  /* display: flex;
+  flex-direction: row;
+  align-items: stretch; */
+  /* width: 100%; */
+  height: 180px;
 }
 </style>
