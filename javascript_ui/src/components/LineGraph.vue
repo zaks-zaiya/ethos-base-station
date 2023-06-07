@@ -1,9 +1,12 @@
 <template>
-  <LineChart
-    v-if="loaded"
-    :data="chartData.data"
-    :options="chartData.options"
-  />
+  <div class="chartBox">
+    <LineChart
+      v-if="loaded"
+      :data="chartData.data"
+      :options="chartData.options"
+    />
+  </div>
+
   <!-- <span class="row justify-space-between">
     <div v-for="item in forecastStore.dayOfWeekForecast" :key="item[0]">
       <DayOfWeekCard :day="item[0]" :maxTemp="item[1]" :minTemp="item[2]" />
@@ -12,7 +15,7 @@
 </template>
 
 <script>
-import { ref, onMounted, computed, defineComponent } from 'vue';
+import { ref, onMounted, computed, defineComponent, withDirectives } from 'vue';
 import {
   Chart as ChartJS,
   Filler,
@@ -56,7 +59,6 @@ export default defineComponent({
       if (!forecastStore.forecastTemps) {
         return {};
       }
-
       let keys = [];
       let values = [];
       const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -78,10 +80,11 @@ export default defineComponent({
               borderColor: 'rgb(242,206,52,1)',
               backgroundColor: 'white',
               data: values,
-              lineTension: 0.2,
-              radius: 0,
+              lineTension: 0.3, // smoothens the line
+              radius: 0, // removes dots
               borderWidth: 3,
               fill: {
+                // fill the area underneath the line chart
                 target: 'origin',
                 above: 'rgb(80,71,42,1)',
                 below: 'rgb(0, 0, 255)',
@@ -89,14 +92,33 @@ export default defineComponent({
             },
           ],
         },
+        plugins: [ChartDataLabels],
         options: {
           plugins: {
             legend: { display: false },
-            ChartDataLabels: true,
+            datalabels: {
+              color: 'white',
+              // anchor: 'end',
+              formatter: Math.round,
+              align: 'end', // move datalabels on top of the line
+              offset: 1, // how far datalabels are from anchor point
+            },
           },
           responsive: true,
           maintainAspectRatio: true,
+          scales: {
+            x: {
+              ticks: {
+                color: 'white',
+              },
+            },
+            y: {
+              display: false,
+            },
+          },
         },
+
+        // options: {},
       };
     });
 
@@ -112,3 +134,9 @@ export default defineComponent({
   },
 });
 </script>
+<style>
+.chartBox {
+  height: 200px;
+  /* width: 300px; */
+}
+</style>
