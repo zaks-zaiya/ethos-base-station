@@ -98,7 +98,6 @@ export default defineComponent({
       {
         name: 'effectiveness',
         required: true,
-        sortable: true,
         label: 'Potential Effectiveness',
         align: 'left',
         field: 'effectiveness',
