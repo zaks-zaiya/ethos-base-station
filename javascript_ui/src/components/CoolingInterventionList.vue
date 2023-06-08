@@ -12,49 +12,55 @@
         If you need to lower your body temperature, here are the best ways to do
         it (click on a row for more info):
       </div>
-      <div class="table-container">
-        <q-table
-          ref="tableRef"
-          :rows="coolingStrategies"
-          class="large-font my-sticky-header-table"
-          row-key="name"
-          :pagination="pagination"
-          :columns="columns"
-          @row-click="onRowClick"
-          hide-bottom
-        >
-          <template v-slot:body-cell-icon="props">
-            <q-td :props="props">
-              <q-icon :name="props.row.icon" size="60px" color="grey" />
-            </q-td>
-          </template>
+      <div class="row">
+        <div class="col-4 q-pr-lg">
+          <CoolingInterventionCard />
+          <CoolingInterventionCard class="q-mt-lg" />
+        </div>
+        <div class="table-container col-8">
+          <q-table
+            ref="tableRef"
+            :rows="coolingStrategies"
+            class="large-font my-sticky-header-table"
+            row-key="name"
+            :pagination="pagination"
+            :columns="columns"
+            @row-click="onRowClick"
+            hide-bottom
+          >
+            <template v-slot:body-cell-icon="props">
+              <q-td :props="props">
+                <q-icon :name="props.row.icon" size="60px" color="grey" />
+              </q-td>
+            </template>
 
-          <template v-slot:body-cell-effectiveness="props">
-            <q-td :props="props">
-              <CoolingInterventionEffectiveness
-                :effectiveness="props.row.effectiveness"
-              />
-            </q-td>
-          </template>
-        </q-table>
-        <q-avatar
-          icon="arrow_upward"
-          size="xl"
-          color="primary"
-          text-color="white"
-          class="scroll-indicator-top"
-          v-show="showTopScrollIndicator"
-          @click="scrollTo(0)"
-        />
-        <q-avatar
-          icon="arrow_downward"
-          size="xl"
-          color="primary"
-          text-color="white"
-          class="scroll-indicator-bottom"
-          v-show="showBottomScrollIndicator"
-          @click="scrollTo(1)"
-        />
+            <template v-slot:body-cell-effectiveness="props">
+              <q-td :props="props">
+                <CoolingInterventionEffectiveness
+                  :effectiveness="props.row.effectiveness"
+                />
+              </q-td>
+            </template>
+          </q-table>
+          <q-avatar
+            icon="arrow_upward"
+            size="xl"
+            color="primary"
+            text-color="white"
+            class="scroll-indicator-top"
+            v-show="showTopScrollIndicator"
+            @click="scrollTo(0)"
+          />
+          <q-avatar
+            icon="arrow_downward"
+            size="xl"
+            color="primary"
+            text-color="white"
+            class="scroll-indicator-bottom"
+            v-show="showBottomScrollIndicator"
+            @click="scrollTo(1)"
+          />
+        </div>
       </div>
     </q-card-section>
   </q-card>
@@ -66,10 +72,11 @@ import { CoolingStrategy } from 'src/components/models';
 import { coolingStrategies } from 'src/helper/coolingStrategies';
 import { QTable, QTableProps } from 'quasar';
 import CoolingInterventionEffectiveness from './CoolingInterventionEffectiveness.vue';
+import CoolingInterventionCard from './CoolingInterventionCard.vue';
 
 export default defineComponent({
   name: 'CoolingInterventionList',
-  components: { CoolingInterventionEffectiveness },
+  components: { CoolingInterventionEffectiveness, CoolingInterventionCard },
   setup(props, { emit }) {
     const showBottomScrollIndicator = ref(false);
     const showTopScrollIndicator = ref(false);
@@ -197,6 +204,7 @@ export default defineComponent({
   position: relative; // This allows absolute positioning of children
 }
 
+// Scrollbar styling
 .q-table__middle.scroll::-webkit-scrollbar {
   width: 20px; /* barStyle width */
   background-color: #027ae333; /* barStyle background color */
@@ -210,6 +218,7 @@ export default defineComponent({
   width: 16px; /* thumbStyle width */
 }
 
+// Styling for scroll indicators at top and bottom of table when content is there
 .scroll-indicator-top,
 .scroll-indicator-bottom {
   position: absolute;
