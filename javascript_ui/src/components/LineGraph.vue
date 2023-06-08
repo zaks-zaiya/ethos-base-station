@@ -1,17 +1,22 @@
 <template>
-  <div class="chartBox">
-    <LineChart
-      v-if="loaded"
-      :data="chartData.data"
-      :options="chartData.options"
-    />
-  </div>
-
-  <!-- <span class="row justify-space-between">
-    <div v-for="item in forecastStore.dayOfWeekForecast" :key="item[0]">
-      <DayOfWeekCard :day="item[0]" :maxTemp="item[1]" :minTemp="item[2]" />
-    </div>
-  </span> -->
+  <q-card class="bg-dark no-shadow">
+    <q-card-section>
+      <div class="chartBox">
+        <LineChart
+          v-if="loaded"
+          :data="chartData.data"
+          :options="chartData.options"
+        />
+      </div>
+    </q-card-section>
+    <q-card-section>
+      <span class="row justify-between">
+        <div v-for="item in forecastStore.dayOfWeekForecast" :key="item[0]">
+          <DayOfWeekCard :day="item[0]" :maxTemp="item[1]" :minTemp="item[2]" />
+        </div>
+      </span>
+    </q-card-section>
+  </q-card>
 </template>
 
 <script>
@@ -30,7 +35,7 @@ import {
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Line as LineChart } from 'vue-chartjs';
 import { useForecastStore } from 'src/stores/forecast';
-
+import DayOfWeekCard from './DayOfWeekCard.vue';
 ChartJS.register(
   Filler,
   ChartDataLabels,
@@ -48,12 +53,17 @@ export default defineComponent({
     day: String,
   },
   name: 'LineGraph',
-  components: { LineChart },
+  components: { LineChart, DayOfWeekCard },
   setup(props) {
     const loaded = ref(false);
     const currentDay = ref(0);
     const forecastStore = useForecastStore();
+    const moveChart = (day) => {
+      // function to change min and max value based on the picked day of week
 
+      chartData.value.scales.x.min = 0;
+      chartData.value.scales.x.min = 7;
+    };
     const chartData = computed(() => {
       // Check if weather data is avaliable yet
       if (!forecastStore.forecastTemps) {
@@ -62,16 +72,19 @@ export default defineComponent({
       let keys = [];
       let values = [];
       const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      console.log(
+        'Number of items in forecastTemps ' + forecastStore.forecastTemps.length
+      );
       forecastStore.forecastTemps
-        .filter((e) => weekday[e[0].getDay()].localeCompare(props.day) == 0)
+        // .filter((e) => weekday[e[0].getDay()].localeCompare(props.day) == 0)
         .forEach((e) => {
+          // console.log('here');
           const date = e[0];
           const ampmHour = date.getHours() % 12 || 12;
           const period = date.getHours() >= 12 ? 'pm' : 'am';
           keys.push('' + ampmHour + period);
           values.push(e[1]);
         });
-
       return {
         data: {
           labels: keys,
@@ -115,6 +128,8 @@ export default defineComponent({
           maintainAspectRatio: false,
           scales: {
             x: {
+              min: 0,
+              max: 7,
               ticks: {
                 color: 'white',
               },
@@ -145,6 +160,7 @@ export default defineComponent({
       loaded,
       chartData,
       currentDay,
+      forecastStore,
     };
   },
 });

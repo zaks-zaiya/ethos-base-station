@@ -26,19 +26,8 @@
       </q-card-section>
 
       <q-card-section class="q-pt-none">
-        <LineGraph day="Thu"
+        <LineGraph day="Fri"
       /></q-card-section>
-      <q-card-section class="q-pt-none">
-        <span class="row justify-between">
-          <div v-for="item in forecastStore.dayOfWeekForecast" :key="item[0]">
-            <DayOfWeekCard
-              :day="item[0]"
-              :maxTemp="item[1]"
-              :minTemp="item[2]"
-            />
-          </div>
-        </span>
-      </q-card-section>
     </q-card>
   </q-dialog>
 </template>
@@ -52,7 +41,7 @@ import DayOfWeekCard from './DayOfWeekCard.vue';
 
 export default defineComponent({
   name: 'ModalDetailedForecast',
-  components: { LineGraph, DayOfWeekCard },
+  components: { LineGraph },
   data: function () {
     return {
       pickedDay: String,

@@ -162,6 +162,11 @@ export const useForecastStore = defineStore('forecast', {
             Math.min(...listOfTemps),
           ]);
         }
+        // check dayOfWeekForecast array if there are than 5 days, remove the last day
+        if (this.dayOfWeekForecast.length > 5) {
+          this.dayOfWeekForecast = this.dayOfWeekForecast.slice(0, -1);
+        }
+
         console.log(JSON.stringify(this.dayOfWeekForecast));
         // Clear error message
         this.errorMessage = '';
