@@ -1,5 +1,5 @@
 <template>
-  <q-card class="fontsize-18">
+  <q-card class="fontsize-18 bg-grey-2">
     <q-card-section>
       <div class="text-bold">Should you use a fan?</div>
       <div v-for="sensor of dataSensorStore.allSensorData" :key="sensor.name">
