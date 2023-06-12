@@ -73,7 +73,7 @@ export default defineComponent({
           return 'no';
         }
       }
-      return 'maybe';
+      return undefined;
     }
 
     const sensorsWithIconData = computed(() => {
