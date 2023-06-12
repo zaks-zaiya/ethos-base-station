@@ -2,7 +2,7 @@
   <div>
     <div class="text-h6 q-mb-md">Reset Data</div>
     <!-- Inputs below -->
-    <div class="q-mb-sm">
+    <div class="q-mb-sm text">
       Press below to delete all data, and reset the app to factory settings
     </div>
     <q-btn color="negative" @click="() => (isShowWarning = true)">

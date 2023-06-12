@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="text-h6 q-mb-md">Preferences</div>
-    <div>Which audio alert type would you like to receive?</div>
+    <div class="text">Which audio alert type would you like to receive?</div>
     <q-table
       :rows="options"
       :columns="columns"
@@ -37,7 +37,9 @@
         </q-td>
       </template>
     </q-table>
-    <div class="q-mt-lg">Which cooling strategies do you have access to?</div>
+    <div class="q-mt-lg text">
+      Which cooling strategies do you have access to?
+    </div>
     <q-option-group
       v-model="dataPreferencesStore.coolingStrategiesAvailable"
       :options="coolingStrategyOptions"
