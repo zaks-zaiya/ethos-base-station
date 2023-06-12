@@ -18,9 +18,13 @@ const deserializeSensorData = (sensorDataString: string) => {
   return state;
 };
 
+export const isOutdoorSensor = (sensor: SensorData) => {
+  return sensor.name?.toLowerCase().includes('out');
+};
+
 const findOutdoorSensorIndex = (sensorData: Array<SensorData>) => {
   const outsideIndex = sensorData.findIndex((el) => {
-    if (el.name?.toLowerCase().includes('out')) {
+    if (isOutdoorSensor(el)) {
       return true;
     }
     return false;
