@@ -11,8 +11,26 @@
     </q-card-section>
     <q-card-section>
       <span class="row justify-between">
-        <div v-for="item in forecastStore.dayOfWeekForecast" :key="item[0]">
-          <DayOfWeekCard :day="item[0]" :maxTemp="item[1]" :minTemp="item[2]" />
+        <div
+          v-for="(item, idx) in forecastStore.dayOfWeekForecast"
+          :key="item[0]"
+          @click="moveChart(item[0], idx)"
+        >
+          <q-card
+            class="no-shadow q-px-md"
+            :class="[{ 'bg-grey-9': idx == activeIndex }, 'bg-dark']"
+          >
+            <div class="column">
+              <div class="row text-white text-body1 justify-center">
+                {{ item[0] }}
+              </div>
+              <div class="row">
+                <div>{{ Math.round(item[1]) }}°</div>
+                <div class="space10"></div>
+                <div class="low">{{ Math.round(item[2]) }}°</div>
+              </div>
+            </div>
+          </q-card>
         </div>
       </span>
     </q-card-section>
@@ -20,7 +38,7 @@
 </template>
 
 <script>
-import { ref, onMounted, computed, defineComponent, withDirectives } from 'vue';
+import { ref, onMounted, computed, defineComponent } from 'vue';
 import {
   Chart as ChartJS,
   Filler,
@@ -35,7 +53,6 @@ import {
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Line as LineChart } from 'vue-chartjs';
 import { useForecastStore } from 'src/stores/forecast';
-import DayOfWeekCard from './DayOfWeekCard.vue';
 ChartJS.register(
   Filler,
   ChartDataLabels,
@@ -49,21 +66,26 @@ ChartJS.register(
 );
 
 export default defineComponent({
-  props: {
-    day: String,
-  },
   name: 'LineGraph',
-  components: { LineChart, DayOfWeekCard },
-  setup(props) {
+  components: { LineChart },
+  setup() {
+    const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const loaded = ref(false);
-    const currentDay = ref(0);
+    const pickedDay = ref(weekday[new Date().getDay()]);
+    const activeIndex = ref(0);
     const forecastStore = useForecastStore();
-    const moveChart = (day) => {
-      // function to change min and max value based on the picked day of week
 
-      chartData.value.scales.x.min = 0;
-      chartData.value.scales.x.min = 7;
+    const moveChart = (day, index) => {
+      // function to change min and max value based on the picked day of week
+      // chartData.value.scales.x.min = 8;
+      // chartData.value.scales.x.min = 15;
+      // scales.value.x.min = 8;
+      // scales.value.x.min = 15;
+
+      activeIndex.value = index;
+      pickedDay.value = day;
     };
+
     const chartData = computed(() => {
       // Check if weather data is avaliable yet
       if (!forecastStore.forecastTemps) {
@@ -71,20 +93,14 @@ export default defineComponent({
       }
       let keys = [];
       let values = [];
-      const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-      console.log(
-        'Number of items in forecastTemps ' + forecastStore.forecastTemps.length
-      );
-      forecastStore.forecastTemps
-        // .filter((e) => weekday[e[0].getDay()].localeCompare(props.day) == 0)
-        .forEach((e) => {
-          // console.log('here');
-          const date = e[0];
-          const ampmHour = date.getHours() % 12 || 12;
-          const period = date.getHours() >= 12 ? 'pm' : 'am';
-          keys.push('' + ampmHour + period);
-          values.push(e[1]);
-        });
+      forecastStore.forecastTemps.forEach((e) => {
+        const date = e[0];
+        const ampmHour = date.getHours() % 12 || 12;
+        const period = date.getHours() >= 12 ? 'pm' : 'am';
+        keys.push('' + ampmHour + period);
+        values.push(e[1]);
+        console.log(ampmHour + period + ', ' + e[1]);
+      });
       return {
         data: {
           labels: keys,
@@ -119,7 +135,7 @@ export default defineComponent({
             datalabels: {
               color: 'white',
               // anchor: 'end',
-              formatter: Math.round,
+              // formatter: Math.round,
               align: 'end', // move datalabels on top of the line
               offset: 1, // how far datalabels are from anchor point
             },
@@ -147,8 +163,6 @@ export default defineComponent({
             },
           },
         },
-
-        // options: {},
       };
     });
 
@@ -159,8 +173,10 @@ export default defineComponent({
     return {
       loaded,
       chartData,
-      currentDay,
+      pickedDay,
       forecastStore,
+      moveChart,
+      activeIndex,
     };
   },
 });
@@ -174,4 +190,13 @@ export default defineComponent({
   /* width: 100%; */
   height: 180px;
 }
+.space10 {
+  width: 8px;
+}
+.low {
+  color: gray;
+}
+/* .daySelection :active {
+  color: rgb(48, 49, 52);
+} */
 </style>

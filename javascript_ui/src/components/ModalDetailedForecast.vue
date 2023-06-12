@@ -7,7 +7,6 @@
   >
     <q-card class="bg-dark q-pb-none text-white">
       <q-card-section>
-        <!-- TODO: Content here -->
         <div class="row justify-between">
           <div class="text-h5">
             <span v-if="forecastStore.stationName"
@@ -25,9 +24,7 @@
         </div>
       </q-card-section>
 
-      <q-card-section class="q-pt-none">
-        <LineGraph day="Fri"
-      /></q-card-section>
+      <q-card-section class="q-pt-none"> <LineGraph /></q-card-section>
     </q-card>
   </q-dialog>
 </template>
@@ -37,19 +34,12 @@ import { defineComponent } from 'vue';
 
 import { useForecastStore } from 'stores/forecast';
 import LineGraph from './LineGraph.vue';
-import DayOfWeekCard from './DayOfWeekCard.vue';
 
 export default defineComponent({
   name: 'ModalDetailedForecast',
   components: { LineGraph },
-  data: function () {
-    return {
-      pickedDay: String,
-    };
-  },
   setup() {
     const forecastStore = useForecastStore();
-    // this.pickedDay
     return {
       forecastStore,
     };
