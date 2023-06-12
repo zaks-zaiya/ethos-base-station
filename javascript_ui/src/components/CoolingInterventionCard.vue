@@ -22,8 +22,9 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import { useDataSensorStore } from 'src/stores/dataSensor';
-import { SensorData } from './models';
+import { calculateWBGT } from 'src/helper/riskLevel';
+import { useDataSensorStore, isOutdoorSensor } from 'src/stores/dataSensor';
+import { SensorData } from 'src/components/models';
 
 export default defineComponent({
   props: {
@@ -60,38 +61,59 @@ export default defineComponent({
     function calculateBlindUse(
       sensor: SensorData
     ): 'yes' | 'maybe' | 'no' | undefined {
-      // TODO: Implement logic
+      const indoorWBGT = calculateWBGT(sensor);
+      const outdoorWBGT = calculateWBGT(dataSensorStore.getOutdoorSensor);
+      console.log(indoorWBGT, outdoorWBGT);
+      if (indoorWBGT && outdoorWBGT) {
+        if (indoorWBGT < outdoorWBGT - 2) {
+          return 'yes';
+        } else if (indoorWBGT < outdoorWBGT + 2) {
+          return 'maybe';
+        } else {
+          return 'no';
+        }
+      }
       return 'maybe';
     }
 
     const sensorsWithIconData = computed(() => {
-      return dataSensorStore.allSensorData.map((sensor) => {
-        let result =
-          props.displayMode === 'fan'
-            ? calculateFanUse(sensor)
-            : calculateBlindUse(sensor);
-        let icon, color;
+      return dataSensorStore.allSensorData
+        .filter((sensor) => {
+          // If in 'blinds' mode and the sensor is an outdoor sensor, filter it out
+          if (props.displayMode === 'blinds' && isOutdoorSensor(sensor)) {
+            return false;
+          }
+          // Otherwise, include it
+          return true;
+        })
+        .map((sensor) => {
+          // Calculate status, and display icon accordingly
+          let result =
+            props.displayMode === 'fan'
+              ? calculateFanUse(sensor)
+              : calculateBlindUse(sensor);
+          let icon, color;
 
-        switch (result) {
-          case 'yes':
-            icon = 'done';
-            color = 'positive';
-            break;
-          case 'maybe':
-            icon = 'question_mark';
-            color = 'amber';
-            break;
-          case 'no':
-            icon = 'close';
-            color = 'negative';
-            break;
-          default:
-            icon = 'device_unknown';
-            color = 'grey';
-        }
+          switch (result) {
+            case 'yes':
+              icon = 'done';
+              color = 'positive';
+              break;
+            case 'maybe':
+              icon = 'question_mark';
+              color = 'amber';
+              break;
+            case 'no':
+              icon = 'close';
+              color = 'negative';
+              break;
+            default:
+              icon = 'device_unknown';
+              color = 'grey';
+          }
 
-        return { ...sensor, icon, color };
-      });
+          return { ...sensor, icon, color };
+        });
     });
 
     return { sensorsWithIconData };
