@@ -14,8 +14,8 @@
       </div>
       <div class="row">
         <div class="col-4 q-pr-lg">
-          <CoolingInterventionCard />
-          <CoolingInterventionCard class="q-mt-lg" />
+          <CoolingInterventionCard displayMode="fan" />
+          <CoolingInterventionCard displayMode="blinds" class="q-mt-lg" />
         </div>
         <div class="table-container col-8">
           <q-table
