@@ -16,6 +16,7 @@
     "Persistedstate",
     "pinia",
     "SETTINGSPASSCODE",
-    "Vetur"
+    "Vetur",
+    "WBGT"
   ]
 }

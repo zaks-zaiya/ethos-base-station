@@ -7,6 +7,7 @@
       :columns="columns"
       row-key="label"
       @row-click="rowClick"
+      hide-bottom=""
     >
       <template v-slot:body-cell-label="props">
         <q-td :props="props">

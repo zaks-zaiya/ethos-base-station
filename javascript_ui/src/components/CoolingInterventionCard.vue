@@ -63,7 +63,6 @@ export default defineComponent({
     ): 'yes' | 'maybe' | 'no' | undefined {
       const indoorWBGT = calculateWBGT(sensor);
       const outdoorWBGT = calculateWBGT(dataSensorStore.getOutdoorSensor);
-      console.log(indoorWBGT, outdoorWBGT);
       if (indoorWBGT && outdoorWBGT) {
         if (indoorWBGT < outdoorWBGT - 2) {
           return 'yes';
