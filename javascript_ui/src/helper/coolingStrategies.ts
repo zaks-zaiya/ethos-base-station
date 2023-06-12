@@ -1,7 +1,7 @@
 import { CoolingStrategy } from 'src/components/models';
 
-export const coolingStrategies: Array<CoolingStrategy> = [
-  {
+export const coolingStrategies: Record<string, CoolingStrategy> = {
+  fan: {
     name: 'Turn on a fan',
     shortName: 'a fan',
     icon: 'air',
@@ -25,7 +25,7 @@ export const coolingStrategies: Array<CoolingStrategy> = [
       ],
     },
   },
-  {
+  immersion: {
     name: 'Water immersion',
     shortName: 'immersion',
     icon: 'bathtub',
@@ -50,7 +50,7 @@ export const coolingStrategies: Array<CoolingStrategy> = [
       ],
     },
   },
-  {
+  sitDown: {
     name: 'Sit down quietly',
     shortName: 'sitting quietly',
     icon: 'self_improvement',
@@ -74,9 +74,9 @@ export const coolingStrategies: Array<CoolingStrategy> = [
       ],
     },
   },
-  {
+  drinkWater: {
     name: 'Drink (cool) water',
-    shortName: 'cool fluids',
+    shortName: 'cool water',
     icon: 'local_drink',
     effectiveness: 0.4,
     extraInfo: {
@@ -100,7 +100,7 @@ export const coolingStrategies: Array<CoolingStrategy> = [
       ],
     },
   },
-  {
+  wetClothes: {
     name: '(Cold) wet clothing',
     shortName: 'wetting clothes',
     icon: 'water_drop',
@@ -128,7 +128,7 @@ export const coolingStrategies: Array<CoolingStrategy> = [
       ],
     },
   },
-  {
+  excessClothing: {
     name: 'Remove excess clothing',
     shortName: 'removing unnecessary clothing',
     icon: 'checkroom',
@@ -152,7 +152,7 @@ export const coolingStrategies: Array<CoolingStrategy> = [
       ],
     },
   },
-  {
+  dousing: {
     name: 'Dousing/spraying',
     shortName: 'dousing/spraying',
     icon: 'bathroom',
@@ -174,7 +174,7 @@ export const coolingStrategies: Array<CoolingStrategy> = [
       ],
     },
   },
-  {
+  icePack: {
     name: 'Ice pack application',
     shortName: 'ice pack application',
     icon: 'kitchen',
@@ -195,7 +195,7 @@ export const coolingStrategies: Array<CoolingStrategy> = [
       ],
     },
   },
-  {
+  airConditioning: {
     name: 'Air conditioning',
     shortName: 'air conditioning',
     icon: 'ac_unit',
@@ -217,7 +217,7 @@ export const coolingStrategies: Array<CoolingStrategy> = [
       ],
     },
   },
-  {
+  windows: {
     name: 'Open/close windows/blinds',
     shortName: 'open/close windows/blinds',
     icon: 'roller_shades',
@@ -238,4 +238,4 @@ export const coolingStrategies: Array<CoolingStrategy> = [
       ],
     },
   },
-];
+};

@@ -36,14 +36,22 @@
         </q-td>
       </template>
     </q-table>
+    <div class="q-mt-lg">Which cooling strategies do you have access to?</div>
+    <q-option-group
+      v-model="dataPreferencesStore.coolingStrategiesAvailable"
+      :options="coolingStrategyOptions"
+      type="checkbox"
+      color="primary"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { QTableProps } from 'quasar';
 import { playAudio, stopAudio } from 'src/helper/audioAlertDispatcher';
+import { coolingStrategies } from 'src/helper/coolingStrategies';
 import { useDataPreferencesStore } from 'src/stores/dataPreferences';
-import { defineComponent, reactive } from 'vue';
+import { defineComponent, reactive, computed } from 'vue';
 import { AudioType, RiskLevel } from './models';
 
 interface TableOptions {
@@ -101,6 +109,13 @@ export default defineComponent({
       },
     ];
 
+    const coolingStrategyOptions = computed(() => {
+      return Object.entries(coolingStrategies).map(([key, value]) => ({
+        label: value.name,
+        value: key,
+      }));
+    });
+
     const rowClick = (evt: Event, row: TableOptions) => {
       // Update group to be the value of the clicked row
       dataPreferencesStore.audioType = row.value;
@@ -131,6 +146,7 @@ export default defineComponent({
       dataPreferencesStore,
       options,
       columns,
+      coolingStrategyOptions,
       rowClick,
       playDemoAudio,
       isPlayingMedium,
