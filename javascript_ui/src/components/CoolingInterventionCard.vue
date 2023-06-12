@@ -36,7 +36,9 @@ export default defineComponent({
   setup(props) {
     const dataSensorStore = useDataSensorStore();
 
-    function calculateFanUse(sensor: SensorData): 'yes' | 'maybe' | 'no' {
+    function calculateFanUse(
+      sensor: SensorData
+    ): 'yes' | 'maybe' | 'no' | undefined {
       if (sensor.humidity && sensor.temperature) {
         // Based on https://www.thelancet.com/journals/lanplh/article/PIIS2542-5196(21)00136-4/fulltext
         const fanThreshold = -(1 / 25) * sensor.humidity + 38.5;
@@ -52,10 +54,12 @@ export default defineComponent({
           return 'no';
         }
       }
-      return 'maybe';
+      return undefined;
     }
 
-    function calculateBlindUse(sensor: SensorData): 'yes' | 'maybe' | 'no' {
+    function calculateBlindUse(
+      sensor: SensorData
+    ): 'yes' | 'maybe' | 'no' | undefined {
       // TODO: Implement logic
       return 'maybe';
     }
@@ -77,10 +81,13 @@ export default defineComponent({
             icon = 'question_mark';
             color = 'amber';
             break;
-          default:
+          case 'no':
             icon = 'close';
             color = 'negative';
             break;
+          default:
+            icon = 'device_unknown';
+            color = 'grey';
         }
 
         return { ...sensor, icon, color };
