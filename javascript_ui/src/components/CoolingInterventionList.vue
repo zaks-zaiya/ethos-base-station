@@ -20,7 +20,7 @@
         <div class="table-container col-8">
           <q-table
             ref="tableRef"
-            :rows="coolingStrategies"
+            :rows="coolingStrategiesList"
             class="large-font my-sticky-header-table"
             row-key="name"
             :pagination="pagination"
@@ -67,7 +67,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref, onMounted, onBeforeUnmount } from 'vue';
+import {
+  defineComponent,
+  ref,
+  Ref,
+  onMounted,
+  onBeforeUnmount,
+  computed,
+} from 'vue';
+import { useDataPreferencesStore } from 'src/stores/dataPreferences';
 import { CoolingStrategy } from 'src/components/models';
 import { coolingStrategies } from 'src/helper/coolingStrategies';
 import { QTable, QTableProps } from 'quasar';
@@ -78,6 +86,7 @@ export default defineComponent({
   name: 'CoolingInterventionList',
   components: { CoolingInterventionEffectiveness, CoolingInterventionCard },
   setup(props, { emit }) {
+    const dataPreferencesStore = useDataPreferencesStore();
     const showBottomScrollIndicator = ref(false);
     const showTopScrollIndicator = ref(false);
     const tableRef: Ref<null | QTable> = ref(null);
@@ -110,6 +119,13 @@ export default defineComponent({
         field: 'effectiveness',
       },
     ];
+
+    // Get cooling strategies from those avaliable
+    const coolingStrategiesList = computed(() => {
+      return dataPreferencesStore.coolingStrategiesAvailable.map((key) => {
+        return coolingStrategies[key];
+      });
+    });
 
     onMounted(() => {
       const table = tableRef.value?.$el;
@@ -179,7 +195,7 @@ export default defineComponent({
     };
 
     return {
-      coolingStrategies,
+      coolingStrategiesList,
       columns,
       pagination,
       tableRef,
