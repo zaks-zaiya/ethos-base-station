@@ -37,8 +37,22 @@ export default defineComponent({
     const dataSensorStore = useDataSensorStore();
 
     function calculateFanUse(sensor: SensorData): 'yes' | 'maybe' | 'no' {
-      // TODO: Implement logic
-      return 'no';
+      if (sensor.humidity && sensor.temperature) {
+        // Based on https://www.thelancet.com/journals/lanplh/article/PIIS2542-5196(21)00136-4/fulltext
+        const fanThreshold = -(1 / 25) * sensor.humidity + 38.5;
+
+        if (sensor.temperature < fanThreshold - 1) {
+          // Safe to use fan
+          return 'yes';
+        } else if (sensor.temperature < fanThreshold + 1) {
+          // Can maybe use fan
+          return 'maybe';
+        } else {
+          // Should not use fan
+          return 'no';
+        }
+      }
+      return 'maybe';
     }
 
     function calculateBlindUse(sensor: SensorData): 'yes' | 'maybe' | 'no' {
