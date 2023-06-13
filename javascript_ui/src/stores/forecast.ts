@@ -113,8 +113,6 @@ export const useForecastStore = defineStore('forecast', {
           responseType: 'text',
           maxContentLength: 65536,
         });
-
-        // Update weather values
         const weatherObj = JSON.parse(result.data);
 
         // clear forecastTemps and dayofweek forecast array
@@ -126,50 +124,11 @@ export const useForecastStore = defineStore('forecast', {
           this.forecastTemps.push([new Date(w.dt * 1000), w.main.temp]);
         }
 
-        console.log('success forecast data API');
-        // console.log(JSON.stringify(this.forecastTemps));
-        // separate out dayOfWeek max and min temp to a separate array
-        const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-        const tempList: string[] = [];
-        // filter to get a list of days of week
-        for (const [dateAndTime, temp] of this.forecastTemps) {
-          const currentDay = weekday[dateAndTime.getDay()];
-          if (!tempList.includes(currentDay)) {
-            tempList.push(currentDay);
-          }
-        }
-        // console.log(tempList);
-
-        // loop thru each day in tempList
-        // get a single day with all the temps
-        // find max and min
-        for (const element of tempList) {
-          const listOfTemps = this.forecastTemps
-            .filter((item) => {
-              return (
-                weekday[new Date(item[0]).getDay()].localeCompare(element) == 0
-              );
-            })
-            .map(function (value) {
-              return value[1];
-            });
-          // console.log(listOfTemps);
-          this.dayOfWeekForecast.push([
-            element,
-            Math.max(...listOfTemps),
-            Math.min(...listOfTemps),
-          ]);
-        }
-        // check dayOfWeekForecast array if there are than 5 days, remove the last day
-        if (this.dayOfWeekForecast.length > 5) {
-          this.dayOfWeekForecast = this.dayOfWeekForecast.slice(0, -1);
-        }
-
-        // console.log(JSON.stringify(this.dayOfWeekForecast));
+        console.log('success retrieving forecast data API');
+        // get min and max temps
+        this.getMinMaxTemps();
         // Clear error message
         this.errorMessage = '';
-        return 'success';
       } catch (error: unknown) {
         if (error instanceof AxiosError) {
           this.errorMessage = error.message;
@@ -177,6 +136,49 @@ export const useForecastStore = defineStore('forecast', {
           this.errorMessage = 'unable to fetch forecast api';
         }
         return this.errorMessage;
+      }
+    },
+    getMinMaxTemps() {
+      // separate out dayOfWeek max and min temp to a separate array
+      if (!this.forecastTemps) {
+        this.errorMessage = 'Unsuccessful forecast API';
+        return;
+      }
+      const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      // clear dayOfWeekForecast array
+      this.dayOfWeekForecast = [];
+      const tempList: string[] = [];
+
+      // filter to get a list of days of week
+      for (const [dateAndTime, t] of this.forecastTemps) {
+        const currentDay = weekday[dateAndTime.getDay()];
+        if (!tempList.includes(currentDay)) {
+          tempList.push(currentDay);
+        }
+      }
+
+      // loop thru each day in tempList
+      // get a list of temps
+      // update dayOfWeekForecast with day, max, and min temps
+      for (const element of tempList) {
+        const listOfTemps = this.forecastTemps
+          .filter((item) => {
+            return (
+              weekday[new Date(item[0]).getDay()].localeCompare(element) == 0
+            );
+          })
+          .map(function (value) {
+            return value[1];
+          });
+        this.dayOfWeekForecast.push([
+          element,
+          Math.max(...listOfTemps),
+          Math.min(...listOfTemps),
+        ]);
+      }
+      // check dayOfWeekForecast array if there are than 5 days, remove the last day
+      if (this.dayOfWeekForecast.length > 5) {
+        this.dayOfWeekForecast = this.dayOfWeekForecast.slice(0, -1);
       }
     },
   },
