@@ -36,6 +36,16 @@ $remaining-height-keyboard-open: calc(
   #{$remaining-height} - #{$keyboard-height}
 );
 
+.remaining-height {
+  height: $remaining-height;
+  transition: height 0.1s ease-in;
+}
+
+.remaining-height-keyboard-open {
+  height: $remaining-height-keyboard-open;
+  transition: height 0.1s ease-out;
+}
+
 @function fluid-font-size(
   $minimumSize,
   $maximumSize,

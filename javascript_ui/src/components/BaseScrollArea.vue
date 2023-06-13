@@ -1,9 +1,9 @@
 <template>
   <div style="position: relative">
     <q-scroll-area
-      @scroll="checkScroll"
       :style="{ height: height, position: 'relative' }"
-      class="q-pr-md scroll-shadow"
+      class="q-pr-md scroll-shadow auto-scroll"
+      :class="heightClass"
       :thumb-style="thumbStyle"
       :bar-style="barStyle"
       visible
@@ -45,8 +45,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref } from 'vue';
+import { defineComponent, ref, Ref, computed } from 'vue';
 import { QScrollArea } from 'quasar';
+import { useKeyboardStore } from 'src/stores/keyboard';
 
 export default defineComponent({
   name: 'BaseScrollArea',
@@ -54,48 +55,60 @@ export default defineComponent({
   props: {
     height: {
       type: String,
-      default: '70vh',
+      required: false,
     },
   },
-  setup() {
+  setup(props) {
     const scrollArea: Ref<null | QScrollArea> = ref(null);
-    const isContentBelow: Ref<boolean> = ref(false);
-    const isContentAbove: Ref<boolean> = ref(false);
+
+    const keyboardStore = useKeyboardStore();
+    const heightClass = computed(() => {
+      if (props.height) {
+        return '';
+      }
+      if (keyboardStore.isKeyboardBound) {
+        return 'remaining-height-keyboard-open';
+      }
+      return 'remaining-height';
+    });
 
     /**
      * Check what styling should be applied (if any) for scroll area
      * @param scrollInfo Event passed with scroll area info
      */
-    const checkScroll = (scrollInfo: ReturnType<QScrollArea['getScroll']>) => {
-      if (scrollInfo.verticalSize === scrollInfo.verticalContainerSize) {
-        // There is no scrollable content
-        return;
+    // const checkScroll = (scrollInfo: ReturnType<QScrollArea['getScroll']>) => {
+    //   if (scrollInfo.verticalSize === scrollInfo.verticalContainerSize) {
+    //     // There is no scrollable content
+    //     return;
+    //   }
+    //   isContentBelow.value = scrollInfo.verticalPercentage < 0.95;
+    //   isContentAbove.value = scrollInfo.verticalPercentage > 0.05;
+    // };
+
+    const isContentBelow = computed(() => {
+      if (scrollArea.value) {
+        const scrollInfo = scrollArea.value.getScroll();
+        if (scrollInfo.verticalSize === scrollInfo.verticalContainerSize) {
+          // There is no scrollable content
+          return false;
+        }
+        return scrollInfo.verticalPercentage < 0.95;
+        return scrollInfo.verticalPercentage > 0.05;
       }
-      let topOpacity = 0.3;
-      let bottomOpacity = 0.3;
+      return false;
+    });
 
-      // Fade out at top of screen
-      if (scrollInfo.verticalPercentage < 0.1) {
-        topOpacity = scrollInfo.verticalPercentage * 3;
+    const isContentAbove = computed(() => {
+      if (scrollArea.value) {
+        const scrollInfo = scrollArea.value.getScroll();
+        if (scrollInfo.verticalSize === scrollInfo.verticalContainerSize) {
+          // There is no scrollable content
+          return false;
+        }
+        return scrollInfo.verticalPercentage > 0.05;
       }
-
-      // Fade out at bottom of screen
-      if (scrollInfo.verticalPercentage > 0.9) {
-        bottomOpacity = (1 - (scrollInfo.verticalPercentage - 0.9) * 10) * 0.3;
-      }
-
-      scrollArea.value?.$el.style.setProperty(
-        '--shadow-top-opacity',
-        topOpacity.toString()
-      );
-      scrollArea.value?.$el.style.setProperty(
-        '--shadow-bottom-opacity',
-        bottomOpacity.toString()
-      );
-
-      isContentBelow.value = scrollInfo.verticalPercentage < 0.95;
-      isContentAbove.value = scrollInfo.verticalPercentage > 0.05;
-    };
+      return false;
+    });
 
     /**
      * Scroll to a certain point in the scroll area, over 200ms
@@ -106,7 +119,7 @@ export default defineComponent({
     };
 
     return {
-      checkScroll,
+      heightClass,
       scrollArea,
       isContentBelow,
       isContentAbove,
@@ -130,32 +143,4 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
-.scroll-shadow::before,
-.scroll-shadow::after {
-  z-index: 1;
-  content: '';
-  position: absolute;
-  left: 0;
-  width: 100%;
-  height: 100px;
-}
-
-.scroll-shadow::before {
-  top: 0;
-  background: linear-gradient(
-    to top,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(0, 0, 0, var(--shadow-top-opacity, 0)) 100%
-  );
-}
-
-.scroll-shadow::after {
-  bottom: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(0, 0, 0, var(--shadow-bottom-opacity, 0)) 100%
-  );
-}
-</style>
+<style scoped lang="scss"></style>

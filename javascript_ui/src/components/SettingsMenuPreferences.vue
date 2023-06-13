@@ -1,52 +1,54 @@
 <template>
-  <div>
-    <div class="text-h6 q-mb-md">Preferences</div>
-    <div class="text">Which audio alert type would you like to receive?</div>
-    <q-table
-      :rows="options"
-      :columns="columns"
-      row-key="label"
-      @row-click="rowClick"
-      hide-bottom=""
-    >
-      <template v-slot:body-cell-label="props">
-        <q-td :props="props">
-          <q-radio
-            v-model="dataPreferencesStore.audioType"
-            :val="props.row.value"
-          />
-          {{ props.row.label }}
-        </q-td>
-      </template>
-      <template v-slot:body-cell-medium-priority="props">
-        <q-td :props="props">
-          <q-btn
-            color="teal"
-            :icon="isPlayingMedium[props.row.value  as AudioType] ? 'stop' : 'play_arrow'"
-            @click.stop="playDemoAudio(props.row, RiskLevel.MEDIUM)"
-          />
-        </q-td>
-      </template>
-      <template v-slot:body-cell-high-priority="props">
-        <q-td :props="props">
-          <q-btn
-            color="teal"
-            :icon="isPlayingHigh[props.row.value  as AudioType] ? 'stop' : 'play_arrow'"
-            @click.stop="playDemoAudio(props.row, RiskLevel.HIGH)"
-          />
-        </q-td>
-      </template>
-    </q-table>
-    <div class="q-mt-lg text">
-      Which cooling strategies do you have access to?
+  <base-scroll-area>
+    <div class="q-ma-lg">
+      <div class="text-h6 q-mb-md">Preferences</div>
+      <div class="text">Which audio alert type would you like to receive?</div>
+      <q-table
+        :rows="options"
+        :columns="columns"
+        row-key="label"
+        @row-click="rowClick"
+        hide-bottom=""
+      >
+        <template v-slot:body-cell-label="props">
+          <q-td :props="props">
+            <q-radio
+              v-model="dataPreferencesStore.audioType"
+              :val="props.row.value"
+            />
+            {{ props.row.label }}
+          </q-td>
+        </template>
+        <template v-slot:body-cell-medium-priority="props">
+          <q-td :props="props">
+            <q-btn
+              color="teal"
+              :icon="isPlayingMedium[props.row.value  as AudioType] ? 'stop' : 'play_arrow'"
+              @click.stop="playDemoAudio(props.row, RiskLevel.MEDIUM)"
+            />
+          </q-td>
+        </template>
+        <template v-slot:body-cell-high-priority="props">
+          <q-td :props="props">
+            <q-btn
+              color="teal"
+              :icon="isPlayingHigh[props.row.value  as AudioType] ? 'stop' : 'play_arrow'"
+              @click.stop="playDemoAudio(props.row, RiskLevel.HIGH)"
+            />
+          </q-td>
+        </template>
+      </q-table>
+      <div class="q-mt-lg text">
+        Which cooling strategies do you have access to?
+      </div>
+      <q-option-group
+        v-model="dataPreferencesStore.coolingStrategiesAvailable"
+        :options="coolingStrategyOptions"
+        type="checkbox"
+        color="primary"
+      />
     </div>
-    <q-option-group
-      v-model="dataPreferencesStore.coolingStrategiesAvailable"
-      :options="coolingStrategyOptions"
-      type="checkbox"
-      color="primary"
-    />
-  </div>
+  </base-scroll-area>
 </template>
 
 <script lang="ts">
@@ -56,6 +58,7 @@ import { coolingStrategies } from 'src/helper/coolingStrategies';
 import { useDataPreferencesStore } from 'src/stores/dataPreferences';
 import { defineComponent, reactive, computed } from 'vue';
 import { AudioType, RiskLevel } from './models';
+import BaseScrollArea from './BaseScrollArea.vue';
 
 interface TableOptions {
   label: string;
@@ -63,7 +66,7 @@ interface TableOptions {
 }
 
 export default defineComponent({
-  components: {},
+  components: { BaseScrollArea },
   setup() {
     const dataPreferencesStore = useDataPreferencesStore();
 

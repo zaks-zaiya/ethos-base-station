@@ -1,11 +1,17 @@
 <template>
-  <div class="settings-menu-quit">
-    <q-btn color="negative" label="Quit" @click="quitApp" />
-  </div>
+  <base-scroll-area>
+    <div class="q-ma-lg">
+      <div class="text-h6 q-mb-md">Quit Application</div>
+      <!-- Inputs below -->
+      <div class="q-mb-sm text">Press below to quit the app</div>
+      <q-btn color="negative" label="Quit" @click="quitApp" />
+    </div>
+  </base-scroll-area>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import BaseScrollArea from './BaseScrollArea.vue';
 
 export default defineComponent({
   methods: {
@@ -17,6 +23,7 @@ export default defineComponent({
       }
     },
   },
+  components: { BaseScrollArea },
 });
 </script>
 

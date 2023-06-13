@@ -114,10 +114,14 @@ export default defineComponent({
       // Scroll input element into view
       setTimeout(() => {
         // Get parent div to be scrolled
-        const scrollParent = inputEl.value?.nativeEl.closest('.auto-scroll');
+        const scrollParent = inputEl.value?.nativeEl.closest('.auto-scroll')
+          ?.firstChild as HTMLElement;
         if (inputEl.value && scrollParent) {
           // Calculate where to scroll
-          const yOffset = -20; // number of pixels padding
+          const yOffset = -10; // number of pixels padding
+          console.log(inputEl.value.nativeEl.getBoundingClientRect().top);
+          console.log(scrollParent.scrollTop);
+          console.log(scrollParent.getBoundingClientRect().top);
           const y =
             inputEl.value.nativeEl.getBoundingClientRect().top +
             scrollParent.scrollTop -
