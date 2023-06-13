@@ -3,7 +3,6 @@ import { defineStore } from 'pinia';
 import axios, { AxiosError } from 'axios';
 import { useDataUserStore } from './dataUser';
 import { watch } from 'vue';
-import { date } from 'quasar';
 
 export const useForecastStore = defineStore('forecast', {
   state: () => ({
@@ -121,7 +120,7 @@ export const useForecastStore = defineStore('forecast', {
         // clear forecastTemps and dayofweek forecast array
         this.forecastTemps = [];
         this.dayOfWeekForecast = [];
-        console.log(weatherObj);
+        // console.log(weatherObj);
         for (const w of weatherObj.list) {
           // Multiply by 1000 to convert seconds to ms (unix to js time)
           this.forecastTemps.push([new Date(w.dt * 1000), w.main.temp]);
@@ -167,7 +166,7 @@ export const useForecastStore = defineStore('forecast', {
           this.dayOfWeekForecast = this.dayOfWeekForecast.slice(0, -1);
         }
 
-        console.log(JSON.stringify(this.dayOfWeekForecast));
+        // console.log(JSON.stringify(this.dayOfWeekForecast));
         // Clear error message
         this.errorMessage = '';
         return 'success';

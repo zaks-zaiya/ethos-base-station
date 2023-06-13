@@ -2,11 +2,7 @@
   <q-card class="bg-dark no-shadow">
     <q-card-section>
       <div class="chartBox">
-        <LineChart
-          v-if="loaded"
-          :data="chartData.data"
-          :options="chartData.options"
-        />
+        <LineChart v-if="loaded" :data="chartData" :options="chartOptions" />
       </div>
     </q-card-section>
     <q-card-section>
@@ -71,19 +67,25 @@ export default defineComponent({
   setup() {
     const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const loaded = ref(false);
-    const pickedDay = ref(weekday[new Date().getDay()]);
-    const activeIndex = ref(0);
+    const activeIndex = ref(0); // first day is always selected
     const forecastStore = useForecastStore();
-
+    const min = ref(0); // which starting part of the chart to render
+    const max = ref(7); // which ending part of the chart to render
     const moveChart = (day, index) => {
       // function to change min and max value based on the picked day of week
-      // chartData.value.scales.x.min = 8;
-      // chartData.value.scales.x.min = 15;
-      // scales.value.x.min = 8;
-      // scales.value.x.min = 15;
-
+      for (let i = 0; i < forecastStore.forecastTemps.length; i++) {
+        if (
+          day.localeCompare(
+            weekday[forecastStore.forecastTemps[i][0].getDay()]
+          ) == 0
+        ) {
+          // found the first matching day of week
+          min.value = i;
+          max.value = i + 7;
+          break;
+        }
+      }
       activeIndex.value = index;
-      pickedDay.value = day;
     };
 
     const chartData = computed(() => {
@@ -99,81 +101,82 @@ export default defineComponent({
         const period = date.getHours() >= 12 ? 'pm' : 'am';
         keys.push('' + ampmHour + period);
         values.push(e[1]);
-        console.log(ampmHour + period + ', ' + e[1]);
+        // console.log(ampmHour + period + ', ' + e[1]);
       });
       return {
-        data: {
-          labels: keys,
-          datasets: [
-            {
-              borderColor: 'rgb(242,206,52,1)',
-              backgroundColor: 'white',
-              data: values,
-              lineTension: 0.3, // smoothens the line
-              radius: 0, // removes dots
-              borderWidth: 3,
-              fill: {
-                // fill the area underneath the line chart
-                target: 'origin',
-                above: 'rgb(80,71,42,1)',
-                below: 'rgb(0, 0, 255)',
-              },
+        labels: keys,
+        datasets: [
+          {
+            borderColor: 'rgb(242,206,52,1)',
+            backgroundColor: 'white',
+            data: values,
+            lineTension: 0.3, // smoothens the line
+            radius: 0, // removes dots
+            borderWidth: 3,
+            fill: {
+              // fill the area underneath the line chart
+              target: 'origin',
+              above: 'rgb(80,71,42,1)',
+              below: 'rgb(0, 0, 255)',
             },
-          ],
+          },
+        ],
+      };
+    });
+    const chartOptions = computed(() => {
+      return {
+        layout: {
+          padding: {
+            left: 10,
+            right: 10,
+          },
         },
-        plugins: [ChartDataLabels],
-        options: {
-          layout: {
-            padding: {
-              left: 10,
-              right: 10,
-            },
+        animation: true,
+        plugins: {
+          legend: { display: false },
+          datalabels: {
+            color: 'white',
+            // anchor: 'end',
+            formatter: Math.round, // will be removed temporarily to test scrolling of chart
+            align: 'end', // move datalabels on top of the line
+            offset: 1, // how far datalabels are from anchor point
           },
-          animation: false,
-          plugins: {
-            legend: { display: false },
-            datalabels: {
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: {
+            min: min.value,
+            max: max.value,
+            ticks: {
               color: 'white',
-              // anchor: 'end',
-              // formatter: Math.round,
-              align: 'end', // move datalabels on top of the line
-              offset: 1, // how far datalabels are from anchor point
+            },
+            grid: {
+              display: false,
             },
           },
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            x: {
-              min: 0,
-              max: 7,
-              ticks: {
-                color: 'white',
-              },
-              grid: {
-                display: false,
-              },
-            },
-            y: {
-              display: false,
-              // min: 11,
-              grace: '1%',
-              ticks: {
-                stepSize: 20,
-              },
+          y: {
+            display: false,
+            // min: 11,
+            grace: '1%',
+            ticks: {
+              stepSize: 20,
             },
           },
         },
       };
     });
-
     onMounted(async () => {
       loaded.value = true;
+      // console.log(chartOptions.value.scales.x);
     });
 
     return {
+      min,
+      max,
       loaded,
       chartData,
-      pickedDay,
+      chartOptions,
       forecastStore,
       moveChart,
       activeIndex,
@@ -183,11 +186,6 @@ export default defineComponent({
 </script>
 <style>
 .chartBox {
-  /* height: 200px; */
-  /* display: flex;
-  flex-direction: row;
-  align-items: stretch; */
-  /* width: 100%; */
   height: 180px;
 }
 .space10 {
@@ -196,7 +194,4 @@ export default defineComponent({
 .low {
   color: gray;
 }
-/* .daySelection :active {
-  color: rgb(48, 49, 52);
-} */
 </style>
