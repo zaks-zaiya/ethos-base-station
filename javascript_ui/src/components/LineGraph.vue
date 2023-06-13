@@ -131,7 +131,19 @@ export default defineComponent({
         //     right: 10,
         //   },
         // },
-        animation: true,
+        // animation: false,
+        animation: {
+          duration: 1000, // general animation time
+        },
+        // animations: {
+        //   borderColor: {
+        //     type: 'number',
+        //     duration: 1000,
+        //     from: 0,
+        //     to: 1,
+        //     loop: true,
+        //   },
+        // },
         plugins: {
           legend: { display: false },
           datalabels: {
