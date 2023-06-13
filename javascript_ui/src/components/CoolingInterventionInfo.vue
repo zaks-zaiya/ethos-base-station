@@ -1,48 +1,58 @@
 <template>
-  <q-card>
-    <q-card-section>
+  <BaseModalScroll>
+    <template #header>
       <div class="row items-center">
-        <q-btn icon="arrow_back" color="primary" @click="$emit('back')">
+        <q-btn
+          class="fontsize-12"
+          icon="arrow_back"
+          color="primary"
+          @click="$emit('back')"
+        >
           back
         </q-btn>
-        <div class="text-h4 q-ml-md">{{ strategy.name }}</div>
+        <div class="fontsize-20 text-bold q-ml-md">{{ strategy.name }}</div>
+        <q-space />
+        <q-btn
+          icon="close"
+          color="primary"
+          class="fontsize-12"
+          @click="$emit('close')"
+        >
+          Close
+        </q-btn>
       </div>
-      <q-scroll-area
-        style="height: 70vh"
-        class="q-pr-md"
-        :thumb-style="thumbStyle"
-        :bar-style="barStyle"
-        visible
-      >
-        <CoolingInterventionInfoSection
-          :headingText="`How to best use ${strategy.shortName}`"
-          :strategyPoints="strategy.extraInfo.bestUse"
-        />
+    </template>
+    <template #main>
+      <CoolingInterventionInfoSection
+        :headingText="`How to best use ${strategy.shortName}`"
+        :strategyPoints="strategy.extraInfo.bestUse"
+      />
 
-        <CoolingInterventionInfoSection
-          :headingText="`When ${strategy.shortName} should be used`"
-          :strategyPoints="strategy.extraInfo.whenUse"
-          color="positive"
-          bullet-style="tick"
-        />
+      <CoolingInterventionInfoSection
+        :headingText="`When ${strategy.shortName} should be used`"
+        :strategyPoints="strategy.extraInfo.whenUse"
+        color="positive"
+        bullet-style="tick"
+      />
 
-        <CoolingInterventionInfoSection
-          :headingText="`When ${strategy.shortName} should not be used`"
-          :strategyPoints="strategy.extraInfo.whenNotUse"
-          color="negative"
-          bullet-style="cross"
-        />
-      </q-scroll-area>
-    </q-card-section>
-  </q-card>
+      <CoolingInterventionInfoSection
+        :headingText="`When ${strategy.shortName} should not be used`"
+        :strategyPoints="strategy.extraInfo.whenNotUse"
+        color="negative"
+        bullet-style="cross"
+      />
+    </template>
+  </BaseModalScroll>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref, computed, Ref } from 'vue';
 import CoolingInterventionInfoSection from './CoolingInterventionInfoSection.vue';
+import { QCardSection } from 'quasar';
+import BaseModalScroll from './BaseModalScroll.vue';
 
 export default defineComponent({
-  name: 'CoolingStrategyInfo',
+  name: 'CoolingInterventionInfo',
   props: {
     strategy: {
       type: Object,
@@ -51,24 +61,27 @@ export default defineComponent({
   },
   components: {
     CoolingInterventionInfoSection,
+    BaseModalScroll,
   },
   setup() {
-    return {
-      thumbStyle: {
-        right: '4px',
-        borderRadius: '5px',
-        backgroundColor: '#027be3',
-        width: '5px',
-        opacity: '0.75',
-      },
+    const header: Ref<null | QCardSection> = ref(null);
+    const scrollAreaHeight = computed(() => {
+      if (header.value) {
+        // Subtract header's height from q-card height
+        return (
+          header.value.$el.parentElement.offsetHeight -
+          header.value.$el.offsetHeight +
+          'px'
+        );
+      } else {
+        // Default height if header's height can't be calculated
+        return '70vh';
+      }
+    });
 
-      barStyle: {
-        right: '2px',
-        borderRadius: '9px',
-        backgroundColor: '#027be3',
-        width: '9px',
-        opacity: '0.2',
-      },
+    return {
+      header,
+      scrollAreaHeight,
     };
   },
 });

@@ -1,53 +1,57 @@
 <template>
-  <div>
-    <div class="text-h6 q-mb-md">User Data</div>
-    <!-- Inputs below -->
-    <input-keyboard
-      v-model.number="dataUserStore.id"
-      :customRule="checkId"
-      type="number"
-      label="User ID (number)"
-    />
+  <base-scroll-area>
+    <div class="q-ma-lg">
+      <div class="text-h6 q-mb-md">User Data</div>
+      <!-- Inputs below -->
+      <input-keyboard
+        v-model.number="dataUserStore.id"
+        :customRule="checkId"
+        type="number"
+        label="User ID (number)"
+      />
 
-    <input-keyboard
-      v-model.number="dataUserStore.postcode"
-      :customRule="checkPostcode"
-      :hint="`Lat: ${dataUserStore.latitude}, Lon: ${dataUserStore.longitude}`"
-      type="number"
-      label="Postcode"
-    />
+      <input-keyboard
+        v-model.number="dataUserStore.postcode"
+        :customRule="checkPostcode"
+        :hint="`Lat: ${dataUserStore.latitude}, Lon: ${dataUserStore.longitude}`"
+        type="number"
+        label="Postcode"
+      />
 
-    <input-keyboard
-      v-model.number="dataUserStore.ageYears"
-      :customRule="checkAge"
-      type="number"
-      label="Age (years)"
-    />
-    <input-keyboard
-      v-model.number="dataUserStore.heightCm"
-      :customRule="checkHeight"
-      type="number"
-      label="Height (cm)"
-    />
-    <input-keyboard
-      v-model.number="dataUserStore.weightKg"
-      :customRule="checkWeight"
-      type="number"
-      label="Weight (kg)"
-    />
-  </div>
+      <input-keyboard
+        v-model.number="dataUserStore.ageYears"
+        :customRule="checkAge"
+        type="number"
+        label="Age (years)"
+      />
+      <input-keyboard
+        v-model.number="dataUserStore.heightCm"
+        :customRule="checkHeight"
+        type="number"
+        label="Height (cm)"
+      />
+      <input-keyboard
+        v-model.number="dataUserStore.weightKg"
+        :customRule="checkWeight"
+        type="number"
+        label="Weight (kg)"
+      />
+    </div>
+  </base-scroll-area>
 </template>
 
 <script lang="ts">
 import { useDataUserStore } from 'src/stores/dataUser';
 import { defineComponent } from 'vue';
 
-import postcodeArrayString from '../assets/australian_postcodes.js';
+import postcodeArrayString from 'assets/australian_postcodes.js';
 import InputKeyboard from './InputKeyboard.vue';
+import BaseScrollArea from './BaseScrollArea.vue';
 
 export default defineComponent({
   components: {
     InputKeyboard,
+    BaseScrollArea,
   },
   setup() {
     const dataUserStore = useDataUserStore();

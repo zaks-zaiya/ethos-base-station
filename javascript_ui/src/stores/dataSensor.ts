@@ -1,6 +1,9 @@
 import { defineStore } from 'pinia';
 import { io } from 'socket.io-client';
 import { SensorData } from 'src/components/models';
+import { getRiskLevel } from 'src/helper/riskLevel';
+import { playAudio } from 'src/helper/audioAlertDispatcher';
+import { useDataPreferencesStore } from 'src/stores/dataPreferences';
 
 const deserializeSensorData = (sensorDataString: string) => {
   // Parse the JSON string
@@ -15,6 +18,20 @@ const deserializeSensorData = (sensorDataString: string) => {
   return state;
 };
 
+export const isOutdoorSensor = (sensor: SensorData) => {
+  return sensor.name?.toLowerCase().includes('out');
+};
+
+const findOutdoorSensorIndex = (sensorData: Array<SensorData>) => {
+  const outsideIndex = sensorData.findIndex((el) => {
+    if (isOutdoorSensor(el)) {
+      return true;
+    }
+    return false;
+  });
+  return outsideIndex;
+};
+
 export const useDataSensorStore = defineStore('dataSensor', {
   persist: {
     serializer: {
@@ -25,6 +42,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
 
   state: () => ({
     isConnected: false,
+    alertSensor: null as SensorData | null,
     allSensorData: [
       {
         id: undefined,
@@ -32,6 +50,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
         temperature: undefined,
         humidity: undefined,
         lastSeen: undefined,
+        riskLevel: undefined,
       },
       {
         id: undefined,
@@ -39,6 +58,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
         temperature: undefined,
         humidity: undefined,
         lastSeen: undefined,
+        riskLevel: undefined,
       },
       {
         id: undefined,
@@ -46,6 +66,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
         temperature: undefined,
         humidity: undefined,
         lastSeen: undefined,
+        riskLevel: undefined,
       },
       {
         id: undefined,
@@ -53,6 +74,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
         temperature: undefined,
         humidity: undefined,
         lastSeen: undefined,
+        riskLevel: undefined,
       },
     ] as Array<SensorData>, // sensor data
   }),
@@ -68,6 +90,11 @@ export const useDataSensorStore = defineStore('dataSensor', {
       }
       return false;
     },
+    // Return outdoor sensor values
+    getOutdoorSensor: (state) => {
+      const outsideIndex = findOutdoorSensorIndex(state.allSensorData);
+      return state.allSensorData[outsideIndex];
+    },
     // Get deep copy of sensor data
     getDeepCopySensorData: (state) => {
       return deserializeSensorData(JSON.stringify(state)).allSensorData;
@@ -77,12 +104,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
       // Take a shallow copy of the array to prevent data mutation
       const copyOfSensorData = [...state.allSensorData];
       // Find index of the sensor that has 'out' in its name
-      const outsideIndex = copyOfSensorData.findIndex((el) => {
-        if (el.name?.toLowerCase().includes('out')) {
-          return true;
-        }
-        return false;
-      });
+      const outsideIndex = findOutdoorSensorIndex(copyOfSensorData);
       // If a sensor matches outside, push it to the end of the array
       if (outsideIndex >= 0) {
         copyOfSensorData.push(copyOfSensorData.splice(outsideIndex, 1)[0]);
@@ -147,9 +169,27 @@ export const useDataSensorStore = defineStore('dataSensor', {
         }
 
         // Update array values
-        this.allSensorData[i].temperature = temperature;
-        this.allSensorData[i].humidity = humidity;
-        this.allSensorData[i].lastSeen = new Date(Date.now());
+        const sensorData = this.allSensorData[i];
+        sensorData.temperature = temperature;
+        sensorData.humidity = humidity;
+        sensorData.lastSeen = new Date(Date.now());
+
+        const oldRiskLevel = sensorData.riskLevel;
+        sensorData.riskLevel = undefined; // While we calculate new value
+        const newRiskLevel = getRiskLevel(sensorData);
+        sensorData.riskLevel = newRiskLevel;
+        if (oldRiskLevel && newRiskLevel && newRiskLevel > oldRiskLevel) {
+          // Risk level has gone up
+          this.alertSensor = { ...sensorData }; // Shallow copy
+          // Get audio type preferences
+          const dataPreferencesStore = useDataPreferencesStore();
+          // Send alert sound
+          playAudio(
+            dataPreferencesStore.audioType,
+            newRiskLevel,
+            this.alertSensor
+          );
+        }
       });
     },
   },

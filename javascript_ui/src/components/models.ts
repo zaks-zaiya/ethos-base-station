@@ -4,6 +4,7 @@ export interface SensorData {
   temperature: number | undefined;
   humidity: number | undefined;
   lastSeen: Date | undefined;
+  riskLevel: RiskLevel | undefined;
 }
 
 export interface UserData {
@@ -19,10 +20,22 @@ export interface UserData {
 export interface CoolingStrategy {
   name: string;
   shortName: string;
-  imageUrl: string;
+  icon: string;
+  effectiveness: number;
   extraInfo: {
     bestUse: Array<string>;
     whenUse: Array<string>;
     whenNotUse: Array<string>;
   };
+}
+
+export enum RiskLevel {
+  LOW = 1,
+  MEDIUM = 2,
+  HIGH = 3,
+}
+
+export enum AudioType {
+  TONE = 'tone',
+  TTS = 'text-to-speech',
 }

@@ -1,16 +1,18 @@
 <template>
   <q-layout view="lHh Lpr lFf" class="bg-blue-grey-2">
     <!-- Register Modals -->
-    <modal-no-connection />
-    <modal-cooling-interventions v-model="isShowCoolingModal" />
-    <modal-help v-model="isShowHelpModal" />
+    <ModalNoConnection />
+    <ModalVolume v-model="isShowVolumeModal" />
+    <ModalHeatAlert @open-cooling-modal="isShowCoolingModal = true" />
+    <ModalCoolingInterventions v-model="isShowCoolingModal" />
+    <ModalHelp v-model="isShowHelpModal" />
     <!-- Main layout -->
     <q-header flat class="transparent">
       <q-toolbar class="ethos-toolbar">
         <img
           v-if="$route.path !== '/settings'"
           src="ethos.svg"
-          height="30"
+          height="50"
           @click="showSettingsButton"
         />
         <q-btn
@@ -19,27 +21,37 @@
           color="info"
           label="go back to home"
           icon="home"
-          class="q-ml-md"
+          class="q-ml-md fontsize-16"
         />
+
+        <CurrentTime class="q-ml-lg fontsize-20" />
+
         <q-toolbar-title></q-toolbar-title>
 
         <q-btn
+          @click="isShowVolumeModal = true"
+          class="q-mr-lg fontsize-16"
+          color="info"
+          :icon="volumeIcon"
+        />
+        <q-btn
           v-if="$route.path !== '/settings'"
           @click="isShowCoolingModal = true"
-          class="q-mr-lg"
+          class="q-mr-lg fontsize-16"
           color="primary"
           label="i need to cool down"
         />
         <q-btn
           v-if="$route.path !== '/settings'"
           @click="isShowHelpModal = true"
+          class="fontsize-16"
           color="secondary"
           label="help me use the app"
         />
         <q-btn
           v-if="isShowSettingsButton"
           @click="hideSettingsButton"
-          class="q-ml-md"
+          class="q-ml-md fontsize-16"
           color="info"
           icon="settings"
           to="settings"
@@ -62,31 +74,53 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
 
 import { useKeyboardStore } from 'src/stores/keyboard';
+import { useVolumeStore } from 'src/stores/volume';
 
+import CurrentTime from 'components/CurrentTime.vue';
 import ModalNoConnection from 'components/ModalNoConnection.vue';
 import ModalCoolingInterventions from 'components/ModalCoolingInterventions.vue';
 import SimpleKeyboard from 'src/components/SimpleKeyboard.vue';
 import ModalHelp from 'src/components/ModalHelp.vue';
+import ModalHeatAlert from 'src/components/ModalHeatAlert.vue';
+import ModalVolume from 'src/components/ModalVolume.vue';
 
 export default defineComponent({
   name: 'MainLayout',
   components: {
     ModalNoConnection,
     ModalCoolingInterventions,
-    SimpleKeyboard,
     ModalHelp,
+    ModalHeatAlert,
+    SimpleKeyboard,
+    CurrentTime,
+    ModalVolume,
   },
   setup() {
     const keyboardStore = useKeyboardStore();
+    const volumeStore = useVolumeStore();
     let isShowSettingsButton = ref(false);
+    let isShowVolumeModal = ref(false);
     let isShowCoolingModal = ref(false);
     let isShowHelpModal = ref(false);
 
     let timeoutShowSettingsButton: null | number = null;
     let showSettingsPressedCount = 0;
+
+    // Determine volume icon based on volume
+    let volumeIcon = computed(() => {
+      if (volumeStore.volumePercent === 0) {
+        return 'volume_off';
+      } else if (volumeStore.volumePercent <= 0.2) {
+        return 'volume_mute';
+      } else if (volumeStore.volumePercent <= 0.6) {
+        return 'volume_down';
+      } else {
+        return 'volume_up';
+      }
+    });
 
     // Function to show settings button if activated multiple times in quick succession
     let showSettingsButton = () => {
@@ -114,7 +148,9 @@ export default defineComponent({
 
     return {
       keyboardStore,
+      volumeIcon,
       isShowSettingsButton,
+      isShowVolumeModal,
       isShowCoolingModal,
       isShowHelpModal,
       showSettingsButton,

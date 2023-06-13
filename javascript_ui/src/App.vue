@@ -34,10 +34,57 @@ export default defineComponent({
 });
 </script>
 
-<style>
-/* Hide cursor in program for touch screen use */
+<style lang="scss">
+// Hide cursor in program for touch screen use
 * {
   cursor: none !important;
+}
+
+// Extend all q-btn components with a larger font size
+.q-btn {
+  @extend .fontsize-12;
+}
+
+// Extend all input components with a larger font size
+.q-input {
+  @extend .fontsize-18;
+}
+.q-field__control {
+  height: 80px !important;
+}
+.q-field__label {
+  @extend .fontsize-14;
+}
+.q-field__messages {
+  @extend .fontsize-10;
+}
+
+// Extend text with larger font
+.text,
+.text-bold {
+  @extend .fontsize-14;
+}
+.text-h6 {
+  @extend .fontsize-18;
+}
+
+// Extend table with larger font
+.q-table th,
+.q-table tbody td {
+  @extend .fontsize-12;
+}
+
+// Extend q-checkbox with larger font
+.q-checkbox {
+  @extend .fontsize-12;
+}
+
+// Extend q-tab with larger font
+.q-tab {
+  height: 110px;
+}
+.q-tab__label {
+  @extend .fontsize-12;
 }
 
 /* Click effect for haptic feedback */

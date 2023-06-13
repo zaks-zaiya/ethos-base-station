@@ -1,5 +1,13 @@
 <template>
-  <q-card class="full-height" :class="backgroundColor">
+  <q-card class="full-height" :class="backgroundColor" @click="readSensorData">
+    <q-icon
+      style="margin-top: 70px"
+      class="absolute-right q-ma-sm"
+      :name="emoticonStyle"
+      color="white"
+      size="150px"
+    />
+
     <q-card-section class="q-pa-sm">
       <div class="fontsize-22 text-bold">
         {{ sensor.name ? sensor.name : 'Undefined' }}
@@ -10,14 +18,13 @@
 
     <q-separator />
 
-    <q-card-section class="full-height q-pa-sm">
-      <div class="fontsize-40">{{ sensor.temperature }}°C</div>
-      <div class="fontsize-30">{{ sensor.humidity }}% RH</div>
-      <div class="fontsize-18 text-italic">
-        Last seen:
-        {{ sensor.lastSeen ? sensor.lastSeen.toLocaleString() : 'Never' }}
-      </div>
+    <q-card-section class="q-pa-sm">
+      <div class="fontsize-40 text-bold">{{ sensor.temperature }}°C</div>
+      <div class="fontsize-30 text-bold">{{ sensor.humidity }}% RH</div>
     </q-card-section>
+    <div class="fontsize-18 text-italic q-ma-sm absolute-bottom">
+      {{ formattedLastSeen }}
+    </div>
   </q-card>
 </template>
 
@@ -30,7 +37,8 @@ import {
   onMounted,
   onUnmounted,
 } from 'vue';
-import { SensorData } from 'components/models';
+import { SensorData, RiskLevel } from 'components/models';
+import { playTextToSpeech } from 'src/helper/audioAlertDispatcher';
 
 export default defineComponent({
   name: 'DisplaySensor',
@@ -77,46 +85,6 @@ export default defineComponent({
       return !props.sensor.id || !props.sensor.name;
     });
 
-    // Calculate the WBGT for risk level
-    let wetBulbTemperature = computed(() => {
-      // Equation taken from:
-      // https://physicscalc.com/physics/wet-bulb-calculator/
-      let temperature = props.sensor.temperature;
-      let humidity = props.sensor.humidity;
-      if (!temperature || !humidity) {
-        return undefined;
-      }
-      let wetBulbTemperature =
-        temperature *
-          Math.atan(0.151977 * Math.pow(humidity + 8.313659, 1 / 2)) +
-        Math.atan(temperature + humidity) -
-        Math.atan(humidity - 1.676331) +
-        0.00391838 *
-          Math.pow(humidity, 3 / 2) *
-          Math.atan(0.023101 * humidity) -
-        4.686035;
-      return wetBulbTemperature;
-    });
-
-    // Return the risk level as 'high', 'medium', low' or '' (undefined)
-    let riskLevel = computed(() => {
-      // Check undefined
-      if (!wetBulbTemperature.value) {
-        console.log('Unable to find correct risk level (no WBGT defined)');
-        return '';
-      }
-      if (wetBulbTemperature.value >= 30) {
-        return 'high';
-      } else if (wetBulbTemperature.value >= 25) {
-        return 'medium';
-      } else if (wetBulbTemperature.value < 25) {
-        return 'low';
-      } else {
-        console.log('Unable to find correct risk level (unknown error)');
-        return '';
-      }
-    });
-
     // Calculate what background color to use for the form card
     let backgroundColor = computed(() => {
       if (
@@ -129,22 +97,105 @@ export default defineComponent({
       } else if (isOffline.value) {
         // Sensor is offline
         return 'bg-grey text-grey-8';
-      } else if (riskLevel.value == 'low') {
-        // Low risk, background green
-        return 'bg-positive';
-      } else if (riskLevel.value == 'medium') {
-        // Medium risk, background yellow
-        return 'bg-warning';
-      } else if (riskLevel.value == 'high') {
-        // High risk, background red
-        return 'bg-negative';
-      } else {
-        console.error('Unable to find correct background color');
-        return 'bg-grey';
+      }
+      // Check risk level
+      switch (props.sensor.riskLevel) {
+        case RiskLevel.LOW:
+          // Low risk, background green
+          return 'bg-positive text-white';
+        case RiskLevel.MEDIUM:
+          // Medium risk, background yellow
+          return 'bg-warning text-white';
+        case RiskLevel.HIGH:
+          // High risk, background red
+          return 'bg-flash text-white';
+        case undefined:
+          // Still calculating, grey for now
+          return 'bg-grey';
+        default:
+          console.error('Unable to find correct background color');
+          return 'bg-grey';
       }
     });
 
-    return { isUndefined, isOffline, backgroundColor };
+    let emoticonStyle = computed(() => {
+      switch (props.sensor.riskLevel) {
+        case RiskLevel.LOW:
+          return 'sentiment_very_satisfied';
+        case RiskLevel.MEDIUM:
+          return 'sentiment_neutral';
+        case RiskLevel.HIGH:
+          return 'sentiment_very_dissatisfied';
+        default:
+          // No emoticon
+          return '';
+      }
+    });
+
+    let formattedLastSeen = computed(() => {
+      const lastSeen = props.sensor.lastSeen;
+      if (!lastSeen) {
+        return 'Never';
+      }
+
+      let strTime = lastSeen.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+
+      return strTime + ', ' + lastSeen.toLocaleDateString();
+    });
+
+    let readRiskLevel = () => {
+      switch (props.sensor.riskLevel) {
+        case RiskLevel.LOW:
+          return 'low';
+        case RiskLevel.MEDIUM:
+          return 'medium';
+        case RiskLevel.HIGH:
+          return 'high';
+        default:
+          // No emoticon
+          return '';
+      }
+    };
+
+    const readSensorData = () => {
+      const text = `The ${props.sensor.name} is ${
+        props.sensor.temperature
+      } degrees celsius, with a relative humidity of ${
+        props.sensor.humidity
+      }%. Your risk level in this room is ${readRiskLevel()}`;
+
+      playTextToSpeech(text);
+    };
+
+    return {
+      isUndefined,
+      isOffline,
+      backgroundColor,
+      formattedLastSeen,
+      emoticonStyle,
+      readSensorData,
+    };
   },
 });
 </script>
+
+<style lang="scss" scoped>
+.bg-flash {
+  animation: flash 2s infinite;
+}
+
+@keyframes flash {
+  0%,
+  50%,
+  100% {
+    background-color: $negative;
+  }
+  25%,
+  75% {
+    background-color: #710101;
+  }
+}
+</style>

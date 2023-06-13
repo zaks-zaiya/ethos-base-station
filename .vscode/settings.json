@@ -8,6 +8,7 @@
   "typescript.tsdk": "node_modules/typescript/lib",
   "python.defaultInterpreterPath": "python_radio/env/bin/python",
   "cSpell.words": [
+    "ampm",
     "axios",
     "bksp",
     "eventlet",
@@ -15,6 +16,7 @@
     "Persistedstate",
     "pinia",
     "SETTINGSPASSCODE",
-    "Vetur"
+    "Vetur",
+    "WBGT"
   ]
 }

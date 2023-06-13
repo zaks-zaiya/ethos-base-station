@@ -7,11 +7,12 @@
 
     <div class="row">
       <q-input
+        ref="passcodeInputRef"
         filled
         bottom-slots
         class="full-width"
         v-model="passcode"
-        label="passcode"
+        placeholder="passcode"
         type="password"
         counter
         maxlength="4"
@@ -19,115 +20,44 @@
         error-message="Incorrect passcode, try again"
       >
         <template v-slot:append>
-          <q-btn round dense flat @click="backspacePasscode" icon="backspace" />
+          <q-btn
+            round
+            dense
+            flat
+            @click="backspacePasscode"
+            icon="backspace"
+            class="fontsize-18 q-mt-lg"
+          />
         </template>
       </q-input>
     </div>
 
-    <div class="row passcode-row">
-      <div class="col q-pa-sm">
+    <div
+      class="row passcode-row"
+      v-for="(row, index) in passcodeInputLayout"
+      :key="index"
+    >
+      <div class="col q-pa-sm" v-for="key in row" :key="key">
         <q-btn
-          class="full-width full-height"
-          color="primary"
-          @click="appendPasscode('1')"
-          label="1"
-        ></q-btn>
-      </div>
-      <div class="col q-pa-sm">
-        <q-btn
-          class="full-width full-height"
-          color="primary"
-          @click="appendPasscode('2')"
-          label="2"
-        ></q-btn>
-      </div>
-      <div class="col q-pa-sm">
-        <q-btn
-          class="full-width full-height"
-          color="primary"
-          @click="appendPasscode('3')"
-          label="3"
-        ></q-btn>
-      </div>
-    </div>
-
-    <div class="row passcode-row">
-      <div class="col q-pa-sm">
-        <q-btn
-          class="full-width full-height"
-          color="primary"
-          @click="appendPasscode('4')"
-          label="4"
-        ></q-btn>
-      </div>
-      <div class="col q-pa-sm">
-        <q-btn
-          class="full-width full-height"
-          color="primary"
-          @click="appendPasscode('5')"
-          label="5"
-        ></q-btn>
-      </div>
-      <div class="col q-pa-sm">
-        <q-btn
-          class="full-width full-height"
-          color="primary"
-          @click="appendPasscode('6')"
-          label="6"
-        ></q-btn>
-      </div>
-    </div>
-
-    <div class="row passcode-row">
-      <div class="col q-pa-sm">
-        <q-btn
-          class="full-width full-height"
-          color="primary"
-          @click="appendPasscode('7')"
-          label="7"
-        ></q-btn>
-      </div>
-      <div class="col q-pa-sm">
-        <q-btn
-          class="full-width full-height"
-          color="primary"
-          @click="appendPasscode('8')"
-          label="8"
-        ></q-btn>
-      </div>
-      <div class="col q-pa-sm">
-        <q-btn
-          class="full-width full-height"
-          color="primary"
-          @click="appendPasscode('9')"
-          label="9"
-        ></q-btn>
-      </div>
-    </div>
-
-    <div class="row passcode-row">
-      <div class="col q-pa-sm">
-        <q-btn
-          class="full-width full-height"
+          v-if="key == 'go back'"
+          class="full-width full-height fontsize-14"
           color="info"
-          label="Go Back"
+          :label="key"
           to="/"
         ></q-btn>
-      </div>
-      <div class="col q-pa-sm">
         <q-btn
-          class="full-width full-height"
-          color="primary"
-          @click="appendPasscode('0')"
-          label="0"
-        ></q-btn>
-      </div>
-      <div class="col q-pa-sm">
-        <q-btn
-          class="full-width full-height"
+          v-else-if="key == 'submit'"
+          class="full-width full-height fontsize-14"
           color="positive"
-          label="Submit"
+          :label="key"
           @click="checkPasscode"
+        ></q-btn>
+        <q-btn
+          v-else
+          class="full-width full-height fontsize-14"
+          color="primary"
+          @click="appendPasscode(key)"
+          :label="key"
         ></q-btn>
       </div>
     </div>
@@ -135,12 +65,20 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, Ref, nextTick } from 'vue';
 
 export default defineComponent({
   name: 'InputPasscode',
   setup(props, { emit }) {
     const passcode = ref('');
+    const passcodeInputRef: Ref<null | HTMLInputElement> = ref(null);
+
+    const passcodeInputLayout = [
+      ['1', '2', '3'],
+      ['4', '5', '6'],
+      ['7', '8', '9'],
+      ['go back', '0', 'submit'],
+    ];
     const isIncorrectPasscode = ref(false);
 
     const backspacePasscode = () => {
@@ -151,6 +89,13 @@ export default defineComponent({
     const appendPasscode = (char: string) => {
       // Append character to end of passcode
       passcode.value = passcode.value.concat(char);
+
+      // Set the focus back to the input
+      nextTick(() => {
+        if (passcodeInputRef.value) {
+          passcodeInputRef.value.focus();
+        }
+      });
     };
 
     const checkPasscode = () => {
@@ -170,6 +115,8 @@ export default defineComponent({
 
     return {
       passcode,
+      passcodeInputRef,
+      passcodeInputLayout,
       isIncorrectPasscode,
       backspacePasscode,
       appendPasscode,
