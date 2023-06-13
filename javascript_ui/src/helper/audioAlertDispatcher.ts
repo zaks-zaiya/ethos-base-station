@@ -58,11 +58,10 @@ export const playTextToSpeech = (text: string): Promise<void> => {
 export const stopAudio = () => {
   if (currentAudio) {
     currentAudio.pause();
-    currentAudio = null;
+    currentAudio.dispatchEvent(new Event('ended'));
   }
   if (currentUtterance) {
     speechSynthesis.cancel();
-    currentUtterance = null;
   }
 };
 
