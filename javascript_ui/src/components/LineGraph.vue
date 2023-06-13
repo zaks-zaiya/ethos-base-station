@@ -1,6 +1,6 @@
 <template>
   <q-card class="bg-dark no-shadow">
-    <q-card-section>
+    <q-card-section class="q-pa-none">
       <div class="chartBox">
         <LineChart v-if="loaded" :data="chartData" :options="chartOptions" />
       </div>
@@ -80,6 +80,7 @@ export default defineComponent({
           ) == 0
         ) {
           // found the first matching day of week
+          // render only 8 datapoints for a single day
           min.value = i;
           max.value = i + 7;
           break;
@@ -101,7 +102,6 @@ export default defineComponent({
         const period = date.getHours() >= 12 ? 'pm' : 'am';
         keys.push('' + ampmHour + period);
         values.push(e[1]);
-        // console.log(ampmHour + period + ', ' + e[1]);
       });
       return {
         labels: keys,
@@ -111,13 +111,13 @@ export default defineComponent({
             backgroundColor: 'white',
             data: values,
             lineTension: 0.3, // smoothens the line
-            radius: 0, // removes dots
-            borderWidth: 3,
+            radius: 0, // removes dots at data points
+            borderWidth: 2.5, // line width
             fill: {
               // fill the area underneath the line chart
               target: 'origin',
               above: 'rgb(80,71,42,1)',
-              below: 'rgb(0, 0, 255)',
+              // below: 'rgb(0, 0, 255)',
             },
           },
         ],
@@ -125,19 +125,19 @@ export default defineComponent({
     });
     const chartOptions = computed(() => {
       return {
-        layout: {
-          padding: {
-            left: 10,
-            right: 10,
-          },
-        },
+        // layout: {
+        //   padding: {
+        //     left: 10,
+        //     right: 10,
+        //   },
+        // },
         animation: true,
         plugins: {
           legend: { display: false },
           datalabels: {
             color: 'white',
             // anchor: 'end',
-            formatter: Math.round, // will be removed temporarily to test scrolling of chart
+            formatter: Math.round, // format labels
             align: 'end', // move datalabels on top of the line
             offset: 1, // how far datalabels are from anchor point
           },
@@ -157,10 +157,10 @@ export default defineComponent({
           },
           y: {
             display: false,
-            // min: 11,
+            // min: 11, adjust min value for y axis
             grace: '1%',
             ticks: {
-              stepSize: 20,
+              stepSize: 20, // step size on y axis. found 20 to look best.
             },
           },
         },
@@ -168,7 +168,6 @@ export default defineComponent({
     });
     onMounted(async () => {
       loaded.value = true;
-      // console.log(chartOptions.value.scales.x);
     });
 
     return {
