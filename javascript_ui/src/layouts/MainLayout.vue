@@ -7,7 +7,7 @@
     <ModalCoolingInterventions v-model="isShowCoolingModal" />
     <ModalHelp v-model="isShowHelpModal" />
     <!-- Main layout -->
-    <q-header flat class="transparent">
+    <q-header flat class="transparent" v-if="$route.path !== '/initialize'">
       <q-toolbar class="ethos-toolbar">
         <img
           v-if="$route.path !== '/settings'"
