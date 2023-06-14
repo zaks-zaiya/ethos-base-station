@@ -54,6 +54,7 @@ export default defineComponent({
 }
 .q-field__label {
   @extend .fontsize-14;
+  line-height: 30px;
 }
 .q-field__messages {
   @extend .fontsize-10;
