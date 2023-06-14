@@ -29,7 +29,11 @@
         :done="step > 3"
         :header-nav="step >= 2 && isNextStepAvailable"
       >
-        <SettingsMenuSensors />
+        <base-scroll-area height="75vh">
+          <div class="q-ma-md">
+            <SettingsMenuSensors />
+          </div>
+        </base-scroll-area>
       </q-step>
 
       <q-step
@@ -79,6 +83,7 @@ import { useDataUserStore } from 'src/stores/dataUser';
 import { useDataSensorStore } from 'src/stores/dataSensor';
 import { useKeyboardStore } from 'src/stores/keyboard';
 import { QStepper } from 'quasar';
+import BaseScrollArea from 'src/components/BaseScrollArea.vue';
 
 export default defineComponent({
   components: {
@@ -86,6 +91,7 @@ export default defineComponent({
     SettingsMenuUserData,
     SettingsMenuSensors,
     SettingsMenuPreferences,
+    BaseScrollArea,
   },
   setup() {
     const step: Ref<number> = ref(1);
@@ -136,3 +142,10 @@ export default defineComponent({
   },
 });
 </script>
+
+<style>
+/* Remove padding for q-stepper inner */
+.q-stepper__step-inner {
+  padding: 0px !important;
+}
+</style>

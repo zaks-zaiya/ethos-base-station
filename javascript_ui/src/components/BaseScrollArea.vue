@@ -1,7 +1,7 @@
 <template>
   <div style="position: relative">
     <q-scroll-area
-      :style="{ height: height, position: 'relative' }"
+      :style="{ height: computedHeight, position: 'relative' }"
       class="q-pr-md scroll-shadow auto-scroll"
       :class="heightClass"
       :thumb-style="thumbStyle"
@@ -60,8 +60,45 @@ export default defineComponent({
   },
   setup(props) {
     const scrollArea: Ref<null | QScrollArea> = ref(null);
-
     const keyboardStore = useKeyboardStore();
+
+    const keyboardHeight = computed(() => {
+      const toolbarHeight = 80;
+      const remainingHeight = window.innerHeight - toolbarHeight - 10;
+      return remainingHeight * 0.52;
+    });
+
+    const computedHeight = computed(() => {
+      if (keyboardStore.isKeyboardBound) {
+        if (!props.height) {
+          return undefined;
+        }
+
+        // Check if the unit is in px or vh
+        const isPx = props.height.endsWith('px');
+        const isVh = props.height.endsWith('vh');
+
+        if (isPx) {
+          const newHeight = parseFloat(props.height) - keyboardHeight.value;
+          return newHeight.toString() + 'px';
+        } else if (isVh) {
+          // Converting vh to px
+          const initialHeightInPx =
+            (parseFloat(props.height) * window.innerHeight) / 100;
+          console.log(keyboardHeight);
+          const newHeightInPx = initialHeightInPx - keyboardHeight.value;
+
+          // Converting back to vh
+          const newHeightInVh = (newHeightInPx * 100) / window.innerHeight;
+
+          console.log(newHeightInVh);
+
+          return newHeightInVh.toString() + 'vh';
+        }
+      }
+      return props.height;
+    });
+
     const heightClass = computed(() => {
       if (props.height) {
         return '';
@@ -72,19 +109,6 @@ export default defineComponent({
       return 'remaining-height';
     });
 
-    /**
-     * Check what styling should be applied (if any) for scroll area
-     * @param scrollInfo Event passed with scroll area info
-     */
-    // const checkScroll = (scrollInfo: ReturnType<QScrollArea['getScroll']>) => {
-    //   if (scrollInfo.verticalSize === scrollInfo.verticalContainerSize) {
-    //     // There is no scrollable content
-    //     return;
-    //   }
-    //   isContentBelow.value = scrollInfo.verticalPercentage < 0.95;
-    //   isContentAbove.value = scrollInfo.verticalPercentage > 0.05;
-    // };
-
     const isContentBelow = computed(() => {
       if (scrollArea.value) {
         const scrollInfo = scrollArea.value.getScroll();
@@ -93,7 +117,6 @@ export default defineComponent({
           return false;
         }
         return scrollInfo.verticalPercentage < 0.95;
-        return scrollInfo.verticalPercentage > 0.05;
       }
       return false;
     });
@@ -119,6 +142,7 @@ export default defineComponent({
     };
 
     return {
+      computedHeight,
       heightClass,
       scrollArea,
       isContentBelow,
@@ -143,4 +167,8 @@ export default defineComponent({
 });
 </script>
 
-<style scoped lang="scss"></style>
+<style lang="scss">
+:root {
+  --keyboard-height: #{$keyboard-height};
+}
+</style>

@@ -24,11 +24,11 @@ $negative: #a10013;
 $info: #31ccec;
 $warning: #d59500;
 
-// -60px for toolbar (50px) + extra room (10px)
-
 $toolbar-height: 80px;
 
-$remaining-height: calc(100vh - #{$toolbar-height} - 10px);
+$remaining-height: calc(
+  100vh - #{$toolbar-height} - 10px
+); // 10px for extra room
 
 $keyboard-height: calc(#{$remaining-height} * 0.52);
 
