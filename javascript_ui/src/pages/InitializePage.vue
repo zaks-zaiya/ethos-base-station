@@ -131,7 +131,7 @@ export default defineComponent({
       else if (step.value === 4) {
         return true;
       }
-      return true;
+      return false;
     });
 
     const nextStep = () => {

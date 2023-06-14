@@ -36,6 +36,7 @@
 <script lang="ts">
 import { useDataSensorStore } from 'src/stores/dataSensor';
 import { useDataUserStore } from 'src/stores/dataUser';
+import { useVolumeStore } from 'src/stores/volume';
 import { useRouter } from 'vue-router';
 import { defineComponent, ref } from 'vue';
 
@@ -45,7 +46,9 @@ export default defineComponent({
     const router = useRouter();
     const dataUserStore = useDataUserStore();
     const dataSensorStore = useDataSensorStore();
+    const volumeStore = useVolumeStore();
     const resetData = () => {
+      volumeStore.$reset();
       dataUserStore.$reset();
       dataSensorStore.$reset();
       dataSensorStore.setup();
