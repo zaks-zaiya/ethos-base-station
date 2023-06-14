@@ -119,9 +119,6 @@ export default defineComponent({
         if (inputEl.value && scrollParent) {
           // Calculate where to scroll
           const yOffset = -10; // number of pixels padding
-          console.log(inputEl.value.nativeEl.getBoundingClientRect().top);
-          console.log(scrollParent.scrollTop);
-          console.log(scrollParent.getBoundingClientRect().top);
           const y =
             inputEl.value.nativeEl.getBoundingClientRect().top +
             scrollParent.scrollTop -
