@@ -63,39 +63,19 @@ export default defineComponent({
     const keyboardStore = useKeyboardStore();
 
     const computedHeight = computed(() => {
-      if (keyboardStore.isKeyboardBound) {
-        if (!props.height) {
-          return undefined;
-        }
-
-        if (!keyboardStore.keyboardHeight) {
-          return props.height;
-        }
-
-        // Check if the unit is in px or vh
-        const isPx = props.height.endsWith('px');
-        const isVh = props.height.endsWith('vh');
-
-        if (isPx) {
-          const newHeight =
-            parseFloat(props.height) - keyboardStore.keyboardHeight;
-          return newHeight.toString() + 'px';
-        } else if (isVh) {
-          // Converting vh to px
-          const initialHeightInPx =
-            (parseFloat(props.height) * window.innerHeight) / 100;
-          const newHeightInPx =
-            initialHeightInPx - keyboardStore.keyboardHeight;
-
-          // Converting back to vh
-          const newHeightInVh = (newHeightInPx * 100) / window.innerHeight;
-
-          console.log(newHeightInVh);
-
-          return newHeightInVh.toString() + 'vh';
-        }
+      if (!keyboardStore.isKeyboardBound) {
+        return props.height;
       }
-      return props.height;
+
+      const initialHeightInPx = parseHeight(props.height);
+      // Sanity check
+      if (!initialHeightInPx || !keyboardStore.keyboardHeight) {
+        return props.height;
+      }
+
+      const newHeightInPx = initialHeightInPx - keyboardStore.keyboardHeight;
+
+      return newHeightInPx + 'px';
     });
 
     const heightClass = computed(() => {
@@ -131,6 +111,28 @@ export default defineComponent({
       }
       return false;
     });
+
+    /**
+     * Parse height string to number value in px
+     * @param height The height string (e.g. '75vh')
+     */
+    const parseHeight = (height: string | undefined) => {
+      if (!height) {
+        return undefined;
+      }
+      // Check if the unit is in px or vh
+      const isPx = height.endsWith('px');
+      const isVh = height.endsWith('vh');
+
+      if (isPx) {
+        return parseFloat(height);
+      } else if (isVh) {
+        // Converting vh to px
+        return (parseFloat(height) * window.innerHeight) / 100;
+      }
+      // Unable to parse
+      return undefined;
+    };
 
     /**
      * Scroll to a certain point in the scroll area, over 200ms
