@@ -10,16 +10,24 @@
       header-nav
     >
       <q-step :name="1" title="Setup Wizard" icon="settings" :done="step > 1">
-        Looks like there may be some undefined data. This page will walk you
-        through setting everything up.
-        <div class="q-my-sm">
-          If you do not intend to be here please contact the Ethos team:
-        </div>
-        <ContactCard />
+        <base-scroll-area height="75vh">
+          <div class="q-ma-md">
+            Looks like there may be some undefined data. This page will walk you
+            through setting everything up.
+            <div class="q-my-sm">
+              If you do not intend to be here please contact the Ethos team:
+            </div>
+            <ContactCard />
+          </div>
+        </base-scroll-area>
       </q-step>
 
       <q-step :name="2" title="Setup User Data" icon="person" :done="step > 2">
-        <SettingsMenuUserData />
+        <base-scroll-area height="75vh">
+          <div class="q-ma-md">
+            <SettingsMenuUserData />
+          </div>
+        </base-scroll-area>
       </q-step>
 
       <q-step
@@ -43,7 +51,11 @@
         :done="step > 4"
         :header-nav="step >= 3 && isNextStepAvailable"
       >
-        <SettingsMenuPreferences />
+        <base-scroll-area height="75vh">
+          <div class="q-ma-md">
+            <SettingsMenuPreferences />
+          </div>
+        </base-scroll-area>
       </q-step>
 
       <template v-slot:navigation>
