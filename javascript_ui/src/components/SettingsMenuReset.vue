@@ -1,40 +1,36 @@
 <template>
-  <base-scroll-area>
-    <div class="q-ma-lg">
-      <div class="text-h6 q-mb-md">Reset Data</div>
-      <!-- Inputs below -->
-      <div class="q-mb-sm text">
-        Press below to delete all data, and reset the app to factory settings
-      </div>
-      <q-btn color="negative" @click="() => (isShowWarning = true)">
-        Press here to reset
-      </q-btn>
-      <!-- Warning modal with confirmation -->
-      <q-dialog v-model="isShowWarning">
-        <q-card>
-          <q-card-section class="row items-center q-pb-none">
-            <div class="text-h6">Confirm Reset</div>
-            <q-space />
-            <q-btn icon="close" flat round dense v-close-popup />
-          </q-card-section>
-          <q-card-section>
-            <div>
-              Are you sure you want to delete all data and reset everything?
-              This cannot be undone
-            </div>
-          </q-card-section>
-          <q-card-actions align="right">
-            <q-btn label="No go back" color="primary" v-close-popup />
-            <q-btn
-              label="Yes delete everything"
-              color="negative"
-              @click="resetData"
-            />
-          </q-card-actions>
-        </q-card>
-      </q-dialog>
-    </div>
-  </base-scroll-area>
+  <div class="text-h6 q-mb-md">Reset Data</div>
+  <!-- Inputs below -->
+  <div class="q-mb-sm text">
+    Press below to delete all data, and reset the app to factory settings
+  </div>
+  <q-btn color="negative" @click="() => (isShowWarning = true)">
+    Press here to reset
+  </q-btn>
+  <!-- Warning modal with confirmation -->
+  <q-dialog v-model="isShowWarning">
+    <q-card>
+      <q-card-section class="row items-center q-pb-none">
+        <div class="text-h6">Confirm Reset</div>
+        <q-space />
+        <q-btn icon="close" flat round dense v-close-popup />
+      </q-card-section>
+      <q-card-section>
+        <div>
+          Are you sure you want to delete all data and reset everything? This
+          cannot be undone
+        </div>
+      </q-card-section>
+      <q-card-actions align="right">
+        <q-btn label="No go back" color="primary" v-close-popup />
+        <q-btn
+          label="Yes delete everything"
+          color="negative"
+          @click="resetData"
+        />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script lang="ts">
@@ -42,7 +38,6 @@ import { useDataSensorStore } from 'src/stores/dataSensor';
 import { useDataUserStore } from 'src/stores/dataUser';
 import { useRouter } from 'vue-router';
 import { defineComponent, ref } from 'vue';
-import BaseScrollArea from './BaseScrollArea.vue';
 
 export default defineComponent({
   setup() {
@@ -58,6 +53,6 @@ export default defineComponent({
     };
     return { isShowWarning, resetData };
   },
-  components: { BaseScrollArea },
+  components: {},
 });
 </script>
