@@ -3,7 +3,7 @@
     <q-stepper
       v-model="step"
       ref="stepper"
-      color="primary"
+      header-class="bg-grey-2"
       class="fontsize-14"
       @transition="keyboardStore.unbindKeyboard()"
       animated
@@ -59,8 +59,8 @@
       </q-step>
 
       <template v-slot:navigation>
-        <q-stepper-navigation>
-          <div class="row items-center q-pb-none">
+        <q-stepper-navigation class="bg-grey-2">
+          <div class="row items-center q-pb-none q-pt-md">
             <q-btn
               v-if="step > 1"
               flat
