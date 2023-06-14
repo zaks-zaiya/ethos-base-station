@@ -87,6 +87,11 @@ export default defineComponent({
   @extend .fontsize-12;
 }
 
+// Extend q-stepper with larger font
+.q-stepper__title {
+  @extend .fontsize-12;
+}
+
 /* Click effect for haptic feedback */
 .click-effect {
   position: absolute;
