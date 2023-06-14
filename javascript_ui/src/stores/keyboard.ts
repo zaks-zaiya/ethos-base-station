@@ -9,6 +9,8 @@ export const useKeyboardStore = defineStore('keyboard', {
     keyboardValue: undefined as undefined | { value: string },
     // Whether to use a text or numeric keyboard
     keyboardType: 'text' as 'text' | 'number',
+    // Height of the keyboard in px
+    keyboardHeight: undefined as undefined | number,
   }),
 
   getters: {

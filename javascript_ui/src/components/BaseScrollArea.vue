@@ -62,16 +62,14 @@ export default defineComponent({
     const scrollArea: Ref<null | QScrollArea> = ref(null);
     const keyboardStore = useKeyboardStore();
 
-    const keyboardHeight = computed(() => {
-      const toolbarHeight = 80;
-      const remainingHeight = window.innerHeight - toolbarHeight - 10;
-      return remainingHeight * 0.52;
-    });
-
     const computedHeight = computed(() => {
       if (keyboardStore.isKeyboardBound) {
         if (!props.height) {
           return undefined;
+        }
+
+        if (!keyboardStore.keyboardHeight) {
+          return props.height;
         }
 
         // Check if the unit is in px or vh
@@ -79,14 +77,15 @@ export default defineComponent({
         const isVh = props.height.endsWith('vh');
 
         if (isPx) {
-          const newHeight = parseFloat(props.height) - keyboardHeight.value;
+          const newHeight =
+            parseFloat(props.height) - keyboardStore.keyboardHeight;
           return newHeight.toString() + 'px';
         } else if (isVh) {
           // Converting vh to px
           const initialHeightInPx =
             (parseFloat(props.height) * window.innerHeight) / 100;
-          console.log(keyboardHeight);
-          const newHeightInPx = initialHeightInPx - keyboardHeight.value;
+          const newHeightInPx =
+            initialHeightInPx - keyboardStore.keyboardHeight;
 
           // Converting back to vh
           const newHeightInVh = (newHeightInPx * 100) / window.innerHeight;
