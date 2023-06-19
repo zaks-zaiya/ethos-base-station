@@ -113,7 +113,7 @@ export default defineComponent({
       keyboardStore.bindKeyboard(inputEl.value, reactiveValue, props.type);
       // Scroll input element into view
       setTimeout(() => {
-        // Get parent div to be scrolled
+        // Get parent div to be scrolled (by finding 'auto-scroll' class)
         const scrollParent = inputEl.value?.nativeEl.closest('.auto-scroll')
           ?.firstChild as HTMLElement;
         if (inputEl.value && scrollParent) {
