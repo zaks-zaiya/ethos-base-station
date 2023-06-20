@@ -150,7 +150,7 @@ export const useForecastStore = defineStore('forecast', {
       const tempList: string[] = [];
 
       // filter to get a list of days of week
-      for (const [dateAndTime, t] of this.forecastTemps) {
+      for (const [dateAndTime] of this.forecastTemps) {
         const currentDay = weekday[dateAndTime.getDay()];
         if (!tempList.includes(currentDay)) {
           tempList.push(currentDay);

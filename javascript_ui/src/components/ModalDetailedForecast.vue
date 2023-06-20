@@ -8,12 +8,12 @@
     <q-card class="bg-dark q-pb-none text-white">
       <q-card-section>
         <div class="row justify-between">
-          <div class="text-h5">
+          <div class="text-bold fontsize-20">
             <span v-if="forecastStore.stationName"
               >Detailed Forecast - {{ forecastStore.stationName }}</span
             >
           </div>
-          <q-btn icon="close" square color="primary" v-close-popup>CLOSE</q-btn>
+          <q-btn icon="close" color="primary" v-close-popup>close</q-btn>
         </div>
       </q-card-section>
       <q-separator dark />

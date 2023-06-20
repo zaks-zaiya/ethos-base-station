@@ -13,17 +13,16 @@
           @click="moveChart(item[0], idx)"
         >
           <q-card
-            class="no-shadow q-px-md"
+            class="no-shadow q-py-md q-px-lg text"
             :class="[{ 'bg-grey-9': idx == activeIndex }, 'bg-dark']"
           >
             <div class="column">
-              <div class="row text-white text-body1 justify-center">
+              <div class="row text-white justify-center">
                 {{ item[0] }}
               </div>
               <div class="row">
-                <div>{{ Math.round(item[1]) }}°</div>
-                <div class="space10"></div>
-                <div class="low">{{ Math.round(item[2]) }}°</div>
+                <div class="q-mr-sm">{{ Math.round(item[1]) }}°</div>
+                <div class="text-grey">{{ Math.round(item[2]) }}°</div>
               </div>
             </div>
           </q-card>
@@ -125,29 +124,14 @@ export default defineComponent({
     });
     const chartOptions = computed(() => {
       return {
-        // layout: {
-        //   padding: {
-        //     left: 10,
-        //     right: 10,
-        //   },
-        // },
-        // animation: false,
         animation: {
           duration: 1000, // general animation time
         },
-        // animations: {
-        //   borderColor: {
-        //     type: 'number',
-        //     duration: 1000,
-        //     from: 0,
-        //     to: 1,
-        //     loop: true,
-        //   },
-        // },
         plugins: {
           legend: { display: false },
           datalabels: {
             color: 'white',
+            font: { size: 28 },
             // anchor: 'end',
             formatter: Math.round, // format labels
             align: 'end', // move datalabels on top of the line
@@ -162,6 +146,7 @@ export default defineComponent({
             max: max.value,
             ticks: {
               color: 'white',
+              font: { size: 28 },
             },
             grid: {
               display: false,
@@ -197,12 +182,6 @@ export default defineComponent({
 </script>
 <style>
 .chartBox {
-  height: 180px;
-}
-.space10 {
-  width: 8px;
-}
-.low {
-  color: gray;
+  height: 40vh;
 }
 </style>
