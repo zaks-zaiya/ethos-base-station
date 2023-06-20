@@ -8,9 +8,9 @@
     <q-card-section>
       <span class="row justify-between">
         <div
-          v-for="(item, idx) in forecastStore.dayOfWeekForecast"
-          :key="item[0]"
-          @click="moveChart(item[0], idx)"
+          v-for="(item, idx) in dailyMinMaxTemps"
+          :key="item.dayOfWeek"
+          @click="activeIndex = idx"
         >
           <q-card
             class="no-shadow q-py-md q-px-lg text"
@@ -18,11 +18,11 @@
           >
             <div class="column">
               <div class="row text-white justify-center">
-                {{ item[0] }}
+                {{ item.dayOfWeek }}
               </div>
               <div class="row">
-                <div class="q-mr-sm">{{ Math.round(item[1]) }}°</div>
-                <div class="text-grey">{{ Math.round(item[2]) }}°</div>
+                <div class="q-mr-sm">{{ Math.round(item.minTemp) }}°</div>
+                <div class="text-grey">{{ Math.round(item.maxTemp) }}°</div>
               </div>
             </div>
           </q-card>
@@ -32,7 +32,7 @@
   </q-card>
 </template>
 
-<script>
+<script lang="ts">
 import { ref, onMounted, computed, defineComponent } from 'vue';
 import {
   Chart as ChartJS,
@@ -48,6 +48,7 @@ import {
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Line as LineChart } from 'vue-chartjs';
 import { useForecastStore } from 'src/stores/forecast';
+import { ChartOptions } from 'chart.js';
 ChartJS.register(
   Filler,
   ChartDataLabels,
@@ -64,43 +65,76 @@ export default defineComponent({
   name: 'LineGraph',
   components: { LineChart },
   setup() {
-    const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const loaded = ref(false);
     const activeIndex = ref(0); // first day is always selected
     const forecastStore = useForecastStore();
-    const min = ref(0); // which starting part of the chart to render
-    const max = ref(7); // which ending part of the chart to render
-    const moveChart = (day, index) => {
-      // function to change min and max value based on the picked day of week
-      for (let i = 0; i < forecastStore.forecastTemps.length; i++) {
-        if (
-          day.localeCompare(
-            weekday[forecastStore.forecastTemps[i][0].getDay()]
-          ) == 0
-        ) {
-          // found the first matching day of week
-          // render only 8 datapoints for a single day
-          min.value = i;
-          max.value = i + 7;
-          break;
+
+    // Getting the day of the week
+    const forecastTempsWithDay = computed(() => {
+      if (!forecastStore.forecastTemps) return [];
+      const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      // Append day of week name onto forecast data
+      return forecastStore.forecastTemps.map((forecast) => ({
+        ...forecast,
+        dayOfWeek: dayNames[forecast.date.getDay()],
+      }));
+    });
+
+    // Getting min and max temperature for the day
+    const dailyMinMaxTemps = computed(() => {
+      // Create object which groups array by day of week
+      const groupedByDay: Record<
+        string,
+        Array<{ date: Date; temperature: number; dayOfWeek: string }>
+      > = {};
+      for (const forecast of forecastTempsWithDay.value) {
+        if (groupedByDay[forecast.dayOfWeek]) {
+          groupedByDay[forecast.dayOfWeek].push(forecast);
+        } else {
+          groupedByDay[forecast.dayOfWeek] = [forecast];
         }
       }
-      activeIndex.value = index;
+
+      // Find min and max temp from grouped object
+      return Object.keys(groupedByDay).map((dayOfWeek) => {
+        const temperatures = groupedByDay[dayOfWeek].map((f) => f.temperature);
+        return {
+          dayOfWeek,
+          minTemp: Math.min(...temperatures),
+          maxTemp: Math.max(...temperatures),
+        };
+      });
+    });
+
+    // Get the min index (where the chart should start displaying from)
+    const chartMin = computed(() => {
+      const activeDay = dailyMinMaxTemps.value[activeIndex.value].dayOfWeek;
+      return forecastTempsWithDay.value.findIndex(
+        (item) => item.dayOfWeek === activeDay
+      );
+    });
+
+    const dateToAmPm = (date: Date) => {
+      const ampmHour = date.getHours() % 12 || 12;
+      const period = date.getHours() >= 12 ? 'pm' : 'am';
+      return '' + ampmHour + period;
     };
 
     const chartData = computed(() => {
-      // Check if weather data is avaliable yet
+      // Check if weather data is available yet
       if (!forecastStore.forecastTemps) {
-        return {};
+        return {
+          labels: [],
+          datasets: [],
+        };
       }
-      let keys = [];
-      let values = [];
-      forecastStore.forecastTemps.forEach((e) => {
-        const date = e[0];
-        const ampmHour = date.getHours() % 12 || 12;
-        const period = date.getHours() >= 12 ? 'pm' : 'am';
-        keys.push('' + ampmHour + period);
-        values.push(e[1]);
+      // Keys are the time e.g. '11pm'
+      let keys = forecastStore.forecastTemps.map((forecastPoint) => {
+        return dateToAmPm(forecastPoint.date);
+      });
+      // Values are the temperatures
+      let values = forecastStore.forecastTemps.map((forecastPoint) => {
+        return forecastPoint.temperature;
       });
       return {
         labels: keys,
@@ -122,7 +156,8 @@ export default defineComponent({
         ],
       };
     });
-    const chartOptions = computed(() => {
+
+    const chartOptions = computed((): ChartOptions<'line'> => {
       return {
         animation: {
           duration: 1000, // general animation time
@@ -142,8 +177,8 @@ export default defineComponent({
         maintainAspectRatio: false,
         scales: {
           x: {
-            min: min.value,
-            max: max.value,
+            min: chartMin.value,
+            max: chartMin.value + 7, // first 8 data points for day
             ticks: {
               color: 'white',
               font: { size: 28 },
@@ -168,13 +203,11 @@ export default defineComponent({
     });
 
     return {
-      min,
-      max,
+      dailyMinMaxTemps,
+      chartMin,
       loaded,
       chartData,
       chartOptions,
-      forecastStore,
-      moveChart,
       activeIndex,
     };
   },
