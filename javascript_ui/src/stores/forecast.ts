@@ -76,7 +76,7 @@ export const useForecastStore = defineStore('forecast', {
           // Clear error message
           this.errorMessage = '';
 
-          // if api call succeeded then call get detailed forecast\
+          // if api call succeeded then call get detailed forecast
           this.getDetailedForecast();
         } catch (error: unknown) {
           if (error instanceof AxiosError) {
@@ -89,7 +89,7 @@ export const useForecastStore = defineStore('forecast', {
       updateWeather();
 
       // Setup poll interval for every 10 min
-      this.pollInterval = window.setInterval(updateWeather, 60000 * 10);
+      this.pollInterval = window.setInterval(updateWeather, 60000 * 20);
     },
     /**
      * Read the user latitude and longitude (based off postcode)
