@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { AudioType } from 'src/components/models';
-import { coolingStrategies } from 'src/helper/coolingStrategies';
+import { coolingStrategies } from 'src/helpers/coolingStrategies';
 
 export const useDataPreferencesStore = defineStore('dataPreferences', {
   persist: true,

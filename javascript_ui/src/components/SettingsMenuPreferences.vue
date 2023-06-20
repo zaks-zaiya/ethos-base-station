@@ -6,7 +6,7 @@
     :columns="columns"
     row-key="label"
     @row-click="rowClick"
-    hide-bottom=""
+    hide-bottom
   >
     <template v-slot:body-cell-label="props">
       <q-td :props="props">
@@ -49,8 +49,8 @@
 
 <script lang="ts">
 import { QTableProps } from 'quasar';
-import { playAudio, stopAudio } from 'src/helper/audioAlertDispatcher';
-import { coolingStrategies } from 'src/helper/coolingStrategies';
+import { playAudio, stopAudio } from 'src/helpers/audioAlertDispatcher';
+import { coolingStrategies } from 'src/helpers/coolingStrategies';
 import { useDataPreferencesStore } from 'src/stores/dataPreferences';
 import { defineComponent, reactive, computed } from 'vue';
 import { AudioType, RiskLevel } from './models';

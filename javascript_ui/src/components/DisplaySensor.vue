@@ -38,7 +38,7 @@ import {
   onUnmounted,
 } from 'vue';
 import { SensorData, RiskLevel } from 'components/models';
-import { playTextToSpeech } from 'src/helper/audioAlertDispatcher';
+import { playTextToSpeech } from 'src/helpers/audioAlertDispatcher';
 
 export default defineComponent({
   name: 'DisplaySensor',

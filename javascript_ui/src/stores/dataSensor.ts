@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia';
 import { io } from 'socket.io-client';
 import { SensorData } from 'src/components/models';
-import { getRiskLevel } from 'src/helper/riskLevel';
-import { playAudio } from 'src/helper/audioAlertDispatcher';
+import { getRiskLevel } from 'src/helpers/riskLevel';
+import { playAudio } from 'src/helpers/audioAlertDispatcher';
 import { useDataPreferencesStore } from 'src/stores/dataPreferences';
 
 const deserializeSensorData = (sensorDataString: string) => {

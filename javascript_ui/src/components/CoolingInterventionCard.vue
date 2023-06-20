@@ -22,7 +22,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import { calculateWBGT } from 'src/helper/riskLevel';
+import { calculateWBGT } from 'src/helpers/riskLevel';
 import { useDataSensorStore, isOutdoorSensor } from 'src/stores/dataSensor';
 import { SensorData } from 'src/components/models';
 

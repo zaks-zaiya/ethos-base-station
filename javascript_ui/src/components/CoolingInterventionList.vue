@@ -77,7 +77,7 @@ import {
 } from 'vue';
 import { useDataPreferencesStore } from 'src/stores/dataPreferences';
 import { CoolingStrategy } from 'src/components/models';
-import { coolingStrategies } from 'src/helper/coolingStrategies';
+import { coolingStrategies } from 'src/helpers/coolingStrategies';
 import { QTable, QTableProps } from 'quasar';
 import CoolingInterventionEffectiveness from './CoolingInterventionEffectiveness.vue';
 import CoolingInterventionCard from './CoolingInterventionCard.vue';
