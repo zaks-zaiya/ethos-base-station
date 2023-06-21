@@ -14,8 +14,8 @@
       </div>
       <div class="row">
         <div class="col-4 q-pr-lg">
-          <CoolingInterventionCard displayMode="fan" />
-          <CoolingInterventionCard displayMode="blinds" class="q-mt-lg" />
+          <CoolingInterventionFanBlinds displayMode="fan" />
+          <CoolingInterventionFanBlinds displayMode="blinds" class="q-mt-lg" />
         </div>
         <div class="table-container col-8">
           <q-table
@@ -80,11 +80,14 @@ import { CoolingStrategy } from 'src/components/models';
 import { coolingStrategies } from 'src/helpers/coolingStrategies';
 import { QTable, QTableProps } from 'quasar';
 import CoolingInterventionEffectiveness from './CoolingInterventionEffectiveness.vue';
-import CoolingInterventionCard from './CoolingInterventionCard.vue';
+import CoolingInterventionFanBlinds from './CoolingInterventionFanBlinds.vue';
 
 export default defineComponent({
   name: 'CoolingInterventionList',
-  components: { CoolingInterventionEffectiveness, CoolingInterventionCard },
+  components: {
+    CoolingInterventionEffectiveness,
+    CoolingInterventionFanBlinds,
+  },
   setup(props, { emit }) {
     const dataPreferencesStore = useDataPreferencesStore();
     const showBottomScrollIndicator = ref(false);
