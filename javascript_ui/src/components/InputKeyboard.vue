@@ -1,6 +1,7 @@
 <template>
   <!-- Type="text" has to be used so cursor position can be obtained -->
   <q-input
+    v-scroll-to-input="'#base-scroll-area'"
     ref="inputEl"
     :model-value="reactiveValue.value"
     :label="label"
@@ -18,10 +19,12 @@
 <script lang="ts">
 import { defineComponent, PropType, reactive, ref, Ref, watch } from 'vue';
 import { useKeyboardStore } from 'src/stores/keyboard';
+import { scrollToInput } from 'src/directives/scrollToInput';
 import { QInput } from 'quasar';
 
 export default defineComponent({
   name: 'InputKeyboard',
+  directives: { scrollToInput },
   props: {
     /**
      * Model value of component
@@ -111,23 +114,6 @@ export default defineComponent({
     // Bind keyboard on focus
     const bindKeyboard = () => {
       keyboardStore.bindKeyboard(inputEl.value, reactiveValue, props.type);
-      // Scroll input element into view
-      setTimeout(() => {
-        // Get parent div to be scrolled (by finding 'auto-scroll' class)
-        const scrollParent = inputEl.value?.nativeEl.closest('.auto-scroll')
-          ?.firstChild as HTMLElement;
-        if (inputEl.value && scrollParent) {
-          // Calculate where to scroll
-          const yOffset = -10; // number of pixels padding
-          const y =
-            inputEl.value.nativeEl.getBoundingClientRect().top +
-            scrollParent.scrollTop -
-            scrollParent.getBoundingClientRect().top +
-            yOffset;
-          // Scroll to y location
-          scrollParent.scrollTo({ top: y, behavior: 'smooth' });
-        }
-      }, 150); // to ensure that the window is resized already
     };
 
     // Unbind keyboard on blur

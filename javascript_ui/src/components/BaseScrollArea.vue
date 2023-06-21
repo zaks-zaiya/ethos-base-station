@@ -1,9 +1,10 @@
 <template>
   <div style="position: relative">
-    <!-- auto-scroll class is needed for automatic scrolling on keyboard bind -->
+    <!-- base-scroll-area ID is needed for automatic scrolling on keyboard bind -->
     <q-scroll-area
       :style="{ height: computedHeight, position: 'relative' }"
-      class="q-pr-md scroll-shadow auto-scroll"
+      id="base-scroll-area"
+      class="q-pr-md"
       :class="heightClass"
       :thumb-style="thumbStyle"
       :bar-style="barStyle"
@@ -148,8 +149,4 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-:root {
-  --keyboard-height: #{$keyboard-height};
-}
-</style>
+<style lang="scss" scoped></style>
