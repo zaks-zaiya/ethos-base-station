@@ -138,7 +138,7 @@ export default defineComponent({
           selectionEnd
         );
         // Restore cursor position
-        restoreInputCursorToPosition(selectionStart - 1);
+        restoreInputCursorToPosition(selectionEnd - 1);
       }
     };
 
