@@ -13,7 +13,7 @@ const scrollToElement = (scrollDiv: Element | null, inputElement: Element) => {
 };
 
 export const scrollToInput: Directive = {
-  beforeMount(el: Element, binding) {
+  mounted(el: Element, binding) {
     let scrollParent: null | Element = null;
     // Get HTML element from supplied ID
     if (!binding.arg) {
