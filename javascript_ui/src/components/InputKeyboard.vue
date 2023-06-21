@@ -2,14 +2,12 @@
   <!-- Type="text" has to be used so cursor position can be obtained -->
   <q-input
     v-scroll-to-input="'#base-scroll-area'"
-    ref="inputEl"
+    v-bind-on-screen-keyboard="{ reactiveValue, type }"
     :model-value="reactiveValue.value"
     :label="label"
     :hint="hint"
     :error="error"
     :error-message="errorMessage"
-    @focus="bindKeyboard"
-    @blur="unbindKeyboard"
     type="text"
     class="q-mb-sm"
     outlined
@@ -17,14 +15,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, reactive, ref, Ref, watch } from 'vue';
-import { useKeyboardStore } from 'src/stores/keyboard';
+import { defineComponent, PropType, reactive, ref, watch } from 'vue';
 import { scrollToInput } from 'src/directives/scrollToInput';
-import { QInput } from 'quasar';
+import { bindOnScreenKeyboard } from 'src/directives/bindOnScreenKeyboard';
 
 export default defineComponent({
   name: 'InputKeyboard',
-  directives: { scrollToInput },
+  directives: { scrollToInput, bindOnScreenKeyboard },
   props: {
     /**
      * Model value of component
@@ -58,7 +55,6 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
-    const keyboardStore = useKeyboardStore();
     const error = ref(false);
     const errorMessage = ref('');
 
@@ -75,8 +71,6 @@ export default defineComponent({
       }
     };
 
-    // A ref to the inputEl QInput
-    const inputEl: Ref<undefined | QInput> = ref(undefined);
     // This is defined as a reactive object to enable passing by reference
     const reactiveValue = reactive({
       value: toString(props.modelValue) as string,
@@ -111,23 +105,10 @@ export default defineComponent({
       }
     });
 
-    // Bind keyboard on focus
-    const bindKeyboard = () => {
-      keyboardStore.bindKeyboard(inputEl.value, reactiveValue, props.type);
-    };
-
-    // Unbind keyboard on blur
-    const unbindKeyboard = () => {
-      keyboardStore.unbindKeyboard();
-    };
-
     return {
       error,
       errorMessage,
-      inputEl,
       reactiveValue,
-      bindKeyboard,
-      unbindKeyboard,
     };
   },
 });

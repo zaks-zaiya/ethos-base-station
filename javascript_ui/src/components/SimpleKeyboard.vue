@@ -98,9 +98,8 @@ export default defineComponent({
       }
 
       // Get starting and ending cursor position
-      const selectionStart =
-        keyboardStore.keyboardBinding.nativeEl.selectionStart;
-      const selectionEnd = keyboardStore.keyboardBinding.nativeEl.selectionEnd;
+      const selectionStart = keyboardStore.keyboardBinding.selectionStart;
+      const selectionEnd = keyboardStore.keyboardBinding.selectionEnd;
 
       if (selectionStart === null || selectionEnd === null) {
         console.error('No cursor position in input element');
@@ -203,7 +202,7 @@ export default defineComponent({
     // Restore the input cursor position to the specified position
     const restoreInputCursorToPosition = (newStartPos: number) => {
       nextTick(() => {
-        keyboardStore.keyboardBinding?.nativeEl.setSelectionRange(
+        keyboardStore.keyboardBinding?.setSelectionRange(
           newStartPos,
           newStartPos
         );
