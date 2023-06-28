@@ -20,7 +20,7 @@
           <q-table
             ref="tableRef"
             :rows="coolingStrategiesList"
-            class="large-font my-sticky-header-table"
+            class="my-sticky-header-table"
             row-key="name"
             :pagination="pagination"
             :columns="columns"
@@ -210,71 +210,13 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-.large-font {
-  tbody td,
-  thead th {
-    font-size: 26px;
-  }
-}
-
+<style lang="scss" scoped>
 .table-container {
   position: relative; // This allows absolute positioning of children
-}
-
-// Scrollbar styling
-.q-table__middle.scroll::-webkit-scrollbar {
-  width: 20px; /* barStyle width */
-  background-color: #027ae333; /* barStyle background color */
-  border-radius: 9px; /* barStyle border radius */
-}
-
-.q-table__middle.scroll::-webkit-scrollbar-thumb {
-  right: 4px; /* thumbStyle right */
-  border-radius: 9px; /* thumbStyle border radius */
-  background-color: #027ae3bf; /* thumbStyle background color */
-  width: 16px; /* thumbStyle width */
-}
-
-// Styling for scroll indicators at top and bottom of table when content is there
-.scroll-indicator-top,
-.scroll-indicator-bottom {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.scroll-indicator-bottom {
-  bottom: 10px;
-}
-
-.scroll-indicator-top {
-  top: 60px;
 }
 
 .my-sticky-header-table {
   /* height or max-height is important */
   height: calc(100vh / 1.5);
-
-  .q-table__top,
-  .q-table__bottom,
-  thead tr:first-child th {
-    /* bg color is important for th; just specify one */
-    background-color: $grey-3;
-  }
-
-  thead tr th {
-    position: sticky;
-    z-index: 1;
-  }
-  thead tr:first-child th {
-    top: 0;
-  }
-
-  /* prevent scrolling behind sticky top row on focus */
-  tbody {
-    /* height of all previous header rows */
-    scroll-margin-top: 48px;
-  }
 }
 </style>
