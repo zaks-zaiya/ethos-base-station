@@ -1,9 +1,11 @@
 <template>
   <div class="text-h6 q-mb-md">Preferences</div>
+
+  <!-- AUDIO OPTION -->
   <div class="text">Which audio alert type would you like to receive?</div>
   <q-table
-    :rows="options"
-    :columns="columns"
+    :rows="audioOptions"
+    :columns="audioColumns"
     row-key="label"
     @row-click="rowClick"
     hide-bottom
@@ -36,23 +38,39 @@
       </q-td>
     </template>
   </q-table>
+
+  <!-- COOLING STRATEGIES OPTION -->
   <div class="q-mt-lg text">
     Which cooling strategies do you have access to?
   </div>
-  <q-option-group
-    v-model="dataPreferencesStore.coolingStrategiesAvailable"
-    :options="coolingStrategyOptions"
-    type="checkbox"
-    color="primary"
-  />
+  <q-table
+    :rows="dataPreferencesStore.coolingStrategyOptions"
+    :columns="coolingStrategyColumns"
+    row-key="label"
+    :pagination="{ rowsPerPage: 0 }"
+    hide-bottom
+  >
+    <template v-slot:body-cell-haveAccessTo="props">
+      <q-td :props="props">
+        <q-toggle v-model="props.row.haveAccessTo" color="primary" />
+      </q-td>
+    </template>
+
+    <template v-slot:body-cell-wouldUse="props">
+      <q-td :props="props">
+        <q-toggle v-model="props.row.wouldUse" color="primary" />
+      </q-td>
+    </template>
+  </q-table>
+
+  <!-- WHY NOT COOLING STRATEGY -->
 </template>
 
 <script lang="ts">
 import { QTableProps } from 'quasar';
 import { playAudio, stopAudio } from 'src/helpers/audioAlertDispatcher';
-import { coolingStrategies } from 'src/helpers/coolingStrategies';
 import { useDataPreferencesStore } from 'src/stores/dataPreferences';
-import { defineComponent, reactive, computed } from 'vue';
+import { defineComponent, reactive } from 'vue';
 import { AudioType, RiskLevel } from './models';
 
 interface TableOptions {
@@ -65,6 +83,7 @@ export default defineComponent({
   setup() {
     const dataPreferencesStore = useDataPreferencesStore();
 
+    // AUDIO TONE OPTIONS
     const isPlayingMedium = reactive<Record<AudioType, boolean>>({
       [AudioType.TONE]: false,
       [AudioType.TTS]: false,
@@ -75,7 +94,7 @@ export default defineComponent({
       [AudioType.TTS]: false,
     });
 
-    let options: Array<TableOptions> = [
+    let audioOptions: Array<TableOptions> = [
       {
         label: 'Tone alerts',
         value: AudioType.TONE,
@@ -86,7 +105,7 @@ export default defineComponent({
       },
     ];
 
-    let columns: QTableProps['columns'] = [
+    let audioColumns: QTableProps['columns'] = [
       {
         name: 'label',
         label: 'Alert Type',
@@ -110,18 +129,6 @@ export default defineComponent({
       },
     ];
 
-    const coolingStrategyOptions = computed(() => {
-      return Object.entries(coolingStrategies).map(([key, value]) => ({
-        label: value.name,
-        value: key,
-      }));
-    });
-
-    const rowClick = (evt: Event, row: TableOptions) => {
-      // Update group to be the value of the clicked row
-      dataPreferencesStore.audioType = row.value;
-    };
-
     const playDemoAudio = async (row: TableOptions, riskLevel: RiskLevel) => {
       if (riskLevel === RiskLevel.MEDIUM) {
         if (isPlayingMedium[row.value]) {
@@ -142,16 +149,45 @@ export default defineComponent({
       }
     };
 
+    const rowClick = (evt: Event, row: TableOptions) => {
+      // Update group to be the value of the clicked row
+      dataPreferencesStore.audioType = row.value;
+    };
+
+    const coolingStrategyColumns: QTableProps['columns'] = [
+      {
+        name: 'name',
+        required: true,
+        label: 'Strategy',
+        align: 'left',
+        field: 'name',
+      },
+      {
+        name: 'haveAccessTo',
+        required: true,
+        label: 'Have Access To',
+        align: 'center',
+        field: 'haveAccessTo',
+      },
+      {
+        name: 'wouldUse',
+        required: true,
+        label: 'Would Use',
+        align: 'center',
+        field: 'wouldUse',
+      },
+    ];
+
     return {
       RiskLevel,
       dataPreferencesStore,
-      options,
-      columns,
-      coolingStrategyOptions,
-      rowClick,
+      audioOptions,
+      audioColumns,
       playDemoAudio,
+      rowClick,
       isPlayingMedium,
       isPlayingHigh,
+      coolingStrategyColumns,
     };
   },
 });

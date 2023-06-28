@@ -19,7 +19,7 @@
         <div class="table-container col-8">
           <q-table
             ref="tableRef"
-            :rows="coolingStrategiesList"
+            :rows="dataPreferencesStore.coolingStrategyOptions"
             class="my-sticky-header-table"
             row-key="name"
             :pagination="pagination"
@@ -66,17 +66,9 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  ref,
-  Ref,
-  onMounted,
-  onBeforeUnmount,
-  computed,
-} from 'vue';
+import { defineComponent, ref, Ref, onMounted, onBeforeUnmount } from 'vue';
 import { useDataPreferencesStore } from 'src/stores/dataPreferences';
 import { CoolingStrategy } from 'src/components/models';
-import { coolingStrategies } from 'src/helpers/coolingStrategies';
 import { QTable, QTableProps } from 'quasar';
 import CoolingInterventionEffectiveness from './CoolingInterventionEffectiveness.vue';
 import CoolingInterventionFanBlinds from './CoolingInterventionFanBlinds.vue';
@@ -121,13 +113,6 @@ export default defineComponent({
         field: 'effectiveness',
       },
     ];
-
-    // Get cooling strategies from those avaliable
-    const coolingStrategiesList = computed(() => {
-      return dataPreferencesStore.coolingStrategiesAvailable.map((key) => {
-        return coolingStrategies[key];
-      });
-    });
 
     onMounted(() => {
       const table = tableRef.value?.$el;
@@ -197,7 +182,7 @@ export default defineComponent({
     };
 
     return {
-      coolingStrategiesList,
+      dataPreferencesStore,
       columns,
       pagination,
       tableRef,

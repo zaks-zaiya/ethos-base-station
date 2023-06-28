@@ -7,9 +7,13 @@ export const useDataPreferencesStore = defineStore('dataPreferences', {
 
   state: () => ({
     audioType: AudioType.TONE,
-    coolingStrategiesAvailable: Object.keys(coolingStrategies) as Array<
-      keyof typeof coolingStrategies
-    >,
+    coolingStrategyOptions: coolingStrategies.map((strategy) => {
+      return {
+        ...strategy,
+        haveAccessTo: true,
+        wouldUse: true,
+      };
+    }),
   }),
 
   getters: {},
