@@ -1,129 +1,129 @@
 <template>
-  <q-card class="fontsize-18 bg-grey-3">
-    <q-card-section>
-      <div class="text-bold" v-if="displayMode === 'fan'">
-        Should you use a fan?
-      </div>
-      <div class="text-bold" v-else-if="displayMode === 'blinds'">
-        Should you close your blinds/windows?
-      </div>
-      <div v-for="sensor of sensorsWithIconData" :key="sensor.name">
-        {{ sensor.name }}:
+  <q-table :rows="sensorsWithIconData" :columns="columns" hide-bottom>
+    <template v-slot:header-cell-blindUse="props">
+      <q-th v-bind="props" :props="props">
+        Close<br />Window/<br />Blinds?
+      </q-th>
+    </template>
+    <template #body-cell-sensor="props">
+      <q-td>{{ props.row.name }}</q-td>
+    </template>
+    <template #body-cell-fanUse="props">
+      <q-td class="text-center">
         <q-avatar
-          :icon="sensor.icon"
+          :icon="props.row.fanUse.icon"
           size="lg"
-          :color="sensor.color"
+          :color="props.row.fanUse.color"
           text-color="white"
         />
-      </div>
-    </q-card-section>
-  </q-card>
+      </q-td>
+    </template>
+    <template #body-cell-blindUse="props">
+      <q-td class="text-center">
+        <q-avatar
+          v-if="!isOutdoorSensor(props.row)"
+          :icon="props.row.blindUse.icon"
+          size="lg"
+          :color="props.row.blindUse.color"
+          text-color="white"
+        />
+      </q-td>
+    </template>
+  </q-table>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
+import { shouldUseFan } from 'src/helpers/fanAndWindowUse';
 import { calculateWBGT } from 'src/helpers/riskLevel';
 import { useDataSensorStore, isOutdoorSensor } from 'src/stores/dataSensor';
 import { SensorData } from 'src/components/models';
+import { QTableProps } from 'quasar';
 
 export default defineComponent({
-  props: {
-    displayMode: {
-      type: String,
-      required: true,
-      validator: (value: string) => ['fan', 'blinds'].includes(value),
-    },
-  },
-  setup(props) {
+  setup() {
     const dataSensorStore = useDataSensorStore();
 
-    function calculateFanUse(
+    const columns: QTableProps['columns'] = [
+      {
+        name: 'name',
+        label: '',
+        field: 'name',
+        align: 'center',
+      },
+      {
+        name: 'fanUse',
+        label: 'Use a fan?',
+        field: 'fanUse',
+        align: 'center',
+      },
+      {
+        name: 'blindUse',
+        label: 'Close window/blinds?',
+        field: 'blindUse',
+        align: 'center',
+      },
+    ];
+
+    // Function to calculate whether blinds/windows should be closed
+    function shouldCloseWindow(
       sensor: SensorData
     ): 'yes' | 'maybe' | 'no' | undefined {
-      if (sensor.humidity && sensor.temperature) {
-        /* Based on Figure 1 (healthy older people)
-         * https://www.thelancet.com/journals/lanplh/article/PIIS2542-5196(21)00136-4/fulltext
-         */
-        const x = sensor.humidity;
-        const fanThreshold =
-          -3.24 * Math.pow(x, 4) * Math.pow(10, -7) +
-          8.4 * Math.pow(x, 3) * Math.pow(10, -5) -
-          7.86 * Math.pow(x, 2) * Math.pow(10, -3) +
-          2.43 * Math.pow(x, 1) * Math.pow(10, -1) +
-          37.93;
-
-        if (sensor.temperature < fanThreshold - 1) {
-          // Safe to use fan
-          return 'yes';
-        } else if (sensor.temperature < fanThreshold + 1) {
-          // Can maybe use fan
-          return 'maybe';
-        } else {
-          // Should not use fan
-          return 'no';
-        }
+      // If looking at outdoor sensor, return undefined
+      if (isOutdoorSensor(sensor)) {
+        return undefined;
       }
-      return undefined;
-    }
-
-    function calculateBlindUse(
-      sensor: SensorData
-    ): 'yes' | 'maybe' | 'no' | undefined {
+      // Calculate indoor and outdoor WBGT
       const indoorWBGT = calculateWBGT(sensor);
       const outdoorWBGT = calculateWBGT(dataSensorStore.getOutdoorSensor);
       if (indoorWBGT && outdoorWBGT) {
         if (indoorWBGT < outdoorWBGT - 2) {
+          // Indoor temp is less than outdoor temp
           return 'yes';
         } else if (indoorWBGT < outdoorWBGT + 2) {
+          // Indoor temp and outdoor temp are similar
           return 'maybe';
         } else {
+          // Indoor temp is higher than outdoor temp
           return 'no';
         }
       }
       return undefined;
     }
 
+    function getIconColor(result: 'yes' | 'maybe' | 'no' | undefined) {
+      let icon, color;
+      switch (result) {
+        case 'yes':
+          icon = 'done';
+          color = 'positive';
+          break;
+        case 'maybe':
+          icon = 'question_mark';
+          color = 'amber';
+          break;
+        case 'no':
+          icon = 'close';
+          color = 'negative';
+          break;
+        default:
+          icon = 'device_unknown';
+          color = 'grey';
+      }
+      return { icon, color };
+    }
+
     const sensorsWithIconData = computed(() => {
-      return dataSensorStore.allSensorData
-        .filter((sensor) => {
-          // If in 'blinds' mode and the sensor is an outdoor sensor, filter it out
-          if (props.displayMode === 'blinds' && isOutdoorSensor(sensor)) {
-            return false;
-          }
-          // Otherwise, include it
-          return true;
-        })
-        .map((sensor) => {
-          // Calculate status, and display icon accordingly
-          let result =
-            props.displayMode === 'fan'
-              ? calculateFanUse(sensor)
-              : calculateBlindUse(sensor);
-          let icon, color;
-
-          switch (result) {
-            case 'yes':
-              icon = 'done';
-              color = 'positive';
-              break;
-            case 'maybe':
-              icon = 'question_mark';
-              color = 'amber';
-              break;
-            case 'no':
-              icon = 'close';
-              color = 'negative';
-              break;
-            default:
-              icon = 'device_unknown';
-              color = 'grey';
-          }
-
-          return { ...sensor, icon, color };
-        });
+      return dataSensorStore.allSensorData.map((sensor) => {
+        // Calculate status, and display icon accordingly
+        let fanUse = getIconColor(shouldUseFan(sensor));
+        let blindUse = getIconColor(shouldCloseWindow(sensor));
+        // Extend sensor with icon and color data for fan use and blind use
+        return { ...sensor, fanUse, blindUse };
+      });
     });
 
-    return { sensorsWithIconData };
+    return { sensorsWithIconData, columns, isOutdoorSensor };
   },
 });
 </script>

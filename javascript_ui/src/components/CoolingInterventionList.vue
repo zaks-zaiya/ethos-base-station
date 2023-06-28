@@ -14,8 +14,7 @@
       </div>
       <div class="row">
         <div class="col-4 q-pr-lg">
-          <CoolingInterventionFanBlinds displayMode="fan" />
-          <CoolingInterventionFanBlinds displayMode="blinds" class="q-mt-lg" />
+          <CoolingInterventionFanBlinds />
         </div>
         <div class="table-container col-8">
           <q-table
