@@ -12,6 +12,8 @@ export const useDataPreferencesStore = defineStore('dataPreferences', {
         ...strategy,
         haveAccessTo: true,
         wouldUse: true,
+        whyNotUse: [] as Array<string>,
+        whyNotUseOther: '',
       };
     }),
   }),

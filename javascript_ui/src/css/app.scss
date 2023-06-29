@@ -66,6 +66,13 @@
 }
 
 /**
+ * CHECKBOX
+ */
+.q-checkbox__label {
+  @extend .fontsize-14;
+}
+
+/**
  * TABLE
  */
 .q-table th,
