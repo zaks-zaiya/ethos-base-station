@@ -16,7 +16,7 @@
         <q-btn icon="close" flat round dense v-close-popup />
       </q-card-section>
       <q-card-section>
-        <div>
+        <div class="text">
           Are you sure you want to delete all data and reset everything? This
           cannot be undone
         </div>
