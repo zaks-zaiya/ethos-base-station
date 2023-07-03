@@ -19,26 +19,39 @@
         <div class="table-container col-8">
           <q-table
             ref="tableRef"
-            :rows="dataPreferencesStore.coolingStrategyOptions"
+            :rows="rows"
             class="my-sticky-header-table"
             row-key="name"
             :pagination="pagination"
             :columns="columns"
-            @row-click="onRowClick"
             hide-bottom
           >
-            <template v-slot:body-cell-icon="props">
-              <q-td :props="props">
-                <q-icon :name="props.row.icon" size="60px" color="grey" />
-              </q-td>
-            </template>
-
-            <template v-slot:body-cell-effectiveness="props">
-              <q-td :props="props">
-                <CoolingInterventionEffectiveness
-                  :effectiveness="props.row.effectiveness"
-                />
-              </q-td>
+            <template v-slot:body="props">
+              <q-tr
+                @click="onRowClick(props.row)"
+                :props="props"
+                :class="{
+                  'bg-grey text-white': !props.row.effectiveness,
+                }"
+              >
+                <q-td v-for="col in props.cols" :key="col.name" :props="props">
+                  <template v-if="col.name === 'icon'">
+                    <q-icon
+                      :name="props.row[col.name]"
+                      size="60px"
+                      color="grey"
+                    />
+                  </template>
+                  <template v-else-if="col.name === 'effectiveness'">
+                    <CoolingInterventionEffectiveness
+                      :effectiveness="props.row[col.name]"
+                    />
+                  </template>
+                  <template v-else>
+                    {{ props.row[col.name] }}
+                  </template>
+                </q-td>
+              </q-tr>
             </template>
           </q-table>
           <q-avatar
@@ -66,7 +79,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref, onMounted, onBeforeUnmount } from 'vue';
+import {
+  defineComponent,
+  ref,
+  Ref,
+  onMounted,
+  onBeforeUnmount,
+  computed,
+} from 'vue';
 import { useDataPreferencesStore } from 'src/stores/dataPreferences';
 import { CoolingStrategy } from 'src/components/models';
 import { QTable, QTableProps } from 'quasar';
@@ -86,8 +106,6 @@ export default defineComponent({
     const tableRef: Ref<null | QTable> = ref(null);
     const pagination = {
       rowsPerPage: 0,
-      sortBy: 'effectiveness',
-      descending: true,
     };
     const columns: QTableProps['columns'] = [
       {
@@ -96,7 +114,6 @@ export default defineComponent({
         label: '',
         align: 'left',
         field: 'icon',
-        format: (val: string) => `<img src="${val}" alt="" />`,
       },
       {
         name: 'name',
@@ -113,6 +130,41 @@ export default defineComponent({
         field: 'effectiveness',
       },
     ];
+
+    const rows = computed(() => {
+      // Separate the strategies into two arrays based on haveAccessTo and wouldUse properties
+      const availableAndUsable =
+        dataPreferencesStore.coolingStrategyOptions.filter(
+          (option) => option.haveAccessTo && option.wouldUse
+        );
+      const remaining = dataPreferencesStore.coolingStrategyOptions.filter(
+        (option) => !(option.haveAccessTo && option.wouldUse)
+      );
+
+      // Sort both arrays
+      availableAndUsable.sort((a, b) => b.effectiveness - a.effectiveness);
+      remaining.sort((a, b) => b.effectiveness - a.effectiveness);
+
+      // Concatenate the sorted arrays with the special row in between
+      return availableAndUsable.concat([
+        {
+          name: 'You might also consider using...',
+          haveAccessTo: true,
+          wouldUse: true,
+          whyNotUse: [],
+          whyNotUseOther: '',
+          shortName: '',
+          icon: '',
+          effectiveness: 0,
+          extraInfo: {
+            bestUse: [],
+            whenUse: [],
+            whenNotUse: [],
+          },
+        },
+        ...remaining,
+      ]);
+    });
 
     onMounted(() => {
       const table = tableRef.value?.$el;
@@ -177,12 +229,15 @@ export default defineComponent({
       }
     };
 
-    const onRowClick = (evt: Event, row: CoolingStrategy) => {
-      emit('show-info', row);
+    const onRowClick = (row: CoolingStrategy) => {
+      if (row.effectiveness) {
+        emit('show-info', row);
+      }
     };
 
     return {
       dataPreferencesStore,
+      rows,
       columns,
       pagination,
       tableRef,
