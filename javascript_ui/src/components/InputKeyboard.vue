@@ -1,7 +1,7 @@
 <template>
   <!-- Type="text" has to be used so cursor position can be obtained -->
   <q-input
-    v-scroll-to-input="'#base-scroll-area'"
+    v-scroll-to-input
     v-bind-on-screen-keyboard="{ reactiveValue, type }"
     :model-value="reactiveValue.value"
     :label="label"

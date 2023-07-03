@@ -18,9 +18,9 @@ export const scrollToInput: Directive = {
     // Get HTML element from supplied ID
     if (!binding.arg) {
       // No argument supplied, get base-scroll-area HTML Element
-      scrollParent = document.querySelector('#base-scroll-area');
+      scrollParent = el.closest('.base-scroll-area');
     } else {
-      scrollParent = document.querySelector(binding.arg);
+      scrollParent = el.closest(binding.arg);
     }
     // Get the first child of scroll parent, which is the div we need to scroll
     const scrollDiv = scrollParent?.firstChild as Element;

@@ -3,8 +3,7 @@
     <!-- base-scroll-area ID is needed for automatic scrolling on keyboard bind -->
     <q-scroll-area
       :style="{ height: computedHeight, position: 'relative' }"
-      id="base-scroll-area"
-      class="q-pr-md"
+      class="base-scroll-area q-pr-md"
       :class="heightClass"
       :thumb-style="thumbStyle"
       :bar-style="barStyle"
