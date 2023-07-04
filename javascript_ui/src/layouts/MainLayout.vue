@@ -29,24 +29,27 @@
         <q-toolbar-title></q-toolbar-title>
 
         <q-btn
-          @click="isShowVolumeModal = true"
-          class="q-mr-lg fontsize-16"
-          color="info"
-          :icon="volumeIcon"
-        />
-        <q-btn
           v-if="$route.path !== '/settings'"
           @click="isShowCoolingModal = true"
           class="q-mr-lg fontsize-16"
-          color="primary"
-          label="i need to cool down"
+          color="info"
+          label="cool down"
+          icon="ac_unit"
         />
         <q-btn
           v-if="$route.path !== '/settings'"
           @click="isShowHelpModal = true"
+          class="q-mr-lg fontsize-16"
+          color="primary"
+          label="app help"
+          icon="question_mark"
+        />
+        <q-btn
+          @click="isShowVolumeModal = true"
           class="fontsize-16"
-          color="secondary"
-          label="help me use the app"
+          color="primary"
+          label="volume"
+          :icon="volumeIcon"
         />
         <q-btn
           v-if="isShowSettingsButton"

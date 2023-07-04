@@ -1,5 +1,5 @@
 <template>
-  <q-chip color="grey" text-color="white">
+  <q-chip color="transparent" text-color="primary" class="text-bold">
     {{ currentTime }}
   </q-chip>
 </template>
