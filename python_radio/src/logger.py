@@ -6,13 +6,16 @@ class Logger:
 
   @staticmethod
   def log_radio_data(radio_data, rssi):
-    print("Radio data.. id: {0}, temp: {1}, RH: {2}, RSSI: {3}".format(radio_data["id"], radio_data["temperature"], radio_data["humidity"], rssi))
+    id = radio_data.get("id", "Missing ID")
+    temp = radio_data.get("temperature", "Missing Temperature")
+    humidity = radio_data.get("humidity", "Missing Humidity")
+    print("Radio data.. id: {0}, temp: {1}, RH: {2}, RSSI: {3}".format(id, temp, humidity, rssi))
     with open('radio_data.csv', 'a', newline='') as datafile:
       data_writer = csv.writer(datafile)
       # Write header if the file is empty
       if datafile.tell() == 0:
         data_writer.writerow(['Time', 'ID', 'Temperature', 'Humidity', 'RSSI'])
-      data_writer.writerow([datetime.datetime.now(), radio_data["id"], radio_data["temperature"], radio_data["humidity"], rssi])
+      data_writer.writerow([datetime.datetime.now(), id, temp, humidity, rssi])
 
   @staticmethod
   def error(msg):
