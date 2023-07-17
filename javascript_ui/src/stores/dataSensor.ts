@@ -136,7 +136,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
 
         // Check data
         if (!(data.id && data.temperature && data.humidity)) {
-          // Some of the data is missing
+          // Error: Some of the data is missing
           console.error('Invalid/missing socket data');
           console.log('ID:', data.id);
           console.log('Temperature:', data.temperature);
@@ -151,6 +151,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
 
         // Check
         if (isNaN(id) || isNaN(temperature) || isNaN(humidity)) {
+          // Error:
           console.error('Error parsing strings to numbers');
           console.log('ID:', data.id);
           console.log('Temperature:', data.temperature);
