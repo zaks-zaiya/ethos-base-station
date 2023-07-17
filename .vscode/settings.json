@@ -18,5 +18,6 @@
     "SETTINGSPASSCODE",
     "Vetur",
     "WBGT"
-  ]
+  ],
+  "python.analysis.extraPaths": ["./python_radio/src"]
 }
