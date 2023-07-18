@@ -66,7 +66,7 @@
   <!-- WHY NOT COOLING STRATEGY -->
   <div v-for="strategy in coolingStrategiesThatWontBeUsed" :key="strategy.name">
     <div class="q-mt-lg text-bold">
-      Why wont you use {{ strategy.shortName }}
+      Reason/s why you wouldn't use {{ strategy.shortName }}
     </div>
     <q-option-group
       v-model="strategy.whyNotUse"
@@ -207,26 +207,30 @@ export default defineComponent({
 
     const whyWontUseOptions = [
       {
-        label: 'Not practical - time consuming',
-        value: 'Not practical - time consuming',
+        label: 'Time consuming',
+        value: 'Time consuming',
       },
       {
-        label: 'Not practical - too much equipment needed',
-        value: 'Not practical - too much equipment needed',
+        label: 'Too much equipment needed',
+        value: 'Too much equipment needed',
       },
       {
-        label: 'Not practical - too much movement required',
-        value: 'Not practical - too much movement required',
+        label: 'Too much movement required',
+        value: 'Too much movement required',
       },
       {
-        label: 'Not practical - difficult for me to perform',
-        value: 'Not practical - difficult for me to perform',
+        label: 'Difficult to perform',
+        value: 'Difficult to perform',
       },
       {
-        label: 'Too uncomfortable to perform',
-        value: 'Too uncomfortable to perform',
+        label: 'Messy to perform',
+        value: 'Messy to perform',
       },
-      { label: 'Too unsafe', value: 'Too unsafe' },
+      {
+        label: 'Uncomfortable to perform',
+        value: 'Uncomfortable to perform',
+      },
+      { label: 'Unsafe', value: 'Unsafe' },
       { label: 'Other', value: 'Other' },
     ];
 
