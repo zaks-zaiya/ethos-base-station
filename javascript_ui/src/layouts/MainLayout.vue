@@ -24,7 +24,7 @@
           class="q-ml-md fontsize-16"
         />
 
-        <CurrentTime class="q-ml-lg fontsize-20" />
+        <BaseCurrentTime class="q-ml-lg fontsize-20" />
 
         <q-toolbar-title></q-toolbar-title>
 
@@ -82,7 +82,7 @@ import { defineComponent, ref, computed } from 'vue';
 import { useKeyboardStore } from 'src/stores/keyboard';
 import { useVolumeStore } from 'src/stores/volume';
 
-import CurrentTime from 'components/CurrentTime.vue';
+import BaseCurrentTime from 'components/BaseCurrentTime.vue';
 import ModalNoConnection from 'components/ModalNoConnection.vue';
 import ModalCoolingInterventions from 'components/ModalCoolingInterventions.vue';
 import SimpleKeyboard from 'src/components/SimpleKeyboard.vue';
@@ -98,7 +98,7 @@ export default defineComponent({
     ModalHelp,
     ModalHeatAlert,
     SimpleKeyboard,
-    CurrentTime,
+    BaseCurrentTime,
     ModalVolume,
   },
   setup() {
