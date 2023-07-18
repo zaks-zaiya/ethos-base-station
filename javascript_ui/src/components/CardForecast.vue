@@ -66,7 +66,7 @@ import { useForecastStore } from 'stores/forecast';
 import ModalDetailedForecast from './ModalDetailedForecast.vue';
 
 export default defineComponent({
-  name: 'DisplayForecast',
+  name: 'CardForecast',
   components: { ModalDetailedForecast },
   setup() {
     const forecastStore = useForecastStore();

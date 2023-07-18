@@ -50,7 +50,7 @@ import { playTextToSpeech } from 'src/helpers/audioAlertDispatcher';
 import { shouldUseFan } from 'src/helpers/fanAndWindowUse';
 
 export default defineComponent({
-  name: 'DisplaySensor',
+  name: 'CardSensor',
   props: {
     sensor: {
       type: Object as PropType<SensorData>,
