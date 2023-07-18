@@ -9,13 +9,8 @@
       <q-td>{{ props.row.name }}</q-td>
     </template>
     <template #body-cell-fanUse="props">
-      <q-td class="text-center">
-        <q-avatar
-          :icon="props.row.fanUse.icon"
-          size="lg"
-          :color="props.row.fanUse.color"
-          text-color="white"
-        />
+      <q-td class="text-center" :class="`bg-${props.row.fanUse.color}`">
+        <q-icon :name="props.row.fanUse.icon" size="lg" color="white" />
       </q-td>
     </template>
   </q-table>
