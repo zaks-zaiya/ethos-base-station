@@ -14,7 +14,7 @@
       </div>
       <div class="row">
         <div class="col-4 q-pr-lg">
-          <CoolingInterventionFanBlinds />
+          <CoolingInterventionFan />
         </div>
         <div class="table-container col-8">
           <q-table
@@ -91,13 +91,13 @@ import { useDataPreferencesStore } from 'src/stores/dataPreferences';
 import { CoolingStrategy } from 'src/components/models';
 import { QTable, QTableProps } from 'quasar';
 import CoolingInterventionEffectiveness from './CoolingInterventionEffectiveness.vue';
-import CoolingInterventionFanBlinds from './CoolingInterventionFanBlinds.vue';
+import CoolingInterventionFan from './CoolingInterventionFan.vue';
 
 export default defineComponent({
   name: 'CoolingInterventionList',
   components: {
     CoolingInterventionEffectiveness,
-    CoolingInterventionFanBlinds,
+    CoolingInterventionFan,
   },
   setup(props, { emit }) {
     const dataPreferencesStore = useDataPreferencesStore();
