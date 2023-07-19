@@ -67,7 +67,6 @@ export default defineComponent({
   setup() {
     const forecastStore = useForecastStore();
     let iconName = computed(() => {
-      console.log(forecastStore.weatherIconId);
       switch (forecastStore.weatherIconId) {
         case '01d':
         case '01n':

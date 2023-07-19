@@ -89,6 +89,7 @@ import {
 } from 'vue';
 import { useDataPreferencesStore } from 'src/stores/dataPreferences';
 import { CoolingStrategy } from 'src/components/models';
+import { coolingStrategies } from 'src/helpers/coolingStrategies';
 import { QTable, QTableProps } from 'quasar';
 import CoolingInterventionEffectiveness from './CoolingInterventionEffectiveness.vue';
 import CoolingInterventionFan from './CoolingInterventionFan.vue';
@@ -133,26 +134,31 @@ export default defineComponent({
 
     const rows = computed(() => {
       // Separate the strategies into two arrays based on haveAccessTo and wouldUse properties
-      const availableAndUsable =
+      const availableOptions =
         dataPreferencesStore.coolingStrategyOptions.filter(
           (option) => option.haveAccessTo && option.wouldUse
         );
-      const remaining = dataPreferencesStore.coolingStrategyOptions.filter(
-        (option) => !(option.haveAccessTo && option.wouldUse)
+      const remainingOptions =
+        dataPreferencesStore.coolingStrategyOptions.filter(
+          (option) => !(option.haveAccessTo && option.wouldUse)
+        );
+
+      // Get strategy text from source
+      const avaliableStrategies = availableOptions.map(
+        (el) => coolingStrategies[el.key]
+      );
+      const remainingStrategies = remainingOptions.map(
+        (el) => coolingStrategies[el.key]
       );
 
       // Sort both arrays
-      availableAndUsable.sort((a, b) => b.effectiveness - a.effectiveness);
-      remaining.sort((a, b) => b.effectiveness - a.effectiveness);
+      avaliableStrategies.sort((a, b) => b.effectiveness - a.effectiveness);
+      remainingStrategies.sort((a, b) => b.effectiveness - a.effectiveness);
 
       // Concatenate the sorted arrays with the special row in between
-      return availableAndUsable.concat([
+      return avaliableStrategies.concat([
         {
           name: 'You might also consider using...',
-          haveAccessTo: true,
-          wouldUse: true,
-          whyNotUse: [],
-          whyNotUseOther: '',
           shortName: '',
           icon: '',
           effectiveness: 0,
@@ -162,7 +168,7 @@ export default defineComponent({
             whenNotUse: [],
           },
         },
-        ...remaining,
+        ...remainingStrategies,
       ]);
     });
 

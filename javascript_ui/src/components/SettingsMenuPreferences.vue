@@ -50,6 +50,12 @@
     :pagination="{ rowsPerPage: 0 }"
     hide-bottom
   >
+    <template v-slot:body-cell-name="props">
+      <q-td :props="props">
+        {{ coolingStrategies[props.row.key].name }}
+      </q-td>
+    </template>
+
     <template v-slot:body-cell-haveAccessTo="props">
       <q-td :props="props">
         <q-toggle v-model="props.row.haveAccessTo" color="primary" size="xl" />
@@ -64,9 +70,10 @@
   </q-table>
 
   <!-- WHY NOT COOLING STRATEGY -->
-  <div v-for="strategy in coolingStrategiesThatWontBeUsed" :key="strategy.name">
+  <div v-for="strategy in coolingStrategiesThatWontBeUsed" :key="strategy.key">
     <div class="q-mt-lg text-bold">
-      Reason/s why you wouldn't use {{ strategy.shortName }}
+      Reason/s why you wouldn't use
+      {{ coolingStrategies[strategy.key].shortName }}
     </div>
     <q-option-group
       v-model="strategy.whyNotUse"
@@ -89,6 +96,7 @@
 <script lang="ts">
 import { QTableProps } from 'quasar';
 import { playAudio, stopAudio } from 'src/helpers/audioAlertDispatcher';
+import { coolingStrategies } from 'src/helpers/coolingStrategies';
 import { useDataPreferencesStore } from 'src/stores/dataPreferences';
 import InputKeyboard from './InputKeyboard.vue';
 import { computed, defineComponent, reactive } from 'vue';
@@ -235,6 +243,7 @@ export default defineComponent({
     ];
 
     return {
+      coolingStrategies,
       RiskLevel,
       dataPreferencesStore,
       audioOptions,
