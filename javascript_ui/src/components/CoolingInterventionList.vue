@@ -8,9 +8,8 @@
       </q-btn>
     </q-card-section>
     <q-card-section>
-      <div class="fontsize-16">
-        If you need to lower your body temperature, here are the best ways to do
-        it (click on a row for more info):
+      <div class="fontsize-16 q-mb-md">
+        Best ways to cool yourself (click on a row for more info):
       </div>
       <div class="row">
         <div class="col-4 q-pr-lg">
@@ -263,6 +262,6 @@ export default defineComponent({
 
 .my-sticky-header-table {
   /* height or max-height is important */
-  height: calc(100vh / 1.5);
+  height: calc(70vh);
 }
 </style>
