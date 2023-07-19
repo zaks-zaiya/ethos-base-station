@@ -4,7 +4,7 @@ export const coolingStrategies: Array<CoolingStrategy> = [
   {
     name: 'Turn on a fan',
     shortName: 'a fan',
-    icon: 'air',
+    icon: 'mdi-fan',
     effectiveness: 0.7,
     extraInfo: {
       bestUse: [
@@ -103,7 +103,7 @@ export const coolingStrategies: Array<CoolingStrategy> = [
   {
     name: '(Cold) wet clothing',
     shortName: 'wetting clothes',
-    icon: 'water_drop',
+    icon: 'mdi-tshirt-crew',
     effectiveness: 0.7,
     extraInfo: {
       bestUse: [
