@@ -27,7 +27,7 @@
     </q-card-section>
 
     <!-- Fan use -->
-    <div v-if="isDisplayFanWarning">
+    <div v-if="isDisplayFanWarning && !isOffline">
       <q-separator />
       <q-card-section class="q-ml-sm q-pa-none row">
         <div class="fontsize-22 text-bold">DONT USE FAN</div>
