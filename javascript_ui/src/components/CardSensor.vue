@@ -29,8 +29,14 @@
     <!-- Fan use -->
     <div v-if="isDisplayFanWarning">
       <q-separator />
-      <q-card-section class="q-ml-sm q-pa-none">
+      <q-card-section class="q-ml-sm q-pa-none row">
         <div class="fontsize-22 text-bold">DONT USE FAN</div>
+        <q-btn
+          icon="question_mark"
+          @click="isShowFanModel = true"
+          class="q-mr-md absolute-right"
+          color="warning"
+        />
       </q-card-section>
     </div>
   </q-card>
@@ -44,6 +50,7 @@ import {
   computed,
   onMounted,
   onUnmounted,
+  inject,
 } from 'vue';
 import { SensorData, RiskLevel } from 'components/models';
 import { playTextToSpeech } from 'src/helpers/audioAlertDispatcher';
@@ -58,6 +65,7 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const isShowFanModel = inject('isShowFanModal');
     // The current time/date
     let currentTime = ref(Date.now());
     // An interval which handles updating the currentTime
@@ -185,6 +193,7 @@ export default defineComponent({
     };
 
     return {
+      isShowFanModel,
       isDisplayFanWarning,
       isUndefined,
       isOffline,
