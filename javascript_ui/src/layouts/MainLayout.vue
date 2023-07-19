@@ -6,6 +6,7 @@
     <ModalHeatAlert @open-cooling-modal="isShowCoolingModal = true" />
     <ModalCoolingInterventions v-model="isShowCoolingModal" />
     <ModalHelp v-model="isShowHelpModal" />
+    <ModalFanInfo v-model="isShowFanModal" />
     <!-- Main layout -->
     <q-header flat class="transparent" v-if="$route.path !== '/initialize'">
       <q-toolbar class="ethos-toolbar">
@@ -77,7 +78,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, ref, computed, provide } from 'vue';
 
 import { useKeyboardStore } from 'src/stores/keyboard';
 import { useVolumeStore } from 'src/stores/volume';
@@ -89,6 +90,7 @@ import SimpleKeyboard from 'src/components/SimpleKeyboard.vue';
 import ModalHelp from 'src/components/ModalHelp.vue';
 import ModalHeatAlert from 'src/components/ModalHeatAlert.vue';
 import ModalVolume from 'src/components/ModalVolume.vue';
+import ModalFanInfo from 'src/components/ModalFanInfo.vue';
 
 export default defineComponent({
   name: 'MainLayout',
@@ -100,6 +102,7 @@ export default defineComponent({
     SimpleKeyboard,
     BaseCurrentTime,
     ModalVolume,
+    ModalFanInfo,
   },
   setup() {
     const keyboardStore = useKeyboardStore();
@@ -108,6 +111,9 @@ export default defineComponent({
     let isShowVolumeModal = ref(false);
     let isShowCoolingModal = ref(false);
     let isShowHelpModal = ref(false);
+    let isShowFanModal = ref(false);
+    // Provide to allow descendent ancestors to modify
+    provide('isShowFanModal', isShowFanModal);
 
     let timeoutShowSettingsButton: null | number = null;
     let showSettingsPressedCount = 0;
@@ -156,6 +162,7 @@ export default defineComponent({
       isShowVolumeModal,
       isShowCoolingModal,
       isShowHelpModal,
+      isShowFanModal,
       showSettingsButton,
       hideSettingsButton,
     };

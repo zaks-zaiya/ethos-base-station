@@ -14,6 +14,12 @@
       <div class="row">
         <div class="col-4 q-pr-lg">
           <CoolingInterventionFan />
+          <q-btn
+            label="When should I not use a fan?"
+            color="info"
+            class="q-mt-xl q-ma-lg"
+            @click="isShowFanModal = true"
+          />
         </div>
         <div class="table-container col-8">
           <q-table
@@ -85,6 +91,7 @@ import {
   onMounted,
   onBeforeUnmount,
   computed,
+  inject,
 } from 'vue';
 import { useDataPreferencesStore } from 'src/stores/dataPreferences';
 import { CoolingStrategy } from 'src/components/models';
@@ -100,6 +107,7 @@ export default defineComponent({
     CoolingInterventionFan,
   },
   setup(props, { emit }) {
+    const isShowFanModal = inject('isShowFanModal');
     const dataPreferencesStore = useDataPreferencesStore();
     const showBottomScrollIndicator = ref(false);
     const showTopScrollIndicator = ref(false);
@@ -241,6 +249,7 @@ export default defineComponent({
     };
 
     return {
+      isShowFanModal,
       dataPreferencesStore,
       rows,
       columns,
