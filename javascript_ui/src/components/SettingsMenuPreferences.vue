@@ -91,6 +91,17 @@
       label="Why other? Click here to enter more info..."
     />
   </div>
+
+  <!-- MARK FOR FOLLOW UP -->
+  <div class="q-mt-lg text-bold">
+    Would you be interested in a follow up with a focus group discussion?
+  </div>
+  <q-toggle
+    v-model="dataPreferencesStore.isFollowUp"
+    :label="dataPreferencesStore.isFollowUp ? 'Yes' : 'No'"
+    color="primary"
+    size="xl"
+  />
 </template>
 
 <script lang="ts">

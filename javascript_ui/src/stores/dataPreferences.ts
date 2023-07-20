@@ -14,6 +14,7 @@ export const useDataPreferencesStore = defineStore('dataPreferences', {
 
   state: () => ({
     audioType: AudioType.TONE,
+    isFollowUp: false,
     coolingStrategyOptions: Object.keys(coolingStrategies).map((key) => {
       return {
         key,
