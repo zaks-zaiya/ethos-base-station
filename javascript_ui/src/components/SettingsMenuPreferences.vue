@@ -58,13 +58,23 @@
 
     <template v-slot:body-cell-haveAccessTo="props">
       <q-td :props="props">
-        <q-toggle v-model="props.row.haveAccessTo" color="primary" size="xl" />
+        <q-toggle
+          v-model="props.row.haveAccessTo"
+          :label="props.row.haveAccessTo ? 'Yes' : 'No'"
+          color="primary"
+          size="xl"
+        />
       </q-td>
     </template>
 
     <template v-slot:body-cell-wouldUse="props">
       <q-td :props="props">
-        <q-toggle v-model="props.row.wouldUse" color="primary" size="xl" />
+        <q-toggle
+          v-model="props.row.wouldUse"
+          :label="props.row.wouldUse ? 'Yes' : 'No'"
+          color="primary"
+          size="xl"
+        />
       </q-td>
     </template>
   </q-table>
