@@ -4,6 +4,15 @@ import { useVolumeStore } from 'src/stores/volume';
 let currentAudio: HTMLAudioElement | null = null;
 let currentUtterance: SpeechSynthesisUtterance | null = null;
 
+/**
+ * Note: This function needs to be called at initialization as the
+ * first time it is called the array of voice options will be empty
+ * @returns Array with voice options available
+ */
+export const getSpeechSynthesisVoices = () => {
+  return window.speechSynthesis.getVoices();
+};
+
 const generateTextToSpeech = (
   riskLevel: RiskLevel,
   sensorData?: SensorData
@@ -13,12 +22,12 @@ const generateTextToSpeech = (
       return 'There is a low priority alert';
     case RiskLevel.MEDIUM:
       return sensorData
-        ? `The ${sensorData.name} is at an elevated temperature`
-        : 'There is a medium priority alert';
+        ? `Your system indicates a medium level heat alert at: ${sensorData.name}`
+        : 'Your system indicates a medium level heat alert';
     case RiskLevel.HIGH:
       return sensorData
-        ? `The ${sensorData.name} is at a dangerous temperature`
-        : 'There is a high priority alert';
+        ? `Your system indicates a medium level heat alert at: ${sensorData.name}`
+        : 'Your system indicates a high level heat alert';
   }
 };
 
@@ -41,8 +50,10 @@ const playAudioTone = (riskLevel: RiskLevel): Promise<void> => {
 
 export const playTextToSpeech = (text: string): Promise<void> => {
   const volumeStore = useVolumeStore();
-  return new Promise((resolve) => {
+  return new Promise(async (resolve) => {
+    const voices = getSpeechSynthesisVoices();
     const utter = new SpeechSynthesisUtterance();
+    utter.voice = voices[0];
     utter.text = text;
     utter.volume = volumeStore.volumePercent;
     utter.rate = 0.9;

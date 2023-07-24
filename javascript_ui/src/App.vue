@@ -5,6 +5,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
+import { getSpeechSynthesisVoices } from './helpers/audioAlertDispatcher';
+
 import { useDataSensorStore } from 'stores/dataSensor';
 import { useForecastStore } from 'stores/forecast';
 import { useDataPreferencesStore } from './stores/dataPreferences';
@@ -13,12 +15,14 @@ export default defineComponent({
   name: 'App',
   // Setup store connections here
   setup() {
+    // Note: This needs to be called to initialize the list of voices available
+    getSpeechSynthesisVoices();
+
+    // Setup stores
     const dataSensorStore = useDataSensorStore();
     dataSensorStore.setup();
-
     const dataPreferencesStore = useDataPreferencesStore();
     dataPreferencesStore.updateCoolingStrategyOptions();
-
     const forecastStore = useForecastStore();
     forecastStore.setup();
 
