@@ -244,22 +244,31 @@ export default defineComponent({
         value: 'Too much equipment needed',
       },
       {
-        label: 'Too much movement required',
-        value: 'Too much movement required',
+        label:
+          'Too much movement required (dexterity, physical exertion, etc.)',
+        value:
+          'Too much movement required (dexterity, physical exertion, etc.)',
       },
       {
-        label: 'Difficult to perform',
-        value: 'Difficult to perform',
+        label: 'Messy to perform (water dripping, risk of stains, etc.)',
+        value: 'Messy to perform (water dripping, risk of stains, etc.)',
       },
       {
-        label: 'Messy to perform',
-        value: 'Messy to perform',
+        label: 'Costs too much (electricity, maintenance, etc.)',
+        value: 'Costs too much (electricity, maintenance, etc.)',
       },
       {
-        label: 'Uncomfortable to perform',
-        value: 'Uncomfortable to perform',
+        label: 'Too noisy',
+        value: 'Too noisy',
       },
-      { label: 'Unsafe', value: 'Unsafe' },
+      {
+        label: 'Physically uncomfortable to perform (too cold, too wet, etc.)',
+        value: 'Physically uncomfortable to perform (too cold, too wet, etc.)',
+      },
+      {
+        label: 'Unsafe (risk of slips, falls, etc.)',
+        value: 'Unsafe (risk of slips, falls, etc.)',
+      },
       { label: 'Other', value: 'Other' },
     ];
 
