@@ -41,7 +41,7 @@
 
   <!-- COOLING STRATEGIES OPTION -->
   <div class="q-mt-lg text-bold">
-    Which cooling strategies do you have access to?
+    Which cooling strategies do you have access to and which would you use?
   </div>
   <q-table
     :rows="dataPreferencesStore.coolingStrategyOptions"
