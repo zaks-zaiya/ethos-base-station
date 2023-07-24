@@ -15,6 +15,7 @@ export interface UserData {
   ageYears: undefined | number;
   heightCm: undefined | number;
   weightKg: undefined | number;
+  sex: undefined | 'male' | 'female' | 'other';
 }
 
 export interface CoolingStrategy {
