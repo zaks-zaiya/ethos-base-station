@@ -25,7 +25,8 @@
           class="q-ml-md fontsize-16"
         />
 
-        <BaseCurrentTime class="q-ml-lg fontsize-20" />
+        <BaseCurrentTime class="fontsize-20" />
+        <BaseNetworkConnection />
 
         <q-toolbar-title></q-toolbar-title>
 
@@ -83,6 +84,7 @@ import { defineComponent, ref, computed, provide } from 'vue';
 import { useKeyboardStore } from 'src/stores/keyboard';
 import { useVolumeStore } from 'src/stores/volume';
 
+import BaseNetworkConnection from 'src/components/BaseNetworkConnection.vue';
 import BaseCurrentTime from 'components/BaseCurrentTime.vue';
 import ModalNoConnection from 'components/ModalNoConnection.vue';
 import ModalCoolingInterventions from 'components/ModalCoolingInterventions.vue';
@@ -103,6 +105,7 @@ export default defineComponent({
     BaseCurrentTime,
     ModalVolume,
     ModalFanInfo,
+    BaseNetworkConnection,
   },
   setup() {
     const keyboardStore = useKeyboardStore();
