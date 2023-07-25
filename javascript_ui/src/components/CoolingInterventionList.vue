@@ -151,7 +151,7 @@ export default defineComponent({
         );
 
       // Get strategy text from source
-      const avaliableStrategies = availableOptions.map(
+      const availableStrategies = availableOptions.map(
         (el) => coolingStrategies[el.key]
       );
       const remainingStrategies = remainingOptions.map(
@@ -159,16 +159,17 @@ export default defineComponent({
       );
 
       // Sort both arrays
-      avaliableStrategies.sort((a, b) => b.effectiveness - a.effectiveness);
+      availableStrategies.sort((a, b) => b.effectiveness - a.effectiveness);
       remainingStrategies.sort((a, b) => b.effectiveness - a.effectiveness);
 
       // Concatenate the sorted arrays with the special row in between
-      return avaliableStrategies.concat([
+      return availableStrategies.concat([
         {
           name: 'You might also consider using...',
           shortName: '',
           icon: '',
           effectiveness: 0,
+          group: '',
           extraInfo: {
             bestUse: [],
             whenUse: [],

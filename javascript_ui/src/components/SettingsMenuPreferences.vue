@@ -44,38 +44,57 @@
     Which cooling strategies do you have access to and which would you use?
   </div>
   <q-table
-    :rows="dataPreferencesStore.coolingStrategyOptions"
+    :rows="dataPreferencesStore.coolingStrategyRows"
     :columns="coolingStrategyColumns"
     row-key="label"
     :pagination="{ rowsPerPage: 0 }"
     hide-bottom
   >
-    <template v-slot:body-cell-name="props">
-      <q-td :props="props">
-        {{ coolingStrategies[props.row.key].name }}
-      </q-td>
-    </template>
-
-    <template v-slot:body-cell-haveAccessTo="props">
-      <q-td :props="props">
-        <q-toggle
-          v-model="props.row.haveAccessTo"
-          :label="props.row.haveAccessTo ? 'Yes' : 'No'"
-          color="primary"
-          size="xl"
-        />
-      </q-td>
-    </template>
-
-    <template v-slot:body-cell-wouldUse="props">
-      <q-td :props="props">
-        <q-toggle
-          v-model="props.row.wouldUse"
-          :label="props.row.wouldUse ? 'Yes' : 'No'"
-          color="primary"
-          size="xl"
-        />
-      </q-td>
+    <template v-slot:body="props">
+      <q-tr
+        :props="props"
+        :class="{
+          'bg-grey text-white': !props.row.effectiveness,
+        }"
+      >
+        <q-td :props="props" key="name">
+          {{ props.row.name }}
+        </q-td>
+        <q-td :props="props" key="haveAccessTo">
+          <q-toggle
+            v-if="props.row.effectiveness"
+            :model-value="props.row.haveAccessTo"
+            @update:model-value="
+              (val) =>
+                dataPreferencesStore.setWouldUseOrHaveAccessTo(
+                  props.row.key,
+                  'haveAccessTo',
+                  val
+                )
+            "
+            :label="props.row.haveAccessTo ? 'Yes' : 'No'"
+            color="primary"
+            size="xl"
+          />
+        </q-td>
+        <q-td :props="props" key="wouldUse">
+          <q-toggle
+            v-if="props.row.effectiveness"
+            :model-value="props.row.wouldUse"
+            @update:model-value="
+              (val) =>
+                dataPreferencesStore.setWouldUseOrHaveAccessTo(
+                  props.row.key,
+                  'wouldUse',
+                  val
+                )
+            "
+            :label="props.row.wouldUse ? 'Yes' : 'No'"
+            color="primary"
+            size="xl"
+          />
+        </q-td>
+      </q-tr>
     </template>
   </q-table>
 
