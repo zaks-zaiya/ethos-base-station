@@ -9,6 +9,22 @@ const defaultOptions = {
   whyNotUseOther: '',
 };
 
+export const emptyCoolingStrategyRow = {
+  name: '',
+  shortName: '',
+  icon: '',
+  effectiveness: 0,
+  group: '' as const,
+  extraInfo: {
+    bestUse: [],
+    whenUse: [],
+    whenNotUse: [],
+  },
+  // Additional options
+  key: '',
+  ...defaultOptions,
+};
+
 export const useDataPreferencesStore = defineStore('dataPreferences', {
   persist: true,
 
@@ -24,44 +40,12 @@ export const useDataPreferencesStore = defineStore('dataPreferences', {
   }),
 
   getters: {
+    // Merge coolingStrategyOptions with all info given in the original coolingStrategies
     coolingStrategyRows: (state) => {
       // Append extra strategy info
-      let coolingStrategyRows = state.coolingStrategyOptions.map((option) => {
+      const coolingStrategyRows = state.coolingStrategyOptions.map((option) => {
         return { ...option, ...coolingStrategies[option.key] };
       });
-      // Sort by group type
-      coolingStrategyRows = coolingStrategyRows.sort((a, b) => {
-        if (a.group < b.group) {
-          return 1;
-        } else if (a.group == b.group) {
-          return 0;
-        }
-        return -1;
-      });
-      // Append new group info row each time row changes
-      let comparator = '';
-      for (let i = 0; i < coolingStrategyRows.length; i++) {
-        const option = coolingStrategyRows[i];
-        if (option.group != comparator) {
-          comparator = option.group;
-          coolingStrategyRows.splice(i, 0, {
-            // Strategy
-            name: comparator,
-            shortName: '',
-            icon: '',
-            effectiveness: 0,
-            group: '',
-            extraInfo: {
-              bestUse: [],
-              whenUse: [],
-              whenNotUse: [],
-            },
-            // Additional options
-            key: '',
-            ...defaultOptions,
-          });
-        }
-      }
       return coolingStrategyRows;
     },
   },

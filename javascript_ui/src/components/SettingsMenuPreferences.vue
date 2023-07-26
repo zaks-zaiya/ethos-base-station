@@ -44,7 +44,7 @@
     Which cooling strategies do you have access to and which would you use?
   </div>
   <q-table
-    :rows="dataPreferencesStore.coolingStrategyRows"
+    :rows="coolingStrategyRows"
     :columns="coolingStrategyColumns"
     row-key="label"
     :pagination="{ rowsPerPage: 0 }"
@@ -137,7 +137,10 @@
 import { QTableProps } from 'quasar';
 import { playAudio, stopAudio } from 'src/helpers/audioAlertDispatcher';
 import { coolingStrategies } from 'src/helpers/coolingStrategies';
-import { useDataPreferencesStore } from 'src/stores/dataPreferences';
+import {
+  useDataPreferencesStore,
+  emptyCoolingStrategyRow,
+} from 'src/stores/dataPreferences';
 import InputKeyboard from './InputKeyboard.vue';
 import { computed, defineComponent, reactive } from 'vue';
 import { AudioType, RiskLevel } from './models';
@@ -247,6 +250,34 @@ export default defineComponent({
       },
     ];
 
+    const coolingStrategyRows = computed(() => {
+      let clonedCoolingStrategyRows = [
+        ...dataPreferencesStore.coolingStrategyRows,
+      ];
+      // Sort by group type
+      clonedCoolingStrategyRows = clonedCoolingStrategyRows.sort((a, b) => {
+        if (a.group < b.group) {
+          return 1;
+        } else if (a.group == b.group) {
+          return 0;
+        }
+        return -1;
+      });
+      // Append new group info row each time row changes
+      let comparator = '';
+      for (let i = 0; i < clonedCoolingStrategyRows.length; i++) {
+        const option = clonedCoolingStrategyRows[i];
+        if (option.group != comparator) {
+          comparator = option.group;
+          clonedCoolingStrategyRows.splice(i, 0, {
+            ...emptyCoolingStrategyRow,
+            name: comparator,
+          });
+        }
+      }
+      return clonedCoolingStrategyRows;
+    });
+
     const coolingStrategiesThatWontBeUsed = computed(() =>
       dataPreferencesStore.coolingStrategyOptions.filter(
         (strategy) => !strategy.wouldUse
@@ -293,6 +324,7 @@ export default defineComponent({
 
     return {
       coolingStrategies,
+      coolingStrategyRows,
       RiskLevel,
       dataPreferencesStore,
       audioOptions,
