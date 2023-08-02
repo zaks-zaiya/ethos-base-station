@@ -55,13 +55,6 @@
                   </template>
                   <template v-else-if="col.name === 'name'">
                     {{ props.row[col.name] }}
-                  </template>
-                  <template v-else-if="col.name === 'effectiveness'">
-                    <CoolingInterventionEffectiveness
-                      :effectiveness="props.row[col.name]"
-                    />
-                  </template>
-                  <template v-else-if="col.name === 'group'">
                     <q-chip
                       v-if="props.row['group']"
                       :color="colorLookup(props.row['group'])"
@@ -69,6 +62,11 @@
                     >
                       {{ props.row[col.name] }}
                     </q-chip>
+                  </template>
+                  <template v-else-if="col.name === 'effectiveness'">
+                    <CoolingInterventionEffectiveness
+                      :effectiveness="props.row[col.name]"
+                    />
                   </template>
                   <template v-else>
                     {{ props.row[col.name] }}
@@ -174,13 +172,6 @@ export default defineComponent({
         label: 'Potential Effectiveness',
         align: 'left',
         field: 'effectiveness',
-      },
-      {
-        name: 'group',
-        required: true,
-        label: 'Group',
-        align: 'left',
-        field: 'group',
       },
     ];
 
