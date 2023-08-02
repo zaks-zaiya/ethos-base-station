@@ -8,20 +8,11 @@
       </q-btn>
     </q-card-section>
     <q-card-section>
-      <div class="fontsize-16 q-mb-md">
-        Best ways to cool yourself (click on a row for more info):
-      </div>
       <div class="row">
-        <div class="col-4 q-pr-lg">
-          <CoolingInterventionFan />
-          <q-btn
-            label="When should I not use a fan?"
-            color="info"
-            class="q-mt-xl q-ma-lg"
-            @click="isShowFanModal = true"
-          />
-        </div>
         <div class="table-container col-8">
+          <div class="fontsize-16 q-mb-sm">
+            Best ways to cool yourself (click on a row for more info):
+          </div>
           <q-table
             ref="tableRef"
             :rows="rows"
@@ -76,6 +67,16 @@
             class="scroll-indicator-bottom"
             v-show="showBottomScrollIndicator"
             @click="scrollTo(1)"
+          />
+        </div>
+        <div class="col-4 q-pl-lg">
+          <div class="fontsize-16 q-mb-sm">Should you use a fan:</div>
+          <CoolingInterventionFan />
+          <q-btn
+            label="When should I not use a fan?"
+            color="info"
+            class="q-mt-xl q-ma-lg"
+            @click="isShowFanModal = true"
           />
         </div>
       </div>
