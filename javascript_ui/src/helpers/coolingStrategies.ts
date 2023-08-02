@@ -81,7 +81,7 @@ export const coolingStrategies: Record<string, CoolingStrategy> = {
     name: 'Drink (cool) water',
     shortName: 'cool water',
     icon: 'local_drink',
-    effectiveness: 0.5,
+    effectiveness: 0.6,
     group: 'Other water',
     extraInfo: {
       bestUse: [
@@ -105,10 +105,10 @@ export const coolingStrategies: Record<string, CoolingStrategy> = {
     },
   },
   wetClothes: {
-    name: '(Cold) wet clothing',
-    shortName: 'wetting clothes',
+    name: 'Dampening clothing',
+    shortName: 'dampening clothes',
     icon: 'mdi-tshirt-crew',
-    effectiveness: 0.7,
+    effectiveness: 0.5,
     group: 'Clothing related',
     extraInfo: {
       bestUse: [
@@ -128,6 +128,7 @@ export const coolingStrategies: Record<string, CoolingStrategy> = {
         'As a means to recover from heat exposure or reduce the risk of heat-related illnesses.',
       ],
       whenNotUse: [
+        'Be careful of any drips coming off clothing and any slips that may result.',
         'When you have open wounds, skin infections, or rashes, as the wet towel may exacerbate the condition or cause discomfort.',
         'When the humidity is very high, as the evaporative cooling effect of the wet towel might be reduced.',
       ],
@@ -274,7 +275,7 @@ export const coolingStrategies: Record<string, CoolingStrategy> = {
     name: 'Swimming',
     shortName: 'swimming',
     icon: 'pool',
-    effectiveness: 0.6,
+    effectiveness: 0.4,
     group: 'Water immersion',
     extraInfo: {
       bestUse: [
@@ -283,12 +284,12 @@ export const coolingStrategies: Record<string, CoolingStrategy> = {
         'Hydrate regularly, as swimming, especially in hot weather, can still lead to dehydration.',
       ],
       whenUse: [
-        'During the heat of the day, as a dip in a pool can quickly lower your body temperature.',
-        'As a form of exercise that can also keep you cool during hot weather.',
+        'When the sun is not out, a dip in a pool can quickly lower your body temperature.',
       ],
       whenNotUse: [
-        'If you have open wounds or skin infections, to avoid worsening the condition or spreading it to others.',
         'If the temperature outside is significantly warmer than inside, or if there is not adequate shade.',
+        'If the pool water is warm due to being exposed to sun.',
+        'If you have open wounds or skin infections, to avoid worsening the condition or spreading it to others.',
         "If you don't feel comfortable swimming or it feels unsafe to do so.",
         "If you can't swim or if there is no lifeguard present.",
       ],
