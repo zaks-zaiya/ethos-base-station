@@ -12,31 +12,25 @@
         Best ways to cool yourself (click on a row for more info):
       </div>
       <div class="row">
-        <div class="col-3 q-pr-lg">
+        <div class="col-4 q-pr-lg">
           <CoolingInterventionFan />
           <q-btn
             label="When should I not use a fan?"
             color="info"
-            class="q-mt-xl"
+            class="q-mt-xl q-ma-lg"
             @click="isShowFanModal = true"
           />
         </div>
-        <div class="table-container col-9">
+        <div class="table-container col-8">
           <q-table
-            dense
             ref="tableRef"
-            :rows="coolingStrategyRows"
+            :rows="rows"
             class="my-sticky-header-table"
             row-key="name"
             :pagination="pagination"
-            :columns="coolingStrategyColumns"
+            :columns="columns"
             hide-bottom
           >
-            <template v-slot:header-cell-effectiveness="props">
-              <q-th v-bind="props" :props="props">
-                Potential<br />Effectiveness
-              </q-th>
-            </template>
             <template v-slot:body="props">
               <q-tr
                 @click="onRowClick(props.row)"
@@ -52,16 +46,6 @@
                       size="60px"
                       color="grey"
                     />
-                  </template>
-                  <template v-else-if="col.name === 'name'">
-                    {{ props.row[col.name] }}
-                    <q-chip
-                      v-if="props.row['group']"
-                      :color="colorLookup(props.row['group'])"
-                      text-color="white"
-                    >
-                      {{ props.row[col.name] }}
-                    </q-chip>
                   </template>
                   <template v-else-if="col.name === 'effectiveness'">
                     <CoolingInterventionEffectiveness
@@ -109,11 +93,9 @@ import {
   computed,
   inject,
 } from 'vue';
-import {
-  useDataPreferencesStore,
-  emptyCoolingStrategyRow,
-} from 'src/stores/dataPreferences';
+import { useDataPreferencesStore } from 'src/stores/dataPreferences';
 import { CoolingStrategy } from 'src/components/models';
+import { coolingStrategies } from 'src/helpers/coolingStrategies';
 import { QTable, QTableProps } from 'quasar';
 import CoolingInterventionEffectiveness from './CoolingInterventionEffectiveness.vue';
 import CoolingInterventionFan from './CoolingInterventionFan.vue';
@@ -133,25 +115,7 @@ export default defineComponent({
     const pagination = {
       rowsPerPage: 0,
     };
-
-    const colorLookup = (color: string) => {
-      switch (color) {
-        case 'Water immersion':
-          return 'primary';
-        case 'Other water':
-          return 'secondary';
-        case 'Clothing related':
-          return 'info';
-        case 'Air ventilation':
-          return 'accent';
-        case 'Activity based':
-          return 'positive';
-        default:
-          return '';
-      }
-    };
-
-    const coolingStrategyColumns: QTableProps['columns'] = [
+    const columns: QTableProps['columns'] = [
       {
         name: 'icon',
         required: true,
@@ -175,26 +139,44 @@ export default defineComponent({
       },
     ];
 
-    const coolingStrategyRows = computed(() => {
+    const rows = computed(() => {
       // Separate the strategies into two arrays based on haveAccessTo and wouldUse properties
-      const availableOptions = dataPreferencesStore.coolingStrategyRows.filter(
-        (option) => option.haveAccessTo && option.wouldUse
+      const availableOptions =
+        dataPreferencesStore.coolingStrategyOptions.filter(
+          (option) => option.haveAccessTo && option.wouldUse
+        );
+      const remainingOptions =
+        dataPreferencesStore.coolingStrategyOptions.filter(
+          (option) => !(option.haveAccessTo && option.wouldUse)
+        );
+
+      // Get strategy text from source
+      const availableStrategies = availableOptions.map(
+        (el) => coolingStrategies[el.key]
       );
-      const remainingOptions = dataPreferencesStore.coolingStrategyRows.filter(
-        (option) => !(option.haveAccessTo && option.wouldUse)
+      const remainingStrategies = remainingOptions.map(
+        (el) => coolingStrategies[el.key]
       );
 
       // Sort both arrays
-      availableOptions.sort((a, b) => b.effectiveness - a.effectiveness);
-      remainingOptions.sort((a, b) => b.effectiveness - a.effectiveness);
+      availableStrategies.sort((a, b) => b.effectiveness - a.effectiveness);
+      remainingStrategies.sort((a, b) => b.effectiveness - a.effectiveness);
 
       // Concatenate the sorted arrays with the special row in between
-      return availableOptions.concat([
+      return availableStrategies.concat([
         {
-          ...emptyCoolingStrategyRow,
           name: 'You might also consider using...',
+          shortName: '',
+          icon: '',
+          effectiveness: 0,
+          group: '',
+          extraInfo: {
+            bestUse: [],
+            whenUse: [],
+            whenNotUse: [],
+          },
         },
-        ...remainingOptions,
+        ...remainingStrategies,
       ]);
     });
 
@@ -270,13 +252,12 @@ export default defineComponent({
     return {
       isShowFanModal,
       dataPreferencesStore,
-      coolingStrategyRows,
-      coolingStrategyColumns,
+      rows,
+      columns,
       pagination,
       tableRef,
       showBottomScrollIndicator,
       showTopScrollIndicator,
-      colorLookup,
       onRowClick,
       scrollTo,
     };

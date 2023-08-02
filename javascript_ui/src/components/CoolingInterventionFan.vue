@@ -1,14 +1,8 @@
 <template>
-  <q-table
-    class="minimal-padding"
-    dense
-    :rows="sensorsWithIconData"
-    :columns="columns"
-    hide-bottom
-  >
-    <template v-slot:header-cell-fanUse="props">
-      <q-th class="q-px-none" v-bind="props" :props="props">
-        Use a<br />fan?
+  <q-table :rows="sensorsWithIconData" :columns="columns" hide-bottom>
+    <template v-slot:header-cell-blindUse="props">
+      <q-th v-bind="props" :props="props">
+        Close<br />Window/<br />Blinds?
       </q-th>
     </template>
     <template #body-cell-sensor="props">
@@ -41,7 +35,7 @@ export default defineComponent({
       },
       {
         name: 'fanUse',
-        label: 'Use\na\nfan?',
+        label: 'Use a fan?',
         field: 'fanUse',
         align: 'center',
       },
@@ -82,11 +76,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style>
-.minimal-padding th,
-.minimal-padding td {
-  padding-left: 1px !important; /* Adjust as needed */
-  padding-right: 1px !important; /* Adjust as needed */
-}
-</style>
