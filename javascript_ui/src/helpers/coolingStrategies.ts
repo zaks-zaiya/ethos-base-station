@@ -271,30 +271,6 @@ export const coolingStrategies: Record<string, CoolingStrategy> = {
       ],
     },
   },
-  swimming: {
-    name: 'Swimming',
-    shortName: 'swimming',
-    icon: 'pool',
-    effectiveness: 0.4,
-    group: 'Water immersion',
-    extraInfo: {
-      bestUse: [
-        'Choose a pool that is properly maintained and has a comfortable water temperature.',
-        'Combine swimming with sun protection measures, like applying waterproof sunscreen, wearing a hat, and using a UV-protective swim shirt.',
-        'Hydrate regularly, as swimming, especially in hot weather, can still lead to dehydration.',
-      ],
-      whenUse: [
-        'When the sun is not out, a dip in a pool can quickly lower your body temperature.',
-      ],
-      whenNotUse: [
-        'If the temperature outside is significantly warmer than inside, or if there is not adequate shade.',
-        'If the pool water is warm due to being exposed to sun.',
-        'If you have open wounds or skin infections, to avoid worsening the condition or spreading it to others.',
-        "If you don't feel comfortable swimming or it feels unsafe to do so.",
-        "If you can't swim or if there is no lifeguard present.",
-      ],
-    },
-  },
   handBath: {
     name: 'Hand/forearm bath',
     shortName: 'a hand/forearm bath',
