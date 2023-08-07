@@ -1,32 +1,40 @@
-import csv
-import datetime
-import os
+import logging
+
 
 class Logger:
+
+  @staticmethod
+  def shutdown():
+    logging.shutdown()
+
+  @staticmethod
+  def setup():
+    # Configure logging
+    logging.basicConfig(
+      level=logging.DEBUG,
+      format='%(asctime)s %(levelname)-8s %(message)s',
+      datefmt='%Y-%m-%d %H:%M:%S',
+      handlers=[
+          logging.FileHandler("logs/radio_data.log", mode='a'),
+          logging.StreamHandler()
+      ]
+    )
 
   @staticmethod
   def log_radio_data(radio_data, rssi):
     id = radio_data.get("id", "Missing ID")
     temp = radio_data.get("temperature", "Missing Temperature")
     humidity = radio_data.get("humidity", "Missing Humidity")
-    print("Radio data.. id: {0}, temp: {1}, RH: {2}, RSSI: {3}".format(id, temp, humidity, rssi))
-
-    os.makedirs('logs', exist_ok=True)
-    with open('logs/radio_data.csv', 'a', newline='') as datafile:
-      data_writer = csv.writer(datafile)
-      # Write header if the file is empty
-      if datafile.tell() == 0:
-        data_writer.writerow(['Time', 'ID', 'Temperature', 'Humidity', 'RSSI'])
-      data_writer.writerow([datetime.datetime.now(), id, temp, humidity, rssi])
+    log_message = "Radio received... id: {0}, temp: {1}, RH: {2}, RSSI: {3}".format(id, temp, humidity, rssi)
+    logging.info(log_message)
 
   @staticmethod
   def error(msg):
-    print(msg)
+    logging.error(msg)
 
-    os.makedirs('logs', exist_ok=True)
-    with open('logs/radio_errors.csv', 'a', newline='') as errorfile:
-      error_writer = csv.writer(errorfile)
-      # Write header if the file is empty
-      if errorfile.tell() == 0:
-        error_writer.writerow(['Time', 'Error'])
-      error_writer.writerow([datetime.datetime.now(), msg])
+# Setup logger
+Logger.setup()
+
+# Sample usage
+# Logger.log_radio_data({"id": "123", "temperature": "22.5", "humidity": "50.2"}, "-70dBm")
+# Logger.error("Sample Error Message")
