@@ -26,7 +26,10 @@ export default defineComponent({
     const forecastStore = useForecastStore();
     forecastStore.setup();
 
-    // Add touch/click feedback to app
+    /**
+     * Add touch/click feedback to the screen.
+     * Every time a user presses the screen, an animated circle will appear in that location.
+     */
     document.addEventListener('click', function (event: MouseEvent) {
       const effect = document.createElement('div');
       effect.classList.add('click-effect');
