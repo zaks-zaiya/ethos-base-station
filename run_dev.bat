@@ -1,6 +1,6 @@
 :: Open quasar program in new window
 cd javascript_ui
-start cmd /C npm start
+start cmd /C yarn start
 cd ..
 
 :: Run python
