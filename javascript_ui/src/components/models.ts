@@ -1,3 +1,10 @@
+// Define sensor data interface
+export interface SocketSensorData {
+  id?: string;
+  temperature?: string;
+  humidity?: string;
+}
+
 export interface SensorData {
   name: string | undefined;
   id: number | undefined;
