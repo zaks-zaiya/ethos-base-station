@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { io } from 'socket.io-client';
-import { SensorData } from 'src/components/models';
+import { SensorData, SocketSensorData } from 'src/components/models';
 import { getRiskLevel } from 'src/helpers/riskLevel';
 import { playAudio } from 'src/helpers/audioAlertDispatcher';
 import { useDataPreferencesStore } from 'src/stores/dataPreferences';
@@ -130,7 +130,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
       });
 
       // Callback to update sensor data when applicable
-      socket.on('data', (data) => {
+      socket.on('data', (data: SocketSensorData) => {
         console.log('Received:');
         console.log(data);
 
