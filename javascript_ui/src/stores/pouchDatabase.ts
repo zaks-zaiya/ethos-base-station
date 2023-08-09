@@ -33,8 +33,7 @@ export const usePouchDatabaseStore = defineStore({
       if (userDataStore.id) {
         this.db = new PouchDB(`user_${userDataStore.id}`);
         this.db.info().then(function (info) {
-          console.log('Connected to local PouchDB instance:');
-          console.log(info);
+          console.log('Connected to local PouchDB instance:', info);
         });
       }
       // TODO: 3. Sets up replication on a remote database
@@ -48,6 +47,7 @@ export const usePouchDatabaseStore = defineStore({
      * @param data The data which will be added to the database
      */
     async postDocument(
+      type: 'sensor' | 'weather' | 'preferences' | 'survey' | 'alert',
       data:
         | SensorDatabaseStructure
         | WeatherDatabaseStructure
@@ -64,6 +64,7 @@ export const usePouchDatabaseStore = defineStore({
 
       // 2. Construct the data which will be sent to the database
       const baseData: BaseDatabaseStructure = {
+        type: type,
         time: new Date(Date.now()),
         userId: userDataStore.id,
       };

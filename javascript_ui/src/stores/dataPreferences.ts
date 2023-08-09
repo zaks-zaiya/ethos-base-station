@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { AudioType } from 'src/components/models';
 import { coolingStrategies } from 'src/helpers/coolingStrategies';
+import { PreferencesDatabaseStructure } from 'src/typings/database-types';
 
 const defaultOptions = {
   haveAccessTo: true,
@@ -12,7 +13,7 @@ const defaultOptions = {
 export const useDataPreferencesStore = defineStore('dataPreferences', {
   persist: true,
 
-  state: () => ({
+  state: (): PreferencesDatabaseStructure => ({
     audioType: AudioType.TONE,
     isFollowUp: false,
     coolingStrategyOptions: Object.keys(coolingStrategies).map((key) => {

@@ -1,12 +1,12 @@
-import { RiskLevel } from 'src/components/models';
+import { AudioType, RiskLevel } from 'src/components/models';
 
 export interface BaseDatabaseStructure {
+  type: 'sensor' | 'weather' | 'preferences' | 'survey' | 'alert';
   time: Date;
   userId: number;
 }
 
 export interface SensorDatabaseStructure {
-  type: 'sensor';
   sensorLocation: string;
   sensorId: number;
   temperature: number;
@@ -14,26 +14,29 @@ export interface SensorDatabaseStructure {
 }
 
 export interface WeatherDatabaseStructure {
-  type: 'weather';
   weatherLocation: string;
   temperature: number;
   humidity: number;
 }
 
 export interface PreferencesDatabaseStructure {
-  type: 'preferences';
-  weatherLocation: string;
-  temperature: number;
-  humidity: number;
+  audioType: AudioType;
+  isFollowUp: boolean;
+  coolingStrategyOptions: Array<{
+    key: string;
+    haveAccessTo: boolean;
+    wouldUse: boolean;
+    whyNotUse: Array<string>;
+    whyNotUseOther: string;
+  }>;
 }
 
 export interface SurveyDatabaseStructure {
-  type: 'survey';
+  todo: null;
   // TODO: Fill in rest once questions finalized
 }
 
 export interface AlertDatabaseStructure {
-  type: 'alert';
   riskLevel: RiskLevel;
   dismissMethod: null | 'not here' | 'cooling strategies' | 'dismiss';
 }
