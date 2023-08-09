@@ -3,13 +3,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, watch } from 'vue';
 
 import { getSpeechSynthesisVoices } from './helpers/audioAlertDispatcher';
 
 import { useDataSensorStore } from 'stores/dataSensor';
 import { useForecastStore } from 'stores/forecast';
 import { useDataPreferencesStore } from './stores/dataPreferences';
+import { usePouchDatabaseStore } from './stores/pouchDatabase';
+import { useDataUserStore } from './stores/dataUser';
 
 export default defineComponent({
   name: 'App',
@@ -21,10 +23,27 @@ export default defineComponent({
     // Setup stores
     const dataSensorStore = useDataSensorStore();
     dataSensorStore.setup();
+
     const dataPreferencesStore = useDataPreferencesStore();
     dataPreferencesStore.updateCoolingStrategyOptions();
+
     const forecastStore = useForecastStore();
     forecastStore.setup();
+
+    const pouchDatabaseStore = usePouchDatabaseStore();
+    pouchDatabaseStore.initializeDatabase();
+
+    const dataUserStore = useDataUserStore();
+    // Update database link when user id changes
+    watch(
+      () => dataUserStore.id,
+      (newId, oldId) => {
+        if (newId && newId !== oldId) {
+          pouchDatabaseStore.initializeDatabase();
+        }
+      },
+      { immediate: true }
+    );
 
     /**
      * Add touch/click feedback to the screen.

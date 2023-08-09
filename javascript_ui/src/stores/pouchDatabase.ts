@@ -11,8 +11,8 @@ import {
   WeatherDatabaseStructure,
 } from 'src/typings/database-types';
 
-export const usePouchStore = defineStore({
-  id: 'pouchDB',
+export const usePouchDatabaseStore = defineStore({
+  id: 'pouchDatabase',
   state: () => ({
     db: null as null | InstanceType<typeof PouchDB>,
   }),
@@ -32,6 +32,10 @@ export const usePouchStore = defineStore({
       // 2. If a user id is defined sets up a database called user_${id}
       if (userDataStore.id) {
         this.db = new PouchDB(`user_${userDataStore.id}`);
+        this.db.info().then(function (info) {
+          console.log('Connected to local PouchDB instance:');
+          console.log(info);
+        });
       }
       // TODO: 3. Sets up replication on a remote database
     },
