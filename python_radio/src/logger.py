@@ -1,4 +1,5 @@
 import logging
+import os
 
 class Logger:
 
@@ -18,7 +19,10 @@ class Logger:
         Logger._logger.setLevel(logging.DEBUG)
 
         # Create handlers
-        file_handler = logging.FileHandler("logs/radio_data.log", mode='a')
+        log_directory = "logs"
+        if not os.path.exists(log_directory):
+            os.makedirs(log_directory)
+        file_handler = logging.FileHandler(os.path.join(log_directory, "radio_data.log"), mode='a')
         stream_handler = logging.StreamHandler()
 
         # Create a formatter and attach to handlers
