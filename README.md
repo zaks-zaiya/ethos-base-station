@@ -6,7 +6,7 @@ To show the settings button, press the ethos logo (top left) 7 times in quick su
 
 ## Development build
 
-Requirements: NPM and Python 3.9 (with venv) and Docker
+Requirements: NPM, Yarn, Python 3.9 (with venv) and Docker
 
 1. Ensure Docker is open and running
 2. Under `./javascript_ui` make a file named `.env` using the provided `.env.example` file and fill in all variables
@@ -15,7 +15,7 @@ Requirements: NPM and Python 3.9 (with venv) and Docker
 
 ## Production build
 
-Requirements: NPM and Python 3.9 (with venv)
+Requirements: NPM, Yarn and Python 3.9 (with venv)
 
 To run production build:
 

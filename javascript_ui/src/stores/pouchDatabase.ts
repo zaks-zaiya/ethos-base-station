@@ -19,24 +19,39 @@ export const usePouchDatabaseStore = defineStore({
   actions: {
     /**
      * Function that:
-     * 1. If an existing database exists, closes it
-     * 2. If a user id is defined sets up a database called user_${id}
-     * TODO: 3. Sets up replication on a remote database
+     * 1. Checks if user ID exists
+     * 2. If an existing database connection exists, closes it
+     * 3. Sets up a database called user_${id}
+     * 4. Sets up replication on a remote database called user_${id}
      */
     initializeDatabase() {
       const userDataStore = useDataUserStore();
-      // 1. If an existing database exists, closes it
+      const databaseName = `user_${userDataStore.id}`;
+      const databaseUrl =
+        process.env.NODE_ENV === 'production'
+          ? process.env.COUCH_DB_URL
+          : 'http://localhost:5984';
+      // 1. Checks if user ID exists
+      if (!userDataStore.id) {
+        console.error('No user ID provided to setup database');
+        return;
+      }
+      // 2. If an existing database exists, closes it
       if (this.db) {
         this.db.close();
       }
-      // 2. If a user id is defined sets up a database called user_${id}
-      if (userDataStore.id) {
-        this.db = new PouchDB(`user_${userDataStore.id}`);
-        this.db.info().then(function (info) {
-          console.log('Connected to local PouchDB instance:', info);
+      // 3. Sets up a database called user_${id}
+      this.db = new PouchDB(databaseName);
+      this.db.info().then(function (info) {
+        console.log('Connected to local PouchDB instance:', info);
+      });
+      // 4. Sets up replication on a remote database
+      if (this.db) {
+        this.db.replicate.to(`${databaseUrl}/${databaseName}`, {
+          live: true,
+          retry: true,
         });
       }
-      // TODO: 3. Sets up replication on a remote database
     },
 
     /**
