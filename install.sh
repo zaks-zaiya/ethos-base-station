@@ -1,6 +1,6 @@
 # Setup javascript npm
 cd javascript_ui
-npm install
+yarn install
 # Setup python environment
 cd ../python_radio
 python3 -m venv ./env

@@ -1,6 +1,6 @@
 # Open quasar program in new window
 cd javascript_ui
-npm start & # Ensure that process does not block python script
+yarn start & # Ensure that process does not block python script
 cd ..
 
 # Run python
