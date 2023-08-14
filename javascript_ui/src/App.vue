@@ -10,7 +10,7 @@ import { getSpeechSynthesisVoices } from './helpers/audioAlertDispatcher';
 import { useDataSensorStore } from 'stores/dataSensor';
 import { useForecastStore } from 'stores/forecast';
 import { useDataPreferencesStore } from './stores/dataPreferences';
-import { usePouchDatabaseStore } from './stores/pouchDatabase';
+import { useDatabaseStore } from './stores/database';
 import { useDataUserStore } from './stores/dataUser';
 
 export default defineComponent({
@@ -30,8 +30,8 @@ export default defineComponent({
     const forecastStore = useForecastStore();
     forecastStore.setup();
 
-    const pouchDatabaseStore = usePouchDatabaseStore();
-    pouchDatabaseStore.initializeDatabase();
+    const databaseStore = useDatabaseStore();
+    databaseStore.initializeDatabase();
 
     const dataUserStore = useDataUserStore();
     // Update database link when user id changes
@@ -39,7 +39,7 @@ export default defineComponent({
       () => dataUserStore.id,
       (newId, oldId) => {
         if (newId && newId !== oldId) {
-          pouchDatabaseStore.initializeDatabase();
+          databaseStore.initializeDatabase();
         }
       },
       { immediate: true }

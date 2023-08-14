@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { AudioType } from 'src/components/models';
 import { coolingStrategies } from 'src/helpers/coolingStrategies';
 import { PreferencesDatabaseStructure } from 'src/typings/database-types';
+import { useDatabaseStore } from 'src/stores/database';
 
 const defaultOptions = {
   haveAccessTo: true,
@@ -68,6 +69,12 @@ export const useDataPreferencesStore = defineStore('dataPreferences', {
   },
 
   actions: {
+    // Post the current preferences data to the database
+    postToDatabase() {
+      const databaseStore = useDatabaseStore();
+      console.log('Saving preferences...', this.$state);
+      databaseStore.postDocument('preferences', this.$state);
+    },
     // Set a either 'haveAccessTo' or 'wouldUse' for a particular strategy
     setWouldUseOrHaveAccessTo(
       strategyKey: string,

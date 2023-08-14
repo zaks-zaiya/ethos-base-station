@@ -138,7 +138,6 @@ import { QTableProps } from 'quasar';
 import { playAudio, stopAudio } from 'src/helpers/audioAlertDispatcher';
 import { coolingStrategies } from 'src/helpers/coolingStrategies';
 import { useDataPreferencesStore } from 'src/stores/dataPreferences';
-import { usePouchDatabaseStore } from 'src/stores/pouchDatabase';
 import InputKeyboard from './InputKeyboard.vue';
 import { computed, defineComponent, onBeforeUnmount, reactive } from 'vue';
 import { AudioType, RiskLevel } from './models';
@@ -152,14 +151,9 @@ export default defineComponent({
   components: { InputKeyboard },
   setup() {
     const dataPreferencesStore = useDataPreferencesStore();
-    const pouchDatabaseStore = usePouchDatabaseStore();
 
     onBeforeUnmount(() => {
-      console.log('Saving preferences...', dataPreferencesStore.$state);
-      pouchDatabaseStore.postDocument(
-        'preferences',
-        dataPreferencesStore.$state
-      );
+      dataPreferencesStore.postToDatabase();
     });
 
     // AUDIO TONE OPTIONS

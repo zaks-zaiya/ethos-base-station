@@ -11,8 +11,8 @@ import {
   WeatherDatabaseStructure,
 } from 'src/typings/database-types';
 
-export const usePouchDatabaseStore = defineStore({
-  id: 'pouchDatabase',
+export const useDatabaseStore = defineStore({
+  id: 'database',
   state: () => ({
     db: null as null | InstanceType<typeof PouchDB>,
   }),
