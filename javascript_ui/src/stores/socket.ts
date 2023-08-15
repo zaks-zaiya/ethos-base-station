@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { io } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 
 import { SocketSensorData } from 'src/components/models';
 
@@ -7,10 +7,29 @@ interface SensorDataCallback {
   (data: SocketSensorData): void;
 }
 
+interface SocketEnvironmentalConditions {
+  height: number;
+  age: number;
+  weight: number;
+  sex: 'male' | 'female' | 'other';
+  Ta: number;
+  RH: number;
+}
+
+interface ServerToClientEvents {
+  data: (data: SocketSensorData) => void;
+}
+interface ClientToServerEvents {
+  calculatePredictedCoreTemperature: (
+    data: SocketEnvironmentalConditions,
+    callback: (response: number) => void
+  ) => void;
+}
+
 export const useSocketStore = defineStore('socket', {
   state: () => ({
     isConnected: false,
-    socket: null as null | ReturnType<typeof io>,
+    socket: null as null | Socket<ServerToClientEvents, ClientToServerEvents>,
   }),
 
   actions: {
@@ -39,6 +58,30 @@ export const useSocketStore = defineStore('socket', {
      */
     onSensorData(callback: SensorDataCallback) {
       this.socket?.on('data', callback);
+    },
+
+    /**
+     * Calculate predicted core temperature using the python socket server
+     * @param data All required information to calculate core temperature
+     * @returns The predicted core temperature for an individual after 3 hours
+     */
+    calculatePredictedCoreTemperature(
+      data: SocketEnvironmentalConditions
+    ): Promise<number> {
+      return new Promise((resolve, reject) => {
+        if (!this.socket) {
+          reject('Socket not initialized');
+          return;
+        }
+        // If a callback is expected from the server after emitting the event
+        this.socket.emit(
+          'calculatePredictedCoreTemperature',
+          data,
+          (response) => {
+            resolve(response);
+          }
+        );
+      });
     },
   },
 });
