@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia';
-import { io } from 'socket.io-client';
 import { SensorData, SocketSensorData } from 'src/components/models';
 import { getRiskLevel } from 'src/helpers/riskLevel';
 import { playAudio } from 'src/helpers/audioAlertDispatcher';
 import { useDataPreferencesStore } from 'src/stores/dataPreferences';
+import { useSocketStore } from 'src/stores//socket';
 
 const deserializeSensorData = (sensorDataString: string) => {
   // Parse the JSON string
@@ -41,7 +41,6 @@ export const useDataSensorStore = defineStore('dataSensor', {
   },
 
   state: () => ({
-    isConnected: false,
     alertSensor: null as SensorData | null,
     allSensorData: [
       {
@@ -115,22 +114,14 @@ export const useDataSensorStore = defineStore('dataSensor', {
 
   actions: {
     setup() {
-      console.log('Setting up socket...');
-      const socket = io('ws://localhost:5001');
-
-      // Callbacks for socket
-      socket.on('connect', () => {
-        this.isConnected = true;
-        console.log('Connected:', socket.id);
-      });
-
-      socket.on('disconnect', () => {
-        this.isConnected = false;
-        console.log('Disconnected:', socket.id);
-      });
+      // Initialize socket store if it is not yet ready
+      const socketStore = useSocketStore();
+      if (!socketStore.isConnected) {
+        socketStore.initialize();
+      }
 
       // Callback to update sensor data when applicable
-      socket.on('data', (data: SocketSensorData) => {
+      socketStore.onSensorData((data: SocketSensorData) => {
         console.log('Received:');
         console.log(data);
 
