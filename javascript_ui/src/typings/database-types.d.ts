@@ -37,6 +37,7 @@ export interface SurveyDatabaseStructure {
 }
 
 export interface AlertDatabaseStructure {
-  riskLevel: RiskLevel;
+  riskLevel: RiskLevel | undefined;
+  volumePercent: number;
   dismissMethod: null | 'not here' | 'cooling strategies' | 'dismiss';
 }

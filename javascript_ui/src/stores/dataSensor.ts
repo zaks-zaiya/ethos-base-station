@@ -5,6 +5,7 @@ import { playAudio } from 'src/helpers/audioAlertDispatcher';
 import { useDataPreferencesStore } from 'src/stores/dataPreferences';
 import { useSocketStore } from 'src/stores//socket';
 import { useDatabaseStore } from './database';
+import { useVolumeStore } from './volume';
 
 const deserializeSensorData = (sensorDataString: string) => {
   // Parse the JSON string
@@ -114,19 +115,11 @@ export const useDataSensorStore = defineStore('dataSensor', {
   },
 
   actions: {
-    postToDatabase(sensorData: SensorData) {
-      // Prepare database store
-      const databaseStore = useDatabaseStore();
-      // Send sensor data to database
-      databaseStore.postDocument('sensor', {
-        sensorId: sensorData.id,
-        sensorLocation: sensorData.name,
-        temperature: sensorData.temperature,
-        humidity: sensorData.humidity,
-      });
-    },
     setup() {
-      // Initialize socket store if it is not yet ready
+      // Load stores
+      const databaseStore = useDatabaseStore();
+      const volumeStore = useVolumeStore();
+      // Setup socket store if it is not yet ready
       const socketStore = useSocketStore();
       if (!socketStore.isConnected) {
         socketStore.initialize();
@@ -152,7 +145,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
         const temperature = parseFloat(data.temperature);
         const humidity = parseFloat(data.humidity);
 
-        // Check
+        // Check numbers are correctly parsed
         if (isNaN(id) || isNaN(temperature) || isNaN(humidity)) {
           // Error:
           console.error('Error parsing strings to numbers');
@@ -168,7 +161,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
         );
         if (i < 0) {
           // Could not find index
-          console.error('Wrong sensor id:', id);
+          console.log('Wrong sensor id:', id);
           return;
         }
 
@@ -189,8 +182,13 @@ export const useDataSensorStore = defineStore('dataSensor', {
         }
         sensorData.riskLevel = newRiskLevel;
 
-        // Post to database
-        this.postToDatabase(sensorData);
+        // Send sensor data to database
+        databaseStore.postDocument('sensor', {
+          sensorId: sensorData.id,
+          sensorLocation: sensorData.name,
+          temperature: sensorData.temperature,
+          humidity: sensorData.humidity,
+        });
 
         // Work out whether to send alert
         if (oldRiskLevel && newRiskLevel && newRiskLevel > oldRiskLevel) {
@@ -204,6 +202,12 @@ export const useDataSensorStore = defineStore('dataSensor', {
             newRiskLevel,
             this.alertSensor
           );
+          // Send alert data to database
+          databaseStore.postDocument('alert', {
+            riskLevel: newRiskLevel,
+            volumePercent: volumeStore.volumePercent,
+            dismissMethod: null,
+          });
         }
       });
     },
