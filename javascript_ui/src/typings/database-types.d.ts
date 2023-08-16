@@ -14,9 +14,9 @@ export interface SensorDatabaseStructure {
 }
 
 export interface WeatherDatabaseStructure {
-  weatherLocation: string;
-  temperature: number;
-  humidity: number;
+  weatherLocation: string | null;
+  temperature: number | null;
+  humidity: number | null;
 }
 
 export interface PreferencesDatabaseStructure {
