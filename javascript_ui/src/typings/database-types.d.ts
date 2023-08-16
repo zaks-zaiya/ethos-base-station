@@ -7,10 +7,10 @@ export interface BaseDatabaseStructure {
 }
 
 export interface SensorDatabaseStructure {
-  sensorLocation: string;
-  sensorId: number;
-  temperature: number;
-  humidity: number;
+  sensorLocation: string | undefined;
+  sensorId: number | undefined;
+  temperature: number | undefined;
+  humidity: number | undefined;
 }
 
 export interface WeatherDatabaseStructure {

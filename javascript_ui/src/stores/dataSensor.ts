@@ -4,6 +4,7 @@ import { getRiskLevel } from 'src/helpers/riskLevel';
 import { playAudio } from 'src/helpers/audioAlertDispatcher';
 import { useDataPreferencesStore } from 'src/stores/dataPreferences';
 import { useSocketStore } from 'src/stores//socket';
+import { useDatabaseStore } from './database';
 
 const deserializeSensorData = (sensorDataString: string) => {
   // Parse the JSON string
@@ -113,6 +114,17 @@ export const useDataSensorStore = defineStore('dataSensor', {
   },
 
   actions: {
+    postToDatabase(sensorData: SensorData) {
+      // Prepare database store
+      const databaseStore = useDatabaseStore();
+      // Send sensor data to database
+      databaseStore.postDocument('sensor', {
+        sensorId: sensorData.id,
+        sensorLocation: sensorData.name,
+        temperature: sensorData.temperature,
+        humidity: sensorData.humidity,
+      });
+    },
     setup() {
       // Initialize socket store if it is not yet ready
       const socketStore = useSocketStore();
@@ -176,6 +188,11 @@ export const useDataSensorStore = defineStore('dataSensor', {
           console.error('Error calculating risk level:', e);
         }
         sensorData.riskLevel = newRiskLevel;
+
+        // Post to database
+        this.postToDatabase(sensorData);
+
+        // Work out whether to send alert
         if (oldRiskLevel && newRiskLevel && newRiskLevel > oldRiskLevel) {
           // Risk level has gone up
           this.alertSensor = { ...sensorData }; // Shallow copy
