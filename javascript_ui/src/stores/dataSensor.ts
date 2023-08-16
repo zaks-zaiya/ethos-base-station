@@ -121,7 +121,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
       }
 
       // Callback to update sensor data when applicable
-      socketStore.onSensorData((data: SocketSensorData) => {
+      socketStore.onSensorData(async (data: SocketSensorData) => {
         console.log('Received:');
         console.log(data);
 
@@ -166,9 +166,15 @@ export const useDataSensorStore = defineStore('dataSensor', {
         sensorData.humidity = humidity;
         sensorData.lastSeen = new Date(Date.now());
 
+        // Calculate risk level
         const oldRiskLevel = sensorData.riskLevel;
         sensorData.riskLevel = undefined; // While we calculate new value
-        const newRiskLevel = getRiskLevel(sensorData);
+        let newRiskLevel = undefined;
+        try {
+          newRiskLevel = await getRiskLevel(sensorData);
+        } catch (e) {
+          console.error('Error calculating risk level:', e);
+        }
         sensorData.riskLevel = newRiskLevel;
         if (oldRiskLevel && newRiskLevel && newRiskLevel > oldRiskLevel) {
           // Risk level has gone up

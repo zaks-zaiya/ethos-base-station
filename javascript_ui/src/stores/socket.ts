@@ -8,10 +8,10 @@ interface SensorDataCallback {
 }
 
 interface SocketEnvironmentalConditions {
-  height: number;
-  age: number;
-  weight: number;
-  sex: 'male' | 'female' | 'other';
+  heightM: number;
+  ageYears: number;
+  weightKg: number;
+  sex: 'male' | 'female';
   Ta: number;
   RH: number;
 }
@@ -43,12 +43,12 @@ export const useSocketStore = defineStore('socket', {
       // Callbacks for socket
       this.socket.on('connect', () => {
         this.isConnected = true;
-        console.log('Connected:', this.socket?.id);
+        console.log('Connected:', this.socket?.id ?? 'socket undefined');
       });
 
       this.socket.on('disconnect', () => {
         this.isConnected = false;
-        console.log('Disconnected:', this.socket?.id);
+        console.log('Disconnected:', this.socket?.id ?? 'socket undefined');
       });
     },
 

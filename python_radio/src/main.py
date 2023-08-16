@@ -41,14 +41,7 @@ def disconnect(sid):
 # Take in RiskLevelData and return core temperature
 @sio.event
 async def calculatePredictedCoreTemperature(sid, data: RiskLevelData):
-  print('Calculating core temp...')
-  height = data.get('height')
-  weight = data.get('weight')
-  age = data.get('age')
-  Ta = data.get('Ta')
-  RH = data.get('RH')
-  sex = data.get('sex')
-  return calculate_predicted_core_temperature(height, weight, age, sex, Ta, RH)
+  return calculate_predicted_core_temperature(data)
 
 if __name__ == '__main__':
   production_arg = sys.argv[1] if len(sys.argv) > 1 else False
