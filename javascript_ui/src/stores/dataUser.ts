@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { UserData } from '../components/models';
+import { UserData } from 'src/typings/data-types';
 
 export const useDataUserStore = defineStore('dataUser', {
   persist: true,

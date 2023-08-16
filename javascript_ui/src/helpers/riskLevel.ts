@@ -1,4 +1,4 @@
-import { SensorData, RiskLevel } from 'src/components/models';
+import { SensorData, RiskLevel } from 'src/typings/data-types';
 import { useDataUserStore } from 'src/stores/dataUser';
 import { useSocketStore } from 'src/stores/socket';
 

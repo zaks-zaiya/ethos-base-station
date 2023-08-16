@@ -41,7 +41,7 @@
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
 import { useDataSensorStore } from 'stores/dataSensor';
-import { RiskLevel } from './models';
+import { RiskLevel } from 'src/typings/data-types';
 
 export default defineComponent({
   name: 'ModalHeatAlert',

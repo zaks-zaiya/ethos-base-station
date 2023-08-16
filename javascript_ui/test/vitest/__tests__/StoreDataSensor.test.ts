@@ -9,7 +9,7 @@ import {
 } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { useDataSensorStore } from 'src/stores/dataSensor';
-import { SocketSensorData } from 'src/components/models';
+import { SocketSensorData } from 'src/typings/data-types';
 
 // Mock socket IO
 import { io, Socket } from 'socket.io-client';

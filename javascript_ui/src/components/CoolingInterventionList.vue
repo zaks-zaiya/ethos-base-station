@@ -95,7 +95,7 @@ import {
   inject,
 } from 'vue';
 import { useDataPreferencesStore } from 'src/stores/dataPreferences';
-import { CoolingStrategy } from 'src/components/models';
+import { CoolingStrategy } from 'src/typings/data-types';
 import { coolingStrategies } from 'src/helpers/coolingStrategies';
 import { QTable, QTableProps } from 'quasar';
 import CoolingInterventionEffectiveness from './CoolingInterventionEffectiveness.vue';

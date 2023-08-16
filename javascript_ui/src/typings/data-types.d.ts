@@ -1,4 +1,4 @@
-// Define sensor data interface
+// Sensor Data
 export interface SocketSensorData {
   id?: string;
   temperature?: string;
@@ -14,6 +14,13 @@ export interface SensorData {
   riskLevel: RiskLevel | undefined;
 }
 
+export enum RiskLevel {
+  LOW = 1,
+  MEDIUM = 2,
+  HIGH = 3,
+}
+
+// User data
 export interface UserData {
   id: undefined | number;
   postcode: undefined | number;
@@ -25,6 +32,7 @@ export interface UserData {
   sex: undefined | 'male' | 'female' | 'other';
 }
 
+// Preferences
 export interface CoolingStrategy {
   name: string;
   shortName: string;
@@ -42,12 +50,6 @@ export interface CoolingStrategy {
     whenUse: Array<string>;
     whenNotUse: Array<string>;
   };
-}
-
-export enum RiskLevel {
-  LOW = 1,
-  MEDIUM = 2,
-  HIGH = 3,
 }
 
 export enum AudioType {

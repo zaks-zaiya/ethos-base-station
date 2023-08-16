@@ -140,7 +140,7 @@ import { coolingStrategies } from 'src/helpers/coolingStrategies';
 import { useDataPreferencesStore } from 'src/stores/dataPreferences';
 import InputKeyboard from './InputKeyboard.vue';
 import { computed, defineComponent, onBeforeUnmount, reactive } from 'vue';
-import { AudioType, RiskLevel } from './models';
+import { AudioType, RiskLevel } from 'src/typings/data-types';
 
 interface TableOptions {
   label: string;

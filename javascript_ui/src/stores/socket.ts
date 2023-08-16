@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { io, Socket } from 'socket.io-client';
 
-import { SocketSensorData } from 'src/components/models';
+import { SocketSensorData } from 'src/typings/data-types';
 
 interface SensorDataCallback {
   (data: SocketSensorData): void;

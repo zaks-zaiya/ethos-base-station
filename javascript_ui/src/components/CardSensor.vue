@@ -53,7 +53,7 @@ import {
   onUnmounted,
   inject,
 } from 'vue';
-import { SensorData, RiskLevel } from 'components/models';
+import { SensorData, RiskLevel } from 'src/typings/data-types';
 import { playTextToSpeech } from 'src/helpers/audioAlertDispatcher';
 import { shouldUseFan } from 'src/helpers/fanAndWindowUse';
 

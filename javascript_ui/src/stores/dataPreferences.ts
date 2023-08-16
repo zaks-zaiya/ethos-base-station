@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { AudioType } from 'src/components/models';
+import { AudioType } from 'src/typings/data-types';
 import { coolingStrategies } from 'src/helpers/coolingStrategies';
 import { PreferencesDatabaseStructure } from 'src/typings/database-types';
 import { useDatabaseStore } from 'src/stores/database';

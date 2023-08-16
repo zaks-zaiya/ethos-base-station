@@ -1,4 +1,4 @@
-import { AudioType, RiskLevel, SensorData } from 'src/components/models';
+import { AudioType, RiskLevel, SensorData } from 'src/typings/data-types';
 import { useVolumeStore } from 'src/stores/volume';
 
 let currentAudio: HTMLAudioElement | null = null;

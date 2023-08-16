@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { SensorData, SocketSensorData } from 'src/components/models';
+import { SensorData, SocketSensorData } from 'src/typings/data-types';
 import { getRiskLevel } from 'src/helpers/riskLevel';
 import { playAudio } from 'src/helpers/audioAlertDispatcher';
 import { useDataPreferencesStore } from 'src/stores/dataPreferences';

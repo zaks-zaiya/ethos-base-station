@@ -1,4 +1,4 @@
-import { CoolingStrategy } from 'src/components/models';
+import { CoolingStrategy } from 'src/typings/data-types';
 
 export const coolingStrategies: Record<string, CoolingStrategy> = {
   fan: {

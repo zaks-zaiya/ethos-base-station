@@ -1,4 +1,4 @@
-import { AudioType, RiskLevel } from 'src/components/models';
+import { AudioType, RiskLevel } from 'src/typings/data-types';
 
 export interface BaseDatabaseStructure {
   type: 'sensor' | 'weather' | 'preferences' | 'survey' | 'alert';
