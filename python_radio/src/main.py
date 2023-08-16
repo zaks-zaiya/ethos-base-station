@@ -4,6 +4,8 @@ import asyncio
 import sys
 import threading
 
+from core_temperature import RiskLevelData, calculate_predicted_core_temperature
+
 try:
   import board
   import busio
@@ -34,6 +36,12 @@ def connect(sid, environ):
 @sio.event
 def disconnect(sid):
   print('disconnect ', sid)
+
+
+# Take in RiskLevelData and return core temperature
+@sio.event
+async def calculatePredictedCoreTemperature(sid, data: RiskLevelData):
+  return calculate_predicted_core_temperature(data)
 
 if __name__ == '__main__':
   production_arg = sys.argv[1] if len(sys.argv) > 1 else False

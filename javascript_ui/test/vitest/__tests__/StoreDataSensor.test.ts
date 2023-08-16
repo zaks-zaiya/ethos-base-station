@@ -13,6 +13,7 @@ import { SocketSensorData } from 'src/components/models';
 
 // Mock socket IO
 import { io, Socket } from 'socket.io-client';
+import { useSocketStore } from 'src/stores/socket';
 vi.mock('socket.io-client', () => {
   return {
     io: vi.fn().mockReturnValue({
@@ -46,42 +47,44 @@ function invokeEventCallback(
 }
 
 describe('Data Sensor Store', () => {
-  let store: ReturnType<typeof useDataSensorStore>;
+  let dataSensorStore: ReturnType<typeof useDataSensorStore>;
+  let socketStore: ReturnType<typeof useSocketStore>;
   const socket = io();
 
   beforeEach(() => {
     // Define store
     const testPinia = createPinia();
     setActivePinia(testPinia);
-    store = useDataSensorStore();
-    store.setup();
+    dataSensorStore = useDataSensorStore();
+    socketStore = useSocketStore();
+    dataSensorStore.setup();
   });
 
   afterEach(() => {
     // Reset store
     setActivePinia(undefined);
-    store.$reset();
+    dataSensorStore.$reset();
     // Clear mocks
     vi.clearAllMocks();
   });
 
   it('should set isConnected to true on socket connect', () => {
     // Make sure is connected is false
-    store.isConnected = false;
+    socketStore.isConnected = false;
     invokeEventCallback(socket, 'connect');
-    expect(store.isConnected).toBe(true);
+    expect(socketStore.isConnected).toBe(true);
   });
 
   it('should set isConnected to false on socket disconnect', () => {
     // Make sure is connected is true
-    store.isConnected = true;
+    socketStore.isConnected = true;
     invokeEventCallback(socket, 'disconnect');
-    expect(store.isConnected).toBe(false);
+    expect(socketStore.isConnected).toBe(false);
   });
 
   it('should handle socket "data" event and update sensor data', () => {
     // Set first sensor with id of 1
-    store.allSensorData[0].id = 1;
+    dataSensorStore.allSensorData[0].id = 1;
     // Define Mock Data
     const mockData: SocketSensorData = {
       id: '1',
@@ -90,7 +93,9 @@ describe('Data Sensor Store', () => {
     };
     invokeEventCallback(socket, 'data', mockData);
     // Find sensor and check data is correctly set
-    const sensor = store.allSensorData.find((dataSensor) => dataSensor.id == 1);
+    const sensor = dataSensorStore.allSensorData.find(
+      (dataSensor) => dataSensor.id == 1
+    );
     expect(sensor).toBeDefined();
     if (sensor) {
       expect(sensor.temperature).toBe(20);
