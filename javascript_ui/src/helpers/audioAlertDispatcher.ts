@@ -26,7 +26,7 @@ const generateTextToSpeech = (
         : 'Your system indicates a medium level heat alert';
     case RiskLevel.HIGH:
       return sensorData
-        ? `Your system indicates a medium level heat alert at: ${sensorData.name}`
+        ? `Your system indicates a high level heat alert at: ${sensorData.name}`
         : 'Your system indicates a high level heat alert';
   }
 };
