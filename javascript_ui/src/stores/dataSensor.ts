@@ -4,6 +4,7 @@ import { getRiskLevel } from 'src/helpers/riskLevel';
 import { playAudio } from 'src/helpers/audioAlertDispatcher';
 import { useDataPreferencesStore } from 'src/stores/dataPreferences';
 import { useSocketStore } from 'src/stores//socket';
+import { useSurveyStore } from 'src/stores/survey';
 
 const deserializeSensorData = (sensorDataString: string) => {
   // Parse the JSON string
@@ -178,6 +179,10 @@ export const useDataSensorStore = defineStore('dataSensor', {
         sensorData.riskLevel = newRiskLevel;
         if (oldRiskLevel && newRiskLevel && newRiskLevel > oldRiskLevel) {
           // Risk level has gone up
+          // Add to alerts count
+          const surveyStore = useSurveyStore();
+          surveyStore.incrementAlertCount();
+          // Display alert
           this.alertSensor = { ...sensorData }; // Shallow copy
           // Get audio type preferences
           const dataPreferencesStore = useDataPreferencesStore();
