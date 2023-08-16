@@ -26,6 +26,14 @@ export const useForecastStore = defineStore('forecast', {
   getters: {},
 
   actions: {
+    postToDatabase() {
+      const databaseStore = useDatabaseStore();
+      databaseStore.postDocument('weather', {
+        weatherLocation: this.stationName,
+        temperature: this.currentTemp,
+        humidity: this.currentHumidity,
+      });
+    },
     setup() {
       // Initialize user data for lat/lon
       const dataUserStore = useDataUserStore();
@@ -84,12 +92,7 @@ export const useForecastStore = defineStore('forecast', {
         // Clear error message
         this.errorMessage = '';
         // Post data to database
-        const databaseStore = useDatabaseStore();
-        databaseStore.postDocument('weather', {
-          weatherLocation: this.stationName,
-          temperature: this.currentTemp,
-          humidity: this.currentHumidity,
-        });
+        this.postToDatabase();
       } catch (error: unknown) {
         if (error instanceof AxiosError) {
           this.errorMessage = error.message;
