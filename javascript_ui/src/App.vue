@@ -12,6 +12,7 @@ import { useForecastStore } from 'stores/forecast';
 import { useDataPreferencesStore } from './stores/dataPreferences';
 import { useDatabaseStore } from './stores/database';
 import { useDataUserStore } from './stores/dataUser';
+import { useSurveyStore } from './stores/survey';
 
 export default defineComponent({
   name: 'App',
@@ -29,6 +30,8 @@ export default defineComponent({
 
     const forecastStore = useForecastStore();
     forecastStore.setup();
+    const surveyStore = useSurveyStore();
+    surveyStore.setup();
 
     const databaseStore = useDatabaseStore();
     databaseStore.initializeDatabase();

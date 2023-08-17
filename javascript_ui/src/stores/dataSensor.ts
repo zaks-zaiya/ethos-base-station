@@ -6,6 +6,7 @@ import { useDataPreferencesStore } from 'src/stores/dataPreferences';
 import { useSocketStore } from 'src/stores//socket';
 import { useDatabaseStore } from './database';
 import { useVolumeStore } from './volume';
+import { useSurveyStore } from 'src/stores/survey';
 
 const deserializeSensorData = (sensorDataString: string) => {
   // Parse the JSON string
@@ -190,9 +191,17 @@ export const useDataSensorStore = defineStore('dataSensor', {
           humidity: sensorData.humidity,
         });
 
-        // Work out whether to send alert
-        if (oldRiskLevel && newRiskLevel && newRiskLevel > oldRiskLevel) {
-          // Risk level has gone up
+        // Display alert if risk level has gone up on indoor sensor
+        if (
+          oldRiskLevel &&
+          newRiskLevel &&
+          newRiskLevel > oldRiskLevel &&
+          !isOutdoorSensor(sensorData)
+        ) {
+          // Add to alerts count
+          const surveyStore = useSurveyStore();
+          surveyStore.incrementAlertCount();
+          // Display alert
           this.alertSensor = { ...sensorData }; // Shallow copy
           // Get audio type preferences
           const dataPreferencesStore = useDataPreferencesStore();
