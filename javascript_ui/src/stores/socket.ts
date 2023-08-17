@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia';
 import { io, Socket } from 'socket.io-client';
 
-import { SocketSensorData } from 'src/typings/data-types';
+import { SensorData, SocketSensorData } from 'src/typings/data-types';
+import { useDataUserStore } from './dataUser';
 
 interface SensorDataCallback {
   (data: SocketSensorData): void;
@@ -62,18 +63,48 @@ export const useSocketStore = defineStore('socket', {
 
     /**
      * Calculate predicted core temperature using the python socket server
-     * @param data All required information to calculate core temperature
+     * @param sensorData The current sensorData
      * @returns The predicted core temperature for an individual after 3 hours
      */
     calculatePredictedCoreTemperature(
-      data: SocketEnvironmentalConditions
-    ): Promise<number> {
-      return new Promise((resolve, reject) => {
-        if (!this.socket) {
-          reject('Socket not initialized');
+      sensorData: SensorData
+    ): Promise<number | undefined> {
+      return new Promise((resolve) => {
+        // Import user data
+        const dataUserStore = useDataUserStore();
+        // Check all required parameters are provided
+        if (
+          !(
+            dataUserStore.heightCm &&
+            dataUserStore.weightKg &&
+            dataUserStore.ageYears &&
+            dataUserStore.sex &&
+            sensorData.temperature &&
+            sensorData.humidity
+          )
+        ) {
+          console.error(
+            'Unable to calculate core temperature, missing some data'
+          );
+          resolve(undefined);
           return;
         }
-        // If a callback is expected from the server after emitting the event
+        // Check socket exists & initialized
+        if (!this.socket) {
+          console.error('Socket not initialized');
+          resolve(undefined);
+          return;
+        }
+        // Build data to provide to python server
+        const data: SocketEnvironmentalConditions = {
+          heightM: dataUserStore.heightCm / 100,
+          weightKg: dataUserStore.weightKg,
+          ageYears: dataUserStore.ageYears,
+          sex: dataUserStore.sex == 'female' ? 'female' : 'male',
+          Ta: sensorData.temperature,
+          RH: sensorData.humidity,
+        };
+        // Resolve the response from the server (which should be core temperature)
         this.socket.emit(
           'calculatePredictedCoreTemperature',
           data,

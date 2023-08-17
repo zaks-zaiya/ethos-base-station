@@ -1,6 +1,9 @@
 import { defineStore } from 'pinia';
-import { SensorData, SocketSensorData } from 'src/typings/data-types';
-import { getRiskLevel } from 'src/helpers/riskLevel';
+import {
+  RiskLevel,
+  SensorData,
+  SocketSensorData,
+} from 'src/typings/data-types';
 import { playAudio } from 'src/helpers/audioAlertDispatcher';
 import { useDataPreferencesStore } from 'src/stores/dataPreferences';
 import { useSocketStore } from 'src/stores//socket';
@@ -33,6 +36,25 @@ const findOutdoorSensorIndex = (sensorData: Array<SensorData>) => {
     return false;
   });
   return outsideIndex;
+};
+
+// Return the riskLevel for a given core temperature
+const getRiskLevel = (coreTemperature: number | undefined) => {
+  if (!coreTemperature) {
+    console.error(
+      'Unable to calculate risk level (core temperature undefined)'
+    );
+    return undefined;
+  } else if (coreTemperature >= 38) {
+    return RiskLevel.HIGH;
+  } else if (coreTemperature >= 37.7) {
+    return RiskLevel.MEDIUM;
+  } else if (coreTemperature < 37.7) {
+    return RiskLevel.LOW;
+  } else {
+    console.error('Unable to calculate risk level (unknown error)');
+    return undefined;
+  }
 };
 
 export const useDataSensorStore = defineStore('dataSensor', {
@@ -172,15 +194,13 @@ export const useDataSensorStore = defineStore('dataSensor', {
         sensorData.humidity = humidity;
         sensorData.lastSeen = new Date(Date.now());
 
+        // Calculate core temperature
+        const predictedCoreTemperature =
+          await socketStore.calculatePredictedCoreTemperature(sensorData);
+
         // Calculate risk level
+        const newRiskLevel = getRiskLevel(predictedCoreTemperature);
         const oldRiskLevel = sensorData.riskLevel;
-        sensorData.riskLevel = undefined; // While we calculate new value
-        let newRiskLevel = undefined;
-        try {
-          newRiskLevel = await getRiskLevel(sensorData);
-        } catch (e) {
-          console.error('Error calculating risk level:', e);
-        }
         sensorData.riskLevel = newRiskLevel;
 
         // Send sensor data to database
