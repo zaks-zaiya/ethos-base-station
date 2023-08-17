@@ -10,6 +10,7 @@ import { getSpeechSynthesisVoices } from './helpers/audioAlertDispatcher';
 import { useDataSensorStore } from 'stores/dataSensor';
 import { useForecastStore } from 'stores/forecast';
 import { useDataPreferencesStore } from './stores/dataPreferences';
+import { useSurveyStore } from './stores/survey';
 
 export default defineComponent({
   name: 'App',
@@ -25,6 +26,8 @@ export default defineComponent({
     dataPreferencesStore.updateCoolingStrategyOptions();
     const forecastStore = useForecastStore();
     forecastStore.setup();
+    const surveyStore = useSurveyStore();
+    surveyStore.setup();
 
     /**
      * Add touch/click feedback to the screen.

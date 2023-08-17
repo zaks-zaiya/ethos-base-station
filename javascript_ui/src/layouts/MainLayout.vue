@@ -2,6 +2,7 @@
   <q-layout view="lHh Lpr lFf" class="bg-blue-grey-2">
     <!-- Register Modals -->
     <ModalNoConnection />
+    <ModalSurvey />
     <ModalVolume v-model="isShowVolumeModal" />
     <ModalHeatAlert @open-cooling-modal="isShowCoolingModal = true" />
     <ModalCoolingInterventions v-model="isShowCoolingModal" />
@@ -93,6 +94,7 @@ import ModalHelp from 'src/components/ModalHelp.vue';
 import ModalHeatAlert from 'src/components/ModalHeatAlert.vue';
 import ModalVolume from 'src/components/ModalVolume.vue';
 import ModalFanInfo from 'src/components/ModalFanInfo.vue';
+import ModalSurvey from 'src/components/ModalSurvey.vue';
 
 export default defineComponent({
   name: 'MainLayout',
@@ -106,6 +108,7 @@ export default defineComponent({
     ModalVolume,
     ModalFanInfo,
     BaseNetworkConnection,
+    ModalSurvey,
   },
   setup() {
     const keyboardStore = useKeyboardStore();
