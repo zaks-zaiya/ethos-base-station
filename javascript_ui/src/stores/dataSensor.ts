@@ -177,8 +177,14 @@ export const useDataSensorStore = defineStore('dataSensor', {
           console.error('Error calculating risk level:', e);
         }
         sensorData.riskLevel = newRiskLevel;
-        if (oldRiskLevel && newRiskLevel && newRiskLevel > oldRiskLevel) {
-          // Risk level has gone up
+
+        // Display alert if risk level has gone up on indoor sensor
+        if (
+          oldRiskLevel &&
+          newRiskLevel &&
+          newRiskLevel > oldRiskLevel &&
+          !isOutdoorSensor(sensorData)
+        ) {
           // Add to alerts count
           const surveyStore = useSurveyStore();
           surveyStore.incrementAlertCount();
