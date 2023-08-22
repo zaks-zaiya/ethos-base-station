@@ -179,6 +179,9 @@ module.exports = configure(function (/* ctx */) {
         // protocol: 'myapp://path',
         // Windows only
         // win32metadata: { ... }
+        // Build for Raspberry Pi
+        platform: 'linux',
+        arch: 'armv7l',
       },
 
       builder: {
