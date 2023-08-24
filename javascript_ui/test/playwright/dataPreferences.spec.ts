@@ -5,6 +5,8 @@ const baseUrl = 'http://127.0.0.1:9000';
 const initializeUrl = baseUrl + '/#/initialize';
 const settingsUrl = baseUrl + '/#/settings';
 
+const databaseUrl = 'http://localhost:5984/user_999';
+
 interface Doc {
   _id: string;
   _rev: string;
@@ -13,32 +15,40 @@ interface Doc {
   // anything else the document has
 }
 
-interface Row {
-  id: string;
-  key: string;
-  doc: Doc;
-}
+async function fetchRecentPreferences(): Promise<Doc[]> {
+  // Calculate times for the last minute
+  const endDate = new Date();
+  const startDate = new Date(endDate);
+  startDate.setMinutes(endDate.getMinutes() - 1);
 
-async function fetchAllDocuments(): Promise<Doc[]> {
-  const url = 'http://localhost:5984/user_999/_all_docs?include_docs=true';
+  const query = {
+    selector: {
+      type: 'preferences',
+      time: {
+        $gte: startDate.toISOString(),
+        $lt: endDate.toISOString(),
+      },
+    },
+  };
 
   try {
-    const response = await axios.get(url);
-    return response.data.rows.map((row: Row) => row.doc);
+    const response = await axios.post(`${databaseUrl}/_find`, query);
+    return response.data.docs;
   } catch (error) {
-    console.error('Failed to fetch data from CouchDB:', error);
+    console.error('Failed to fetch recent preferences from CouchDB:', error);
     return [];
   }
 }
 
-function filterPreferencesFromLastMinute(docs: Doc[]) {
-  const oneMinuteAgo = Date.now() - 60000; // 60,000 ms = 1 minute
-
-  return docs.filter((doc) => {
-    return (
-      doc.type === 'preferences' && new Date(doc.time).getTime() > oneMinuteAgo
-    );
-  });
+async function deleteDocuments(documents: Doc[]): Promise<void> {
+  try {
+    for (const doc of documents) {
+      const deleteURL = `${databaseUrl}/${doc._id}?rev=${doc._rev}`;
+      await axios.delete(deleteURL);
+    }
+  } catch (error) {
+    console.error('Failed to delete documents from CouchDB:', error);
+  }
 }
 
 test.describe('settings', () => {
@@ -51,9 +61,15 @@ test.describe('settings', () => {
     await page.locator('div').filter({ hasText: /^9$/ }).click();
     await page.locator('div').filter({ hasText: /^9$/ }).click();
     await page.locator('div').filter({ hasText: /^9$/ }).click();
+    await page
+      .locator('div')
+      .filter({ hasText: /^return$/ })
+      .click();
     expect(await page.getByLabel('User ID (number)').inputValue()).toMatch(
       /999/
     );
+    // Give time for database to initialize
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Navigate to settings page
     await page.goto(settingsUrl);
@@ -101,18 +117,18 @@ test.describe('settings', () => {
 
     // Go back home which will trigger settings saving
     await page.getByRole('link', { name: 'go back to home' }).click();
-    // TODO: Data not posting correctly for some reason
+    // Give time for data to post to database
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Check data appears on CouchDB
-    const recentPreferenceDocs = filterPreferencesFromLastMinute(
-      await fetchAllDocuments()
-    );
-    console.log(recentPreferenceDocs);
+    const recentPreferenceDocs = await fetchRecentPreferences();
     expect(recentPreferenceDocs).toHaveLength(1);
-  });
 
-  test.afterAll(() => {
-    // TODO: Remove all CouchDB posts made in last x minutes
-    // TODO: Or see if a fresh couchdb instance can be used each test
+    // Delete the recently created documents
+    deleteDocuments(recentPreferenceDocs);
+    // Give time for data to post to database
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // Database should now be reset
+    expect(await fetchRecentPreferences()).toHaveLength(0);
   });
 });
