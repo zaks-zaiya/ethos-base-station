@@ -20,4 +20,4 @@ cd ..
 
 # After tests, shut down processes
 kill $python_pid # Kill Python process
-# docker-compose down # Bring down docker container and reset database
+docker-compose down # Bring down docker container and reset database
