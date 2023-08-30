@@ -1,11 +1,14 @@
 import { test, expect } from '@playwright/test';
 import axios from 'axios';
+import { usernameToDbName } from 'src/helpers/database';
 
 const baseUrl = 'http://127.0.0.1:9000';
-const initializeUrl = baseUrl + '/#/initialize';
 const settingsUrl = baseUrl + '/#/settings';
 
-const databaseUrl = 'http://localhost:5984/user_999';
+const databaseName = usernameToDbName(
+  process.env.USER_ID ? process.env.USER_ID : ''
+);
+const databaseUrl = `http://${process.env.USER_ID}:${process.env.USER_PASSWORD}@localhost:5984/${databaseName}`;
 
 interface Doc {
   _id: string;
@@ -53,21 +56,6 @@ async function deleteDocuments(documents: Doc[]): Promise<void> {
 
 test.describe('settings', () => {
   test.beforeEach(async ({ page }) => {
-    // Navigate to initialize page
-    await page.goto(initializeUrl);
-    // Setup user ID
-    await page.getByRole('button', { name: 'Continue' }).click();
-    await page.getByLabel('User ID (number)').click();
-    await page.locator('div').filter({ hasText: /^9$/ }).click();
-    await page.locator('div').filter({ hasText: /^9$/ }).click();
-    await page.locator('div').filter({ hasText: /^9$/ }).click();
-    await page
-      .locator('div')
-      .filter({ hasText: /^return$/ })
-      .click();
-    expect(await page.getByLabel('User ID (number)').inputValue()).toMatch(
-      /999/
-    );
     // Give time for database to initialize
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -115,10 +103,15 @@ test.describe('settings', () => {
     await toggleFocusGroup.click();
     expect(await toggleFocusGroup.textContent()).toBe('Yes');
 
+    // await page.screenshot({ path: 'preferences-after-setting.png' });
+
     // Go back home which will trigger settings saving
     await page.getByRole('link', { name: 'go back to home' }).click();
+
     // Give time for data to post to database
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+
+    // await page.screenshot({ path: 'preferences-after-saving.png' });
 
     // Check data appears on CouchDB
     const recentPreferenceDocs = await fetchRecentPreferences();
@@ -127,7 +120,7 @@ test.describe('settings', () => {
     // Delete the recently created documents
     deleteDocuments(recentPreferenceDocs);
     // Give time for data to post to database
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 5000));
     // Database should now be reset
     expect(await fetchRecentPreferences()).toHaveLength(0);
   });
