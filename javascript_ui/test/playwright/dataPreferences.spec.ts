@@ -111,7 +111,7 @@ test.describe('settings', () => {
     await page.getByRole('link', { name: 'go back to home' }).click();
 
     // Give time for data to post to database
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     await page.screenshot({
       path: 'test/playwright/screenshots/dataPreferences-2-saving.png',
@@ -124,7 +124,7 @@ test.describe('settings', () => {
     // Delete the recently created documents
     deleteDocuments(recentPreferenceDocs);
     // Give time for data to post to database
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     // Database should now be reset
     expect(await fetchRecentPreferences()).toHaveLength(0);
   });
