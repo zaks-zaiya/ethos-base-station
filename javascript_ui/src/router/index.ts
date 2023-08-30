@@ -52,8 +52,8 @@ export default route(function (/* { store, ssrContext } */) {
       to.path !== initializePath &&
       // Allow navigation to settings
       to.path !== settingsPath &&
-      // Not currently debugging
-      !process.env.DEBUGGING
+      // Is running in electron (i.e. not in test mode)
+      process.env.MODE == 'electron'
     ) {
       // redirect the user to the initialize page
       return initializePath;
