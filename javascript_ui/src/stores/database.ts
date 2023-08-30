@@ -1,5 +1,6 @@
-// src/stores/pouchStore.ts
+// src/stores/database.ts
 import { defineStore } from 'pinia';
+import { usernameToDbName } from 'src/helpers/database';
 import PouchDB from 'pouchdb-browser';
 import {
   AlertDatabaseStructure,
@@ -9,29 +10,6 @@ import {
   SurveyDatabaseStructure,
   WeatherDatabaseStructure,
 } from 'src/typings/database-types';
-
-/**
- * Convert string to hexadecimal representation
- * @param input The input string to be converted
- * @returns The hex string (e.g. '999' becomes '393939')
- */
-function stringToHex(input: string) {
-  let result = '';
-  for (let i = 0; i < input.length; i++) {
-    result += input.charCodeAt(i).toString(16);
-  }
-  return result;
-}
-
-/**
- * Find the correct database name for a given user id
- * https://docs.couchdb.org/en/stable/config/couch-peruser.html
- * @param id The user ID
- * @returns The database name (e.g. userdb-3f)
- */
-function usernameToDbName(id: string) {
-  return 'userdb-' + stringToHex(id);
-}
 
 export const useDatabaseStore = defineStore({
   id: 'database',
@@ -57,6 +35,7 @@ export const useDatabaseStore = defineStore({
      * 5. Sets up replication on a remote database called user_${id}
      */
     initializeDatabase() {
+      console.log('Initializing database...');
       // 1. Checks if user ID and password exists
       if (!process.env.USER_ID || !process.env.USER_PASSWORD) {
         console.error(
@@ -89,21 +68,27 @@ export const useDatabaseStore = defineStore({
         replication
           .on('paused', (err) => {
             if (err) {
+              console.log('database replication error:', err);
               this.replicationStatus = 'error';
             } else {
+              console.log('database replication paused');
               this.replicationStatus = 'paused';
             }
           })
           .on('active', () => {
+            console.log('database replication active');
             this.replicationStatus = 'active';
           })
           .on('denied', () => {
+            console.log('database replication denied');
             this.replicationStatus = 'denied';
           })
           .on('complete', () => {
+            console.log('database replication complete');
             this.replicationStatus = 'complete';
           })
           .on('error', () => {
+            console.log('database replication error');
             this.replicationStatus = 'error';
           });
       }
