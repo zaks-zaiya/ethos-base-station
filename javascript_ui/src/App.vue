@@ -11,7 +11,6 @@ import { useDataSensorStore } from 'stores/dataSensor';
 import { useForecastStore } from 'stores/forecast';
 import { useDataPreferencesStore } from './stores/dataPreferences';
 import { useDatabaseStore } from './stores/database';
-import { useDataUserStore } from './stores/dataUser';
 import { useSurveyStore } from './stores/survey';
 
 export default defineComponent({
@@ -35,11 +34,9 @@ export default defineComponent({
 
     const databaseStore = useDatabaseStore();
     databaseStore.initializeDatabase();
-
-    const dataUserStore = useDataUserStore();
     // Update database link when user id changes
     watch(
-      () => dataUserStore.id,
+      () => process.env.USER_ID,
       (newId, oldId) => {
         if (newId && newId !== oldId) {
           databaseStore.initializeDatabase();

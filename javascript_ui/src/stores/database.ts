@@ -1,7 +1,6 @@
 // src/stores/pouchStore.ts
 import { defineStore } from 'pinia';
 import PouchDB from 'pouchdb-browser';
-import { useDataUserStore } from './dataUser';
 import {
   AlertDatabaseStructure,
   BaseDatabaseStructure,
@@ -10,6 +9,29 @@ import {
   SurveyDatabaseStructure,
   WeatherDatabaseStructure,
 } from 'src/typings/database-types';
+
+/**
+ * Convert string to hexadecimal representation
+ * @param input The input string to be converted
+ * @returns The hex string (e.g. '999' becomes '393939')
+ */
+function stringToHex(input: string) {
+  let result = '';
+  for (let i = 0; i < input.length; i++) {
+    result += input.charCodeAt(i).toString(16);
+  }
+  return result;
+}
+
+/**
+ * Find the correct database name for a given user id
+ * https://docs.couchdb.org/en/stable/config/couch-peruser.html
+ * @param id The user ID
+ * @returns The database name (e.g. userdb-3f)
+ */
+function usernameToDbName(id: string) {
+  return 'userdb-' + stringToHex(id);
+}
 
 export const useDatabaseStore = defineStore({
   id: 'database',
@@ -29,29 +51,32 @@ export const useDatabaseStore = defineStore({
     /**
      * Function that:
      * 1. Checks if user ID exists
-     * 2. If an existing database connection exists, closes it
-     * 3. Sets up a database called user_${id}
-     * 4. Sets up replication on a remote database called user_${id}
+     * 2. Gets the correct database name and remote url
+     * 3. If an existing database connection exists, closes it
+     * 4. Sets up a database called user_${id}
+     * 5. Sets up replication on a remote database called user_${id}
      */
     initializeDatabase() {
-      const userDataStore = useDataUserStore();
-      const databaseName = `user_${userDataStore.id}`;
-      const databaseUrl =
-        process.env.NODE_ENV === 'production'
-          ? process.env.COUCH_DB_URL
-          : 'http://localhost:5984';
-      // 1. Checks if user ID exists
-      if (!userDataStore.id) {
-        console.error('No user ID provided to setup database');
+      // 1. Checks if user ID and password exists
+      if (!process.env.USER_ID || !process.env.USER_PASSWORD) {
+        console.error(
+          'Database Error: User ID or password not defined, check .env file'
+        );
         return;
       }
-      // 2. If an existing database exists, closes it
+      // 2. Gets the correct database name and remote url
+      const databaseName = usernameToDbName(process.env.USER_ID);
+      const databaseUrl =
+        process.env.NODE_ENV === 'production'
+          ? `https://${process.env.USER_ID}:${process.env.USER_PASSWORD}@${process.env.COUCH_DB_URL}`
+          : `http://${process.env.USER_ID}:${process.env.USER_PASSWORD}@localhost:5984`;
+      // 3. If an existing database exists, closes it
       if (this.db) {
         this.db.close();
       }
-      // 3. Sets up a database called user_${id}
+      // 4. Sets up a local database called user-${id as hex}
       this.db = new PouchDB(databaseName);
-      // 4. Sets up replication on a remote database
+      // 5. Sets up replication on a remote database
       if (this.db) {
         const replication = this.db.replicate.to(
           `${databaseUrl}/${databaseName}`,
@@ -101,17 +126,20 @@ export const useDatabaseStore = defineStore({
         | AlertDatabaseStructure
     ) {
       // 1. Check that everything is initialised and ready
-      const userDataStore = useDataUserStore();
-      if (!this.db || !userDataStore.id) {
-        console.error('Trying to post data before database is initialized.');
-        throw new Error('Trying to post data before database is initialized.');
+      if (!this.db || !process.env.USER_ID) {
+        console.error(
+          'Trying to post data before database is initialized or no user ID.'
+        );
+        throw new Error(
+          'Trying to post data before database is initialized or no user ID.'
+        );
       }
 
       // 2. Construct the data which will be sent to the database
       const baseData: BaseDatabaseStructure = {
         type: type,
         time: new Date(Date.now()),
-        userId: userDataStore.id,
+        userId: process.env.USER_ID,
       };
       const sentData = { ...baseData, ...data };
 

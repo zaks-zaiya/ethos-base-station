@@ -11,7 +11,17 @@ cd ..
 
 # Give time for everything to start up
 echo "Starting tests in 10 seconds"
-sleep 10
+
+# Wait for DB to start
+sleep 5
+# Create test user on DB
+curl -X PUT http://localhost:5984/_users/org.couchdb.user:999 \
+     -H "Accept: application/json" \
+     -H "Content-Type: application/json" \
+     -u admin:password \
+     -d '{"name": "999", "password": "12345", "roles": [], "type": "user"}'
+# Wait for user to be created
+sleep 5
 
 # Run tests
 cd javascript_ui
