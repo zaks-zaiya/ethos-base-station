@@ -38,5 +38,7 @@ yarn-error.log*
 /playwright-report/
 /playwright/.cache/
 
-# Playwright screenshots
+# Playwright screenshots and output
 test/playwright/screenshots/
+test/playwright/output/
+test/playwright/playwright-report/
