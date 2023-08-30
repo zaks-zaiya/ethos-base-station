@@ -14,7 +14,7 @@ echo "Starting tests..."
 
 # Function to wait for CouchDB to start
 wait_for_couchdb() {
-    for _ in {1..60}; do # Try for 60 seconds
+    for _ in {1..15}; do # Try for 15 seconds
         if curl -s -u admin:password http://localhost:5984/ >/dev/null; then
             return 0
         fi
