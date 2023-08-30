@@ -9,8 +9,19 @@ python3 src/main.py &
 python_pid=$! # Store PID of the last background process
 cd ..
 
-# Wait for DB to start
-# sleep 5
+# Function to wait for CouchDB to start
+wait_for_couchdb() {
+    for _ in {1..60}; do # Try for 60 seconds
+        if curl -s -u admin:password http://localhost:5984/ >/dev/null; then
+            return 0
+        fi
+        sleep 1
+    done
+    echo "CouchDB did not start in time"
+    exit 1
+}
+wait_for_couchdb
+
 # Create test user on DB
 curl -X PUT http://localhost:5984/_users/org.couchdb.user:999 \
      -H "Accept: application/json" \
