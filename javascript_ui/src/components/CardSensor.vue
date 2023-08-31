@@ -44,18 +44,12 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  PropType,
-  ref,
-  computed,
-  onMounted,
-  onUnmounted,
-  inject,
-} from 'vue';
+import { defineComponent, PropType, computed, inject } from 'vue';
+import { isOfflineSensor } from 'src/helpers/dataSensor';
 import { SensorData, RiskLevel } from 'src/typings/data-types';
 import { playTextToSpeech } from 'src/helpers/audioAlertDispatcher';
 import { shouldUseFan } from 'src/helpers/fanAndWindowUse';
+import { useDateTimeStore } from 'src/stores/dateTime';
 
 export default defineComponent({
   name: 'CardSensor',
@@ -66,26 +60,8 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const dateTimeStore = useDateTimeStore();
     const isShowFanModel = inject('isShowFanModal');
-    // The current time/date
-    let currentTime = ref(Date.now());
-    // An interval which handles updating the currentTime
-    let updateCurrentTimeInterval: NodeJS.Timeout | undefined = undefined;
-
-    // The function which updates the currentTime
-    let updateCurrentTime = () => {
-      currentTime.value = Date.now();
-    };
-
-    // Update currentTime every 5 seconds
-    onMounted(() => {
-      updateCurrentTimeInterval = setInterval(updateCurrentTime, 5000);
-    });
-
-    // Clear the interval when unmounted
-    onUnmounted(() => {
-      clearInterval(updateCurrentTimeInterval);
-    });
 
     // Whether we should display 'DON'T USE FAN' at bottom of component
     const isDisplayFanWarning = computed(
@@ -94,13 +70,7 @@ export default defineComponent({
 
     // Calculate whether the sensor is offline using currentTime and lastSeen
     let isOffline = computed(() => {
-      const lastSeen = props.sensor.lastSeen?.getTime();
-      if (!lastSeen) {
-        return true;
-      }
-      const timeDifference = Math.abs(lastSeen - currentTime.value);
-      const thirtyMinutes = 1800000; // in ms
-      return timeDifference > thirtyMinutes;
+      return isOfflineSensor(props.sensor, dateTimeStore.currentDate.getTime());
     });
 
     // Whether the risk level is currently being calculated

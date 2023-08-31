@@ -1,28 +1,22 @@
 <template>
   <q-chip color="transparent" text-color="primary" class="text-bold">
-    {{ currentTime }}
+    {{ timeString }}
   </q-chip>
 </template>
 
 <script lang="ts">
+import { useDateTimeStore } from 'src/stores/dateTime';
+import { computed } from 'vue';
 export default {
-  data() {
-    return {
-      currentTime: '',
-    };
-  },
-  methods: {
-    getCurrentTime() {
-      const now = new Date();
-      this.currentTime = now.toLocaleTimeString('en-US', {
+  setup() {
+    const dateTimeStore = useDateTimeStore();
+    const timeString = computed(() =>
+      dateTimeStore.currentDate.toLocaleTimeString('en-US', {
         hour: '2-digit',
         minute: '2-digit',
-      });
-    },
-  },
-  mounted() {
-    this.getCurrentTime();
-    setInterval(this.getCurrentTime, 60000);
+      })
+    );
+    return { timeString };
   },
 };
 </script>
