@@ -6,7 +6,7 @@ cleanup() {
 
 # Trap the cleanup function to be called on exit
 # This ensures it is run even if the tests fail
-trap cleanup EXIT
+trap cleanup EXIT INT TERM
 
 # Start docker (for CouchDB)
 docker-compose up > /dev/null 2>&1 & # redirect all output away from console and stop blocking
