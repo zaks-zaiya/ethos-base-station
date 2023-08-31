@@ -1,58 +1,11 @@
 import { test, expect } from '@playwright/test';
-import axios from 'axios';
-import { usernameToDbName } from 'src/helpers/database';
+import {
+  fetchRecentDocumentsOfType,
+  deleteDocuments,
+} from './helpers/database';
 
 const baseUrl = 'http://127.0.0.1:9000';
 const settingsUrl = baseUrl + '/#/settings';
-
-const databaseName = usernameToDbName(
-  process.env.USER_ID ? process.env.USER_ID : ''
-);
-const databaseUrl = `http://${process.env.USER_ID}:${process.env.USER_PASSWORD}@localhost:5984/${databaseName}`;
-
-interface Doc {
-  _id: string;
-  _rev: string;
-  type: string;
-  time: string;
-  // anything else the document has
-}
-
-async function fetchRecentPreferences(): Promise<Doc[]> {
-  // Calculate times for the last minute
-  const endDate = new Date();
-  const startDate = new Date(endDate);
-  startDate.setMinutes(endDate.getMinutes() - 1);
-
-  const query = {
-    selector: {
-      type: 'preferences',
-      time: {
-        $gte: startDate.toISOString(),
-        $lt: endDate.toISOString(),
-      },
-    },
-  };
-
-  try {
-    const response = await axios.post(`${databaseUrl}/_find`, query);
-    return response.data.docs;
-  } catch (error) {
-    console.error('Failed to fetch recent preferences from CouchDB:', error);
-    return [];
-  }
-}
-
-async function deleteDocuments(documents: Doc[]): Promise<void> {
-  try {
-    for (const doc of documents) {
-      const deleteURL = `${databaseUrl}/${doc._id}?rev=${doc._rev}`;
-      await axios.delete(deleteURL);
-    }
-  } catch (error) {
-    console.error('Failed to delete documents from CouchDB:', error);
-  }
-}
 
 test.describe('settings', () => {
   test.beforeEach(async ({ page }) => {
@@ -118,7 +71,9 @@ test.describe('settings', () => {
     });
 
     // Check data appears on CouchDB
-    const recentPreferenceDocs = await fetchRecentPreferences();
+    const recentPreferenceDocs = await fetchRecentDocumentsOfType(
+      'preferences'
+    );
     expect(recentPreferenceDocs).toHaveLength(1);
 
     // Delete the recently created documents
@@ -126,6 +81,6 @@ test.describe('settings', () => {
     // Give time for data to post to database
     await new Promise((resolve) => setTimeout(resolve, 1000));
     // Database should now be reset
-    expect(await fetchRecentPreferences()).toHaveLength(0);
+    expect(await fetchRecentDocumentsOfType('preferences')).toHaveLength(0);
   });
 });
