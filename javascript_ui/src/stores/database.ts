@@ -1,6 +1,7 @@
 // src/stores/database.ts
 import { defineStore } from 'pinia';
 import { usernameToDbName } from 'src/helpers/database';
+import { replicate } from 'pouchdb';
 import PouchDB from 'pouchdb-browser';
 import {
   AlertDatabaseStructure,
@@ -16,6 +17,7 @@ export const useDatabaseStore = defineStore({
   state: () => ({
     // Database variable
     db: null as null | InstanceType<typeof PouchDB>,
+    replicationHandler: null as null | ReturnType<typeof replicate>,
     // The status of the remote CouchDB instance
     replicationStatus: 'initial' as
       | 'initial'
@@ -57,7 +59,7 @@ export const useDatabaseStore = defineStore({
       this.db = new PouchDB(databaseName);
       // 5. Sets up replication on a remote database
       if (this.db) {
-        const replication = this.db.replicate.to(
+        this.replicationHandler = this.db.replicate.to(
           `${databaseUrl}/${databaseName}`,
           {
             live: true,
@@ -65,7 +67,7 @@ export const useDatabaseStore = defineStore({
           }
         );
         // Replication status callbacks
-        replication
+        this.replicationHandler
           .on('paused', (err) => {
             if (err) {
               console.log('database replication error:', err);
@@ -154,6 +156,26 @@ export const useDatabaseStore = defineStore({
       } catch (e) {
         console.error(e);
         return 'Unknown error getting db info';
+      }
+    },
+    /**
+     * Destroy the database and clear all memory
+     * WARNING: This will delete any data stored in DB
+     */
+    async destroyDatabase() {
+      // Check and stop replication if it exists
+      if (this.replicationHandler) {
+        this.replicationHandler.cancel();
+      }
+
+      if (this.db) {
+        try {
+          await this.db.destroy();
+          console.log('Database successfully destroyed');
+          this.db = null;
+        } catch (error) {
+          console.error('Error destroying the database:', error);
+        }
       }
     },
   },
