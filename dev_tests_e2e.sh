@@ -1,3 +1,13 @@
+# Function to cleanup at the end or on exit
+cleanup() {
+    kill $python_pid  # Kill Python process
+    docker-compose down  # Bring down docker container and reset database
+}
+
+# Trap the cleanup function to be called on exit
+# This ensures it is run even if the tests fail
+trap cleanup EXIT
+
 # Start docker (for CouchDB)
 docker-compose up > /dev/null 2>&1 & # redirect all output away from console and stop blocking
 
@@ -36,7 +46,3 @@ curl -X PUT http://localhost:5984/_users/org.couchdb.user:999 \
 cd javascript_ui
 yarn test:e2e:ci
 cd ..
-
-# After tests, shut down processes
-kill $python_pid # Kill Python process
-docker-compose down # Bring down docker container and reset database
