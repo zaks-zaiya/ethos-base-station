@@ -71,6 +71,35 @@ export const useDataSensorStore = defineStore('dataSensor', {
       }
       return false;
     },
+    // Return the coolest sensor/room
+    getCoolestSensor: (state) => {
+      const currentTime = Date.now();
+      // Filter out sensors that are either outdoors or not currently online
+      const indoorOnlineSensors = state.allSensorData.filter((sensor) => {
+        return (
+          !isOutdoorSensor(sensor) && !isOfflineSensor(sensor, currentTime)
+        );
+      });
+
+      // Return null if there are no valid indoor sensors
+      if (indoorOnlineSensors.length === 0) {
+        return null;
+      }
+
+      // Determine the coolest sensor by comparing the temperature property
+      let coolestSensor = indoorOnlineSensors[0];
+      for (const sensor of indoorOnlineSensors) {
+        if (
+          sensor.temperature &&
+          coolestSensor.temperature &&
+          sensor.temperature < coolestSensor.temperature
+        ) {
+          coolestSensor = sensor;
+        }
+      }
+
+      return coolestSensor;
+    },
     // Return outdoor sensor values
     getOutdoorSensor: (state) => {
       const outsideIndex = findOutdoorSensorIndex(state.allSensorData);
