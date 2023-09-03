@@ -3,6 +3,7 @@ import {
   fetchRecentDocumentsOfType,
   deleteDocuments,
 } from './helpers/database';
+import { takeScreenshot } from './helpers/screenshot';
 
 const baseUrl = 'http://127.0.0.1:9000';
 const settingsUrl = baseUrl + '/#/settings';
@@ -56,9 +57,7 @@ test.describe('settings', () => {
     await toggleFocusGroup.click();
     expect(await toggleFocusGroup.textContent()).toBe('Yes');
 
-    await page.screenshot({
-      path: 'test/playwright/screenshots/dataPreferences-1-setting.png',
-    });
+    await takeScreenshot(page, 'dataPreferences-1.png');
 
     // Go back home which will trigger settings saving
     await page.getByRole('link', { name: 'go back to home' }).click();
@@ -66,9 +65,7 @@ test.describe('settings', () => {
     // Give time for data to post to database
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    await page.screenshot({
-      path: 'test/playwright/screenshots/dataPreferences-2-saving.png',
-    });
+    await takeScreenshot(page, 'dataPreferences-2.png');
 
     // Check data appears on CouchDB
     const recentPreferenceDocs = await fetchRecentDocumentsOfType(
