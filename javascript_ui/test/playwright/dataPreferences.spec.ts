@@ -74,9 +74,8 @@ test.describe('settings', () => {
     expect(recentPreferenceDocs).toHaveLength(1);
 
     // Delete the recently created documents
-    deleteDocuments(recentPreferenceDocs);
-    // Give time for data to post to database
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await deleteDocuments(recentPreferenceDocs);
+
     // Database should now be reset
     expect(await fetchRecentDocumentsOfType('preferences')).toHaveLength(0);
   });
