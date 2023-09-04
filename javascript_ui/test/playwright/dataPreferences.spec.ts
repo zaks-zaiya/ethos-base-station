@@ -1,9 +1,10 @@
 import { test, expect } from '@playwright/test';
+import { usernameToDbName } from 'src/helpers/database';
 import {
   fetchRecentDocumentsOfType,
   deleteDocuments,
-} from './helpers/database';
-import { takeScreenshot } from './helpers/screenshot';
+} from 'test/playwright/helpers/database';
+import { takeScreenshot } from 'test/playwright/helpers/screenshot';
 
 const baseUrl = 'http://127.0.0.1:9000';
 const settingsUrl = baseUrl + '/#/settings';
@@ -59,11 +60,21 @@ test.describe('settings', () => {
 
     await takeScreenshot(page, 'dataPreferences-1.png');
 
-    // Go back home which will trigger settings saving
+    // Start awaiting for response from server before initiating request
+    const responsePromise = page.waitForResponse((response) => {
+      const dbName = usernameToDbName(
+        process.env.USER_ID ? process.env.USER_ID : ''
+      );
+      const request = response.request();
+      return (
+        request.method() === 'PUT' &&
+        request.url().includes(`${dbName}/_local/`)
+      );
+    });
+    // Navigate home which will trigger posting to database
     await page.getByRole('link', { name: 'go back to home' }).click();
-
-    // Give time for data to post to database
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // Await for the response from the server
+    await responsePromise;
 
     await takeScreenshot(page, 'dataPreferences-2.png');
 
