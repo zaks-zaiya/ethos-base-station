@@ -30,4 +30,4 @@ To run production build:
 
 ## Data Structure
 The overall data structure and flow of the application is as follows:
-![ethos drawio (8)](https://github.com/climate-ethos/ethos-raspberry-pi/assets/25999161/208dc64c-523c-4730-874c-582c651a265a)
+![ethos-data-flow](https://github.com/climate-ethos/ethos-raspberry-pi/assets/25999161/c520cee3-ded9-4c9c-98d3-66fe885b14e8)
