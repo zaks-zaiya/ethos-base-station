@@ -27,3 +27,7 @@ To run production build:
 ## Run tests
 
 1. Run executable with `sh dev_tests.sh` (Mac/Linux/Pi)
+
+## Data Structure
+The overall data structure and flow of the application is as follows:
+![ethos drawio (8)](https://github.com/climate-ethos/ethos-raspberry-pi/assets/25999161/208dc64c-523c-4730-874c-582c651a265a)
