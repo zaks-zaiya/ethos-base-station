@@ -29,5 +29,78 @@ To run production build:
 1. Run executable with `sh dev_tests.sh` (Mac/Linux/Pi)
 
 ## Data Structure
+
 The overall data structure and flow of the application is as follows:
 ![ethos-data-flow](https://github.com/climate-ethos/ethos-raspberry-pi/assets/25999161/c520cee3-ded9-4c9c-98d3-66fe885b14e8)
+
+Where each data type is represented by the JSON object specified below. Definitions for the structure can be found in `javascript_ui/src/typings/database-types.d.ts`.
+
+### Sensor
+
+```{ .json }
+{
+  type: 'sensor';
+  time: Date;
+  userId: string;
+  sensorLocation: string | undefined;
+  sensorId: number | undefined;
+  temperature: number | undefined;
+  humidity: number | undefined;
+}
+```
+
+### Weather
+
+```{ .json }
+{
+  type: 'weather';
+  time: Date;
+  userId: string;
+  weatherLocation: string | null;
+  temperature: number | null;
+  humidity: number | null;
+}
+```
+
+### Preferences
+
+```{ .json }
+{
+  type: 'preferences';
+  time: Date;
+  userId: string;
+  audioType: AudioType;
+  isFollowUp: boolean;
+  coolingStrategyOptions: Array<{
+    key: string;
+    haveAccessTo: boolean;
+    wouldUse: boolean;
+    whyNotUse: Array<string>;
+    whyNotUseOther: string;
+  }>;
+}
+```
+
+### Survey
+
+```{ .json }
+{
+  type: 'survey';
+  time: Date;
+  userId: string;
+  TODO
+}
+```
+
+### Alert
+
+```{ .json }
+{
+  type: 'alert';
+  time: Date;
+  userId: string;
+  riskLevel: RiskLevel | undefined;
+  volumePercent: number;
+  dismissMethod: null | 'not here' | 'cooling strategies' | 'dismiss';
+}
+```
