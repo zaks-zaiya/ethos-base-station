@@ -15,10 +15,10 @@ test.describe('settings', () => {
     await page.goto(settingsUrl);
 
     // Type in passcode and click submit
-    await page.getByRole('button', { name: '3' }).click();
-    await page.getByRole('button', { name: '2' }).click();
-    await page.getByRole('button', { name: '1' }).click();
-    await page.getByRole('button', { name: '4' }).click();
+    const settingsPasscode = process.env.SETTINGSPASSCODE || '';
+    for (const digit of settingsPasscode) {
+      await page.getByRole('button', { name: digit }).click();
+    }
     await page.getByRole('button', { name: 'submit' }).click();
   });
 
