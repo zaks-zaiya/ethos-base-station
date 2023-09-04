@@ -11,9 +11,6 @@ const settingsUrl = baseUrl + '/#/settings';
 
 test.describe('settings', () => {
   test.beforeEach(async ({ page }) => {
-    // Give time for database to initialize
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
     // Navigate to settings page
     await page.goto(settingsUrl);
 
