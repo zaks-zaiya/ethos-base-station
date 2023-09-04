@@ -68,7 +68,7 @@ export const useForecastStore = defineStore('forecast', {
      */
     async getSimpleForecast(latitude: number, longitude: number) {
       try {
-        const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${process.env.OPENWEATHERMAPSAPIKEY}`;
+        const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${process.env.OPENWEATHERMAP_API_KEY}`;
         const result = await axios.get(url, {
           timeout: 4000,
           responseType: 'text',
@@ -104,7 +104,7 @@ export const useForecastStore = defineStore('forecast', {
      */
     async getDetailedForecast(latitude: number, longitude: number) {
       try {
-        const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&units=metric&appid=${process.env.OPENWEATHERMAPSAPIKEY}`;
+        const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&units=metric&appid=${process.env.OPENWEATHERMAP_API_KEY}`;
         const result = await axios.get(url, {
           timeout: 4000,
           responseType: 'text',

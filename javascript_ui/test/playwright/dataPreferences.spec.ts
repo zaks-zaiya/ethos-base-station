@@ -15,7 +15,7 @@ test.describe('settings', () => {
     await page.goto(settingsUrl);
 
     // Type in passcode and click submit
-    const settingsPasscode = process.env.SETTINGSPASSCODE || '';
+    const settingsPasscode = process.env.SETTINGS_PASSCODE || '';
     for (const digit of settingsPasscode) {
       await page.getByRole('button', { name: digit }).click();
     }
