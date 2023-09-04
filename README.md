@@ -1,39 +1,75 @@
-# ethos-raspberrypi
+# Contents
+
+- [Tips](#tips)
+  * [Show settings button](#show-settings-button)
+- [Installation and building](#installation-and-building)
+  * [Development build](#development-build)
+  * [Production build](#production-build)
+- [Testing](#testing)
+  * [Unit testing](#unit-testing)
+  * [End-to-end testing](#end-to-end-testing)
+- [Application data structure](#application-data-structure)
+  * [Data flow diagram](#data-flow-diagram)
+  * [Database types](#database-types)
+    + [Sensor](#sensor)
+    + [Weather](#weather)
+    + [Preferences](#preferences)
+    + [Survey](#survey)
+    + [Alert](#alert)
+
+# Tips
 
 ## Show settings button
 
 To show the settings button, press the ethos logo (top left) 7 times in quick succession
 
+# Installation and building
+
 ## Development build
 
-Requirements: NPM, Yarn, Python 3.9 (with venv) and Docker
+*Requirements: NPM, Yarn, Python 3.9 (with venv) and Docker*
 
 1. Ensure Docker is open and running
 2. Under `./javascript_ui` make a file named `.env` using the provided `.env.example` file and fill in all variables
 3. Run install script `sh dev_install.sh` (Mac/Linux) or `.\dev_install.bat` (Windows)
 4. To run development build run `sh dev_run.sh` (Mac/Linux) or `.\dev_run.bat` (Windows)
 
-Note: If you get an error `CouchDB did not start in time` or `Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?`, make sure docker is running, either by launching the application or by running `sudo systemctl start docker` (linux).
+Note: If you get an error `CouchDB did not start in time` or `Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?`, make sure docker is running, either by launching the application or by running `sudo systemctl start docker` (Linux).
 
 ## Production build
 
-Requirements: NPM, Yarn and Python 3.9 (with venv)
+*Requirements: NPM, Yarn and Python 3.9 (with venv)*
 
 To run production build:
 
 1. Build production binary and install dependencies by running `sh pi_install_build.sh` (Pi)
 2. Run executable with `sh pi_run.sh` (Pi)
 
-## Run tests
+# Testing
 
-1. Run executable with `sh dev_tests.sh` (Mac/Linux/Pi)
+## Unit testing
 
-## Data Structure
+*Requirements: NPM, Yarn and Python 3.9 (with venv)*
 
-The overall data structure and flow of the application is as follows:
-![ethos-data-flow](https://github.com/climate-ethos/ethos-raspberry-pi/assets/25999161/c520cee3-ded9-4c9c-98d3-66fe885b14e8)
+1. Run executable with `sh dev_tests_unit.sh` (Mac/Linux)
 
-Where each data type is represented by the JSON object specified below. Definitions for the structure can be found in `javascript_ui/src/typings/database-types.d.ts`.
+## End-to-end testing
+
+*Requirements: NPM, Yarn, Python 3.9 (with venv) and Docker*
+
+1. Run executable with `sh dev_tests_e2e.sh` (Mac/Linux)
+
+# Application data structure
+
+## Data flow diagram
+
+Each data type shown in the diagram is explained below:
+
+![ethos-data-flow](https://github.com/climate-ethos/ethos-raspberry-pi/assets/25999161/2769a5f9-9b91-4e8b-abfb-830f0033efab)
+
+## Database types
+
+Definitions for the structure can be found in `javascript_ui/src/typings/database-types.d.ts`.
 
 ### Sensor
 
