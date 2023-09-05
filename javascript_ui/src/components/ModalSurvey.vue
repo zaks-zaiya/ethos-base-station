@@ -28,7 +28,7 @@
         </div>
         <q-option-group
           :options="coolingStrategiesUsedOptions"
-          type="radio"
+          type="checkbox"
           v-model="surveyStore.surveyAnswers.coolingStrategiesUsed"
         />
 
