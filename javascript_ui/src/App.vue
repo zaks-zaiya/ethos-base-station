@@ -8,7 +8,7 @@ import { defineComponent, watch } from 'vue';
 import { getSpeechSynthesisVoices } from './helpers/audioAlertDispatcher';
 
 import { useDataSensorStore } from 'stores/dataSensor';
-import { useForecastStore } from 'stores/forecast';
+import { useWeatherStore } from 'stores/weather';
 import { useDataPreferencesStore } from './stores/dataPreferences';
 import { useDatabaseStore } from './stores/database';
 import { useSurveyStore } from './stores/survey';
@@ -28,8 +28,8 @@ export default defineComponent({
     const dataPreferencesStore = useDataPreferencesStore();
     dataPreferencesStore.updateCoolingStrategyOptions();
 
-    const forecastStore = useForecastStore();
-    forecastStore.setup();
+    const weatherStore = useWeatherStore();
+    weatherStore.setup();
     const surveyStore = useSurveyStore();
     surveyStore.setup();
 

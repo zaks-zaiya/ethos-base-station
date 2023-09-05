@@ -5,7 +5,7 @@
         <div class="text-center">
           <q-icon :name="iconName" size="100px" />
           <div class="fontsize-16 text-capitalize">
-            {{ forecastStore.weatherDescription }}
+            {{ weatherStore.weatherDescription }}
           </div>
         </div>
       </q-card-section>
@@ -15,8 +15,8 @@
       <div class="full-width">
         <q-card-section class="q-pa-sm">
           <div class="fontsize-22 text-bold">
-            <span v-if="forecastStore.stationName">
-              {{ forecastStore.stationName }} -
+            <span v-if="weatherStore.stationName">
+              {{ weatherStore.stationName }} -
             </span>
             <span>Weather Station</span>
           </div>
@@ -25,16 +25,16 @@
         <q-separator dark />
 
         <q-card-section class="q-pa-sm fontsize-26">
-          <div v-if="forecastStore.errorMessage">
+          <div v-if="weatherStore.errorMessage">
             Weather Station Offline <br />
-            Reason: {{ forecastStore.errorMessage }}
+            Reason: {{ weatherStore.errorMessage }}
           </div>
           <div v-else class="row">
             <div class="col">
               <div>
-                Temperature: {{ forecastStore.currentTemp?.toFixed(1) }}°C
+                Temperature: {{ weatherStore.currentTemp?.toFixed(1) }}°C
               </div>
-              <div>Humidity: {{ forecastStore.currentHumidity }}% RH</div>
+              <div>Humidity: {{ weatherStore.currentHumidity }}% RH</div>
               <q-btn
                 @click="displayDetailedForecast"
                 class="q-mt-sm fontsize-14"
@@ -42,7 +42,7 @@
                 >View Detailed Forecast</q-btn
               >
               <modal-detailed-forecast
-                v-if="forecastStore.isShowDetailedForecast"
+                v-if="weatherStore.isShowDetailedForecast"
               />
             </div>
             <!-- <div class="col"> -->
@@ -58,16 +58,16 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import { useForecastStore } from 'stores/forecast';
+import { useWeatherStore } from 'stores/weather';
 import ModalDetailedForecast from './ModalDetailedForecast.vue';
 
 export default defineComponent({
   name: 'CardForecast',
   components: { ModalDetailedForecast },
   setup() {
-    const forecastStore = useForecastStore();
+    const weatherStore = useWeatherStore();
     let iconName = computed(() => {
-      switch (forecastStore.weatherIconId) {
+      switch (weatherStore.weatherIconId) {
         case '01d':
         case '01n':
           return 'ion-sunny';
@@ -98,9 +98,9 @@ export default defineComponent({
       }
     });
     const displayDetailedForecast = () => {
-      forecastStore.isShowDetailedForecast = true;
+      weatherStore.isShowDetailedForecast = true;
     };
-    return { forecastStore, iconName, displayDetailedForecast };
+    return { weatherStore, iconName, displayDetailedForecast };
   },
 });
 </script>

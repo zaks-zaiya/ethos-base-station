@@ -5,7 +5,7 @@ import { useDataUserStore } from './dataUser';
 import { watch } from 'vue';
 import { useDatabaseStore } from './database';
 
-export const useForecastStore = defineStore('forecast', {
+export const useWeatherStore = defineStore('weather', {
   state: () => ({
     // Show or hide modal
     isShowDetailedForecast: false,
@@ -54,7 +54,7 @@ export const useForecastStore = defineStore('forecast', {
             'Unspecified latitude/longitude, is postcode specified in settings?';
           return;
         }
-        this.getSimpleForecast(latitude, longitude);
+        this.getCurrentWeather(latitude, longitude);
         this.getDetailedForecast(latitude, longitude);
       };
       updateWeather();
@@ -66,7 +66,7 @@ export const useForecastStore = defineStore('forecast', {
     /**
      * Get simple weather forecast for current time
      */
-    async getSimpleForecast(latitude: number, longitude: number) {
+    async getCurrentWeather(latitude: number, longitude: number) {
       try {
         const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${process.env.OPENWEATHERMAP_API_KEY}`;
         const result = await axios.get(url, {
