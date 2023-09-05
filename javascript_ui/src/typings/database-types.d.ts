@@ -32,8 +32,9 @@ export interface PreferencesDatabaseStructure {
 }
 
 export interface SurveyDatabaseStructure {
-  todo: null;
-  // TODO: Fill in rest once questions finalized
+  wasHome: undefined | boolean;
+  coolingStrategiesUsed: Array<string>;
+  howEffective: undefined | number;
 }
 
 export interface AlertDatabaseStructure {
