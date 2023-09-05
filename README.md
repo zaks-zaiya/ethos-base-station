@@ -63,13 +63,13 @@ To run production build:
 
 ## Data flow diagram
 
-Each data type shown in the diagram is explained below:
+![ethos-data-flow](https://github.com/climate-ethos/ethos-raspberry-pi/assets/25999161/d875d1a4-6194-4e35-b54b-a58411adab3e)
 
-![ethos-data-flow](https://github.com/climate-ethos/ethos-raspberry-pi/assets/25999161/2769a5f9-9b91-4e8b-abfb-830f0033efab)
+Each data type shown in the diagram is explained below:
 
 ## Database types
 
-Definitions for the structure can be found in `javascript_ui/src/typings/database-types.d.ts`.
+Definitions for the structure can be found in `javascript_ui/src/typings/database-types.d.ts`. Each row in the database corresponds to a historical record of one of the following types:
 
 ### Sensor
 
