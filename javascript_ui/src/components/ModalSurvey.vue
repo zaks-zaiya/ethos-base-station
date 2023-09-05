@@ -1,5 +1,10 @@
 <template>
-  <q-dialog full-width full-height v-model="surveyStore.isShowSurveyModal">
+  <q-dialog
+    full-width
+    full-height
+    v-model="surveyStore.isShowSurveyModal"
+    @hide="onHide"
+  >
     <BaseModalScroll>
       <template #header>
         <div class="row items-center">
@@ -65,6 +70,11 @@ export default defineComponent({
   setup() {
     const surveyStore = useSurveyStore();
 
+    const onHide = () => {
+      // Post data to store when survey closed
+      surveyStore.postSurveyAnswers();
+    };
+
     const wasHomeOptions = [
       { label: 'Yes', value: true },
       { label: 'No', value: false },
@@ -84,6 +94,7 @@ export default defineComponent({
 
     return {
       surveyStore,
+      onHide,
       wasHomeOptions,
       coolingStrategiesUsedOptions,
       howEffectiveOptions,
