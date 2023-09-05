@@ -11,6 +11,7 @@ export interface SensorDatabaseStructure {
   sensorId: number | undefined;
   temperature: number | undefined;
   humidity: number | undefined;
+  coreTemperature: number | undefined;
 }
 
 export interface WeatherDatabaseStructure {

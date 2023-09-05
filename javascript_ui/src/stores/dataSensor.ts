@@ -31,6 +31,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
         temperature: undefined,
         humidity: undefined,
         lastSeen: undefined,
+        coreTemperature: undefined,
         riskLevel: undefined,
       },
       {
@@ -39,6 +40,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
         temperature: undefined,
         humidity: undefined,
         lastSeen: undefined,
+        coreTemperature: undefined,
         riskLevel: undefined,
       },
       {
@@ -47,6 +49,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
         temperature: undefined,
         humidity: undefined,
         lastSeen: undefined,
+        coreTemperature: undefined,
         riskLevel: undefined,
       },
       {
@@ -55,6 +58,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
         temperature: undefined,
         humidity: undefined,
         lastSeen: undefined,
+        coreTemperature: undefined,
         riskLevel: undefined,
       },
     ] as Array<SensorData>, // sensor data
@@ -179,13 +183,11 @@ export const useDataSensorStore = defineStore('dataSensor', {
         sensorData.temperature = temperature;
         sensorData.humidity = humidity;
         sensorData.lastSeen = new Date(Date.now());
-
-        // Calculate core temperature
-        const predictedCoreTemperature =
+        sensorData.coreTemperature =
           await socketStore.calculatePredictedCoreTemperature(sensorData);
 
         // Calculate risk level
-        const newRiskLevel = getRiskLevel(predictedCoreTemperature);
+        const newRiskLevel = getRiskLevel(sensorData.coreTemperature);
         const oldRiskLevel = sensorData.riskLevel;
         sensorData.riskLevel = newRiskLevel;
 
@@ -195,6 +197,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
           sensorLocation: sensorData.name,
           temperature: sensorData.temperature,
           humidity: sensorData.humidity,
+          coreTemperature: sensorData.coreTemperature,
         });
 
         // Display alert if risk level has gone up on indoor sensor

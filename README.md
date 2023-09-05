@@ -86,6 +86,7 @@ Definitions for the structure can be found in `javascript_ui/src/typings/databas
   sensorId: number | undefined;
   temperature: number | undefined;
   humidity: number | undefined;
+  coreTemperature: number | undefined;
 }
 ```
 

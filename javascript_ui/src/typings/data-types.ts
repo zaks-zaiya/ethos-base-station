@@ -11,6 +11,7 @@ export interface SensorData {
   temperature: number | undefined;
   humidity: number | undefined;
   lastSeen: Date | undefined;
+  coreTemperature: number | undefined;
   riskLevel: RiskLevel | undefined;
 }
 
