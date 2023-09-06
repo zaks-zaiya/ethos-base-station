@@ -57,8 +57,9 @@ Requirements: _NPM, Yarn and Python 3.9 (with venv)_
 
 To run production build:
 
-1. Build production binary and install dependencies by running `sh pi_install_build.sh` (Pi)
-2. Run executable with `sh pi_run.sh` (Pi)
+1. Install dependencies by running `sh pi_install.sh` (Pi)
+2. Build production binary using `sh pi_build.sh` (Pi)
+3. Run executable with `sh pi_run.sh` (Pi)
 
 ## Testing
 
