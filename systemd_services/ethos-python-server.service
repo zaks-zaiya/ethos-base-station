@@ -5,7 +5,10 @@ After=network.target
 [Service]
 ExecStart=/home/pi/ethos-raspberry-pi/python_radio/env/bin/python3 /home/pi/ethos-raspberry-pi/python_radio/src/main.py production
 Restart=always
+RestartSec=10s
 User=pi
+KillMode=process
+TimeoutSec=infinity
 
 [Install]
 WantedBy=multi-user.target
