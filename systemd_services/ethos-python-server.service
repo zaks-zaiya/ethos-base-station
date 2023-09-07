@@ -1,0 +1,11 @@
+[Unit]
+Description=Ethos Python Server
+After=network.target
+
+[Service]
+ExecStart=~/ethos-raspberry-pi/python_radio/env/bin/python3 ~/ethos-raspberry-pi/python_radio/src/main.py
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target

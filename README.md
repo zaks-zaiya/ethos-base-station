@@ -36,7 +36,7 @@
 
 ### Show settings button
 
-To show the settings button, press the ethos logo (top left) 7 times in quick succession
+To show the settings button, press the ethos logo (top left) 7 times in quick succession.
 
 ## Installation and building
 
@@ -44,22 +44,26 @@ To show the settings button, press the ethos logo (top left) 7 times in quick su
 
 Requirements: _NPM, Yarn, Python 3.9 (with venv) and Docker_
 
-1. Ensure Docker is open and running
-2. Under `./javascript_ui` make a file named `.env` using the provided `.env.example` file and fill in all variables
-3. Run install script `sh dev_install.sh` (Mac/Linux) or `.\dev_install.bat` (Windows)
-4. To run development build run `sh dev_run.sh` (Mac/Linux) or `.\dev_run.bat` (Windows)
+1. Ensure Docker is open and running.
+2. Under `./javascript_ui` make a file named `.env` using the provided `.env.example` file and fill in all variables.
+3. Run install script `sh dev_install.sh` (Mac/Linux) or `.\dev_install.bat` (Windows).
+4. To run development build run `sh dev_run.sh` (Mac/Linux) or `.\dev_run.bat` (Windows).
 
 Note: If you get an error `CouchDB did not start in time` or `Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?`, make sure docker is running, either by launching the application or by running `sudo systemctl start docker` (Linux).
 
 ### Production build
 
-Requirements: _NPM, Yarn and Python 3.9 (with venv)_
+Requirements: _NPM, Yarn, Python 3.9 (with venv) and Git_
 
-To run production build:
+To setup production build:
 
-1. Install dependencies by running `sh pi_install.sh` (Pi)
-2. Build production binary using `sh pi_build.sh` (Pi)
-3. Run executable with `sh pi_run.sh` (Pi)
+1. **Important:** Ensure that the application is cloned in the home directory (`~/ethos-raspberry-pi`). Otherwise systemd services will not work.
+2. **Important:** Make all pi-related scripts executable with the command: `find . -maxdepth 1 -type f -name "pi_*.sh" -exec chmod +x {} \;` (Linux/Pi).
+3. Install dependencies by running `sh pi_install.sh` (Pi). This will also setup auto-launch at startup and automatic updates with a cron job.
+4. Build production binary/Electron app using `sh pi_build.sh` (Pi).
+5. Run systemd services with `sh pi_run.sh` (Pi), or alternatively restart device.
+
+If this doesn't work you can try a manual launch with `pi_run_manual.sh` (Pi) for debugging.
 
 ## Testing
 
@@ -73,7 +77,7 @@ Requirements: _NPM, Yarn and Python 3.9 (with venv)_
 
 Requirements: _NPM, Yarn, Python 3.9 (with venv) and Docker_
 
-1. Run executable with `sh dev_tests_e2e.sh` (Mac/Linux)
+1. Run executable with `sh dev_tests_e2e.sh` (Mac/Linux).
 
 ## Application data structure
 
