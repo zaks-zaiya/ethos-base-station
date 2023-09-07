@@ -7,6 +7,7 @@ ExecStart="/home/pi/ethos-raspberry-pi/javascript_ui/dist/electron/Packaged/Etho
 Restart=always
 User=pi
 Environment=DISPLAY=:0
+Environment=XAUTHORITY=/home/pi/.Xauthority
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=graphical.target

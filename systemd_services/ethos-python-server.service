@@ -3,7 +3,7 @@ Description=Ethos Python Server
 After=network.target
 
 [Service]
-ExecStart=/home/pi/ethos-raspberry-pi/python_radio/env/bin/python3 /home/pi/ethos-raspberry-pi/python_radio/src/main.py
+ExecStart=/home/pi/ethos-raspberry-pi/python_radio/env/bin/python3 /home/pi/ethos-raspberry-pi/python_radio/src/main.py production
 Restart=always
 User=pi
 
