@@ -7,6 +7,7 @@ Environment=XAUTHORITY=/home/pi/.Xauthority
 ExecStart="/home/pi/ethos-raspberry-pi/javascript_ui/dist/electron/Packaged/Ethos Heat Monitor-linux-armv7l/Ethos Heat Monitor"
 Restart=always
 RestartSec=10s
+User=pi
 KillMode=process
 TimeoutSec=infinity
 

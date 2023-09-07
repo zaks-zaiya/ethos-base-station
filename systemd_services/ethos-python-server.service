@@ -3,10 +3,10 @@ Description=Ethos Python Server
 After=network.target
 
 [Service]
+User=pi
 ExecStart=/home/pi/ethos-raspberry-pi/python_radio/env/bin/python3 /home/pi/ethos-raspberry-pi/python_radio/src/main.py production
 Restart=always
 RestartSec=10s
-User=pi
 KillMode=process
 TimeoutSec=infinity
 
