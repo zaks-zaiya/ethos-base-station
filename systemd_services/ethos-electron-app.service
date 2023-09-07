@@ -1,13 +1,14 @@
 [Unit]
 Description=Ethos Electron App
-After=network.target
 
 [Service]
-ExecStart="/home/pi/ethos-raspberry-pi/javascript_ui/dist/electron/Packaged/Ethos Heat Monitor-linux-armv7l/Ethos Heat Monitor"
-Restart=always
-User=pi
 Environment=DISPLAY=:0
 Environment=XAUTHORITY=/home/pi/.Xauthority
+ExecStart="/home/pi/ethos-raspberry-pi/javascript_ui/dist/electron/Packaged/Ethos Heat Monitor-linux-armv7l/Ethos Heat Monitor"
+Restart=always
+RestartSec=10s
+KillMode=process
+TimeoutSec=infinity
 
 [Install]
 WantedBy=graphical.target
