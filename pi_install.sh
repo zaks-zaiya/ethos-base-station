@@ -8,12 +8,12 @@ cd python_radio
 python3 -m venv ./env
 source ./env/bin/activate
 pip3 install -r requirements.txt
-cd ..
 
 echo "Installing adafruit blinka..."
 cd install_scripts
 sudo python3 raspi-blinka.py
-cd ..
+
+cd ../..
 
 echo "Installing services..."
 sudo cp systemd_services/ethos-electron-app.service /etc/systemd/system/
