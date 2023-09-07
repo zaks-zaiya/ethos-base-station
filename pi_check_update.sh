@@ -2,7 +2,7 @@
 
 # Change to correct repository
 # This is needed as it is run from cron
-cd ~/ethos-raspberry-pi
+cd /home/pi/ethos-raspberry-pi
 
 # Check for changes in the remote repository
 git fetch
