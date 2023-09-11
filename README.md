@@ -57,15 +57,24 @@ Note: If you get an error `CouchDB did not start in time` or `Cannot connect to 
 
 Requirements: _NPM, Yarn, Python 3.9 (with venv) and Git_
 
-To setup production build:
-
-1. **Important:** Ensure that the application is cloned in the home directory (`~/ethos-raspberry-pi`). Otherwise systemd services will not work.
-2. **Important:** Make all pi-related scripts executable with the command: `find . -maxdepth 1 -type f -name "pi_*.sh" -exec chmod +x {} \;` (Linux/Pi).
-3. Install dependencies by running `sh pi_install.sh` (Pi). This will also setup auto-launch at startup and automatic updates with a cron job.
-4. Build production binary/Electron app using `sh pi_build.sh` (Pi).
-5. Run systemd services with `sh pi_run.sh` (Pi), or alternatively restart device.
+1. Image Raspberry Pi OS to an SD card using [Raspberry Pi Imager](https://www.raspberrypi.com/software/)
+2. Ensure that existing packages are up to date with `sudo apt update && sudo apt -y upgrade`
+3. (If required) Setup waveshare touchscreen divers by following [these instructions](<https://www.waveshare.com/wiki/8inch_DSI_LCD_(C)>)
+4. Install nvm by using: `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash`
+5. Source terminal with `source ~/.bashrc`
+6. Install node version 18 with `nvm install 18` and then activate it with `nvm use 18`
+7. Install Yarn with `npm install --global yarn`
+8. Navigate to the home directory with either `cd ~` or `cd /home/pi`
+9. Clone the GitHub repository with `git clone git@github.com:climate-ethos/ethos-raspberry-pi.git`
+10. Move into the newly created directory with `cd ethos-raspberry-pi`
+11. Make all pi-related scripts executable with the command: `find . -maxdepth 1 -type f -name "pi_*.sh" -exec chmod +x {} \;`
+12. Install dependencies by running `sh pi_install.sh` (Pi). This will also setup auto-launch at startup and automatic updates with a cron job.
+13. Build production binary/Electron app using `sh pi_build.sh`
+14. Run systemd services with `sh pi_run.sh` (Pi), or alternatively restart device.
 
 If this doesn't work you can try a manual launch with `pi_run_manual.sh` (Pi) for debugging.
+
+**Important:** Ensure that the application is cloned in the home directory (`~/ethos-raspberry-pi`). Otherwise systemd services will not work. The system has been designed with Python 3.9 and Node 18 so if any errors arise check the versions of those two services first.
 
 ## Testing
 
