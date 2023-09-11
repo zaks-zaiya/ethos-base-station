@@ -19,6 +19,6 @@ if [ $LOCAL != $REMOTE ]; then
     sh pi_build.sh
 
     # Restart services
-    systemctl restart ethos-electron-app.service
-    systemctl restart ethos-python-server.service
+    sudo systemctl restart ethos-electron-app.service
+    sudo systemctl restart ethos-python-server.service
 fi
