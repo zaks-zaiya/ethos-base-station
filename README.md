@@ -57,7 +57,7 @@ Note: If you get an error `CouchDB did not start in time` or `Cannot connect to 
 
 Requirements: _NPM, Yarn, Python 3.9 (with venv) and Git_
 
-1. Image Raspberry Pi OS to an SD card using [Raspberry Pi Imager](https://www.raspberrypi.com/software/)
+1. Image Raspberry Pi OS to an SD card using [Raspberry Pi Imager](https://www.raspberrypi.com/software/). When setting up the user ensure the name is set to `pi`. _This is important for automatic process startup with systemd_
 2. Ensure that existing packages are up to date with `sudo apt update && sudo apt -y upgrade`
 3. (If required) Setup waveshare touchscreen divers by following [these instructions](<https://www.waveshare.com/wiki/8inch_DSI_LCD_(C)>)
 4. Install nvm by using: `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash`
