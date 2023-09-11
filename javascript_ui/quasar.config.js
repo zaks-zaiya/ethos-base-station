@@ -182,7 +182,7 @@ module.exports = configure(function (/* ctx */) {
         // Build for Raspberry Pi
         // platform: 'linux',
         // arch: 'armv7l', // 32 bit
-        // arch: 'armv64', // 64 bit
+        // arch: 'arm64', // 64 bit
       },
 
       builder: {
