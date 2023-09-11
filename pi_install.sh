@@ -6,7 +6,8 @@ cd ..
 echo "Setting up Python environment..."
 cd python_radio
 python3 -m venv ./env
-source ./env/bin/activate
+# Use dot as alias for 'source'
+. ./env/bin/activate
 pip3 install -r requirements.txt
 
 echo "Installing adafruit blinka..."
