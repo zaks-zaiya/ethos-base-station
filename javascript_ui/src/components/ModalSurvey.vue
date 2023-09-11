@@ -28,23 +28,26 @@
           v-model="surveyStore.surveyAnswers.wasHome"
         />
 
-        <div class="q-mt-lg text-bold">
-          What cooling strategies did you use (if any)?
-        </div>
-        <q-option-group
-          :options="coolingStrategiesUsedOptions"
-          type="checkbox"
-          v-model="surveyStore.surveyAnswers.coolingStrategiesUsed"
-        />
+        <!-- Only show other questions if they were home -->
+        <template v-if="surveyStore.surveyAnswers.wasHome === true">
+          <div class="q-mt-lg text-bold">
+            What cooling strategies did you use (if any)?
+          </div>
+          <q-option-group
+            :options="coolingStrategiesUsedOptions"
+            type="checkbox"
+            v-model="surveyStore.surveyAnswers.coolingStrategiesUsed"
+          />
 
-        <div class="q-mt-lg text-bold">
-          How effective do you feel the cooling strategies used were?
-        </div>
-        <q-option-group
-          :options="howEffectiveOptions"
-          type="radio"
-          v-model="surveyStore.surveyAnswers.howEffective"
-        />
+          <div class="q-mt-lg text-bold">
+            How effective do you feel the cooling strategies used were?
+          </div>
+          <q-option-group
+            :options="howEffectiveOptions"
+            type="radio"
+            v-model="surveyStore.surveyAnswers.howEffective"
+          />
+        </template>
 
         <q-btn
           label="finish"
