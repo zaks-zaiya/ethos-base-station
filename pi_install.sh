@@ -8,7 +8,7 @@ cd python_radio
 python3 -m venv ./env
 # Use dot as alias for 'source'
 . ./env/bin/activate
-pip3 install -r requirements.txt
+sudo pip3 install -r requirements.txt
 
 echo "Installing adafruit blinka..."
 cd install_scripts
