@@ -14,7 +14,7 @@ REMOTE=$(git rev-parse @{u})
 
 # Check if there are any new changes
 if [ $LOCAL != $REMOTE ]; then
-    echo "Updates found, pulling in..."
+    echo "Updates found, updating app..."
     # Pull the changes
     git pull
 
@@ -24,4 +24,6 @@ if [ $LOCAL != $REMOTE ]; then
     # Restart services
     sudo systemctl restart ethos-electron-app.service
     sudo systemctl restart ethos-python-server.service
+else
+    echo "No updates found."
 fi
