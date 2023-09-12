@@ -1,6 +1,6 @@
 # Run nvm setup
 # This lets us run yarn in cron job
-export NVM_DIR="$HOME/.nvm"
+export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
 # Build electron App
