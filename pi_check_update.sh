@@ -1,5 +1,7 @@
 # TODO: Might need to update git with full path to run from cron (e.g. `git` -> `/usr/local/bin/git`)
 
+echo "Checking for updates..."
+
 # Change to correct repository
 # This is needed as it is run from cron
 cd /home/pi/ethos-raspberry-pi
@@ -12,6 +14,7 @@ REMOTE=$(git rev-parse @{u})
 
 # Check if there are any new changes
 if [ $LOCAL != $REMOTE ]; then
+    echo "Updates found, pulling in..."
     # Pull the changes
     git pull
 
