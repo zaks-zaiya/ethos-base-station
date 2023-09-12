@@ -117,9 +117,7 @@ export const useDatabaseStore = defineStore({
         console.error(
           'Trying to post data before database is initialized or no user ID.'
         );
-        throw new Error(
-          'Trying to post data before database is initialized or no user ID.'
-        );
+        return;
       }
 
       // 2. Construct the data which will be sent to the database
@@ -135,11 +133,9 @@ export const useDatabaseStore = defineStore({
         const response = await this.db.post(sentData);
         if (!response.ok) {
           console.error('Database response indicates error has occurred');
-          throw new Error('Database response indicates error has occurred');
         }
       } catch (error) {
         console.error('Failed to post document:', error);
-        throw error;
       }
     },
     /**
