@@ -1,5 +1,8 @@
-# Source the required environment variables
-. /home/pi/.profile
+# Run nvm setup
+# This lets us run yarn in cron job
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
 # Build electron App
 cd javascript_ui
 yarn install
