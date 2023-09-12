@@ -32,4 +32,18 @@ echo "0 2 * * * sleep $((RANDOM % 3600)) && /home/pi/ethos-raspberry-pi/pi_check
 crontab /tmp/mycron
 rm /tmp/mycron
 
+echo "Modifying sudoers to allow systemctl commands without a password..."
+# Create a temporary sudoers file with the entry
+echo "pi ALL=(ALL) NOPASSWD: /bin/systemctl restart ethos-electron-app.service, /bin/systemctl restart ethos-python-server.service" > /tmp/sudoers_temp
+# Check the temporary sudoers file for syntax errors, and append it to the main sudoers file if it's okay
+sudo visudo -cf /tmp/sudoers_temp
+if [ $? -eq 0 ]; then
+    cat /tmp/sudoers_temp | sudo tee -a /etc/sudoers
+    echo "sudoers file updated successfully."
+else
+    echo "Failed to update sudoers file. Please update it manually."
+fi
+# Remove the temporary sudoers file
+rm /tmp/sudoers_temp
+
 echo "Installation complete!"
