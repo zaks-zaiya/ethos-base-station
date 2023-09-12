@@ -68,10 +68,11 @@ Requirements: _NPM, Yarn, Python 3.9 (with venv) and Git_
 9. Navigate to the home directory with either `cd ~` or `cd /home/pi`
 10. Clone the GitHub repository with `git clone git@github.com:climate-ethos/ethos-raspberry-pi.git`
 11. Move into the newly created directory with `cd ethos-raspberry-pi`
-12. Make all pi-related scripts executable with the command: `find . -maxdepth 1 -type f -name "pi_*.sh" -exec chmod +x {} \;`
-13. Install dependencies by running `sh pi_install.sh` (Pi). This will also setup auto-launch at startup and automatic updates with a cron job.
-14. Build production binary/Electron app using `sh pi_build.sh`
-15. Run systemd services with `sh pi_run.sh` (Pi), or alternatively restart device.
+12. Under `./javascript_ui` make a file named `.env` using the provided `.env.example` file and fill in all variables.
+13. Make all pi-related scripts executable with the command: `find . -maxdepth 1 -type f -name "pi_*.sh" -exec chmod +x {} \;`
+14. Install dependencies by running `sh pi_install.sh` (Pi). This will also setup auto-launch at startup and automatic updates with a cron job.
+15. Build production binary/Electron app using `sh pi_build.sh`
+16. Run systemd services with `sh pi_run.sh` (Pi), or alternatively restart device.
 
 If this doesn't work you can try a manual launch with `pi_run_manual.sh` (Pi) for debugging.
 
