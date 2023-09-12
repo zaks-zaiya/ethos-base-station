@@ -1,3 +1,5 @@
+# Source the required environment variables
+. /home/pi/.profile
 # Build electron App
 cd javascript_ui
 yarn install
