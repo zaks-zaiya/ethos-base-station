@@ -1,6 +1,6 @@
 <template>
   <q-dialog v-model="isDisconnected" :persistent="true" full-width>
-    <q-card class="bg-negative text-white text-h6">
+    <q-card class="bg-negative text-white text-h6 q-pa-md">
       <q-card-section>
         <div>
           Error, unable to connect to temperature sensors (socket issue). This
