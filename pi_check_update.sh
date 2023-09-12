@@ -1,8 +1,11 @@
-# TODO: Might need to update git with full path to run from cron (e.g. `git` -> `/usr/local/bin/git`)
+# Random number of seconds between 0-10 minutes
+# This ensures that Raspberry Pi's dont all try and update at exact same time
+WAIT_SECS=$((RANDOM % 10 * 60))
+echo "Update script sleeping for $WAIT_SECS seconds"
+sleep $WAIT_SECS
 
 echo "Checking for updates..."
 
-# Change to correct repository
 # This is needed as it is run from cron
 cd /home/pi/ethos-raspberry-pi
 
