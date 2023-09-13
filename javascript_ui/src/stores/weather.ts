@@ -59,8 +59,8 @@ export const useWeatherStore = defineStore('weather', {
       };
       updateWeather();
 
-      // Setup poll interval for every 20 min
-      this.pollInterval = window.setInterval(updateWeather, 60000 * 20);
+      // Setup poll interval for every 10 min
+      this.pollInterval = window.setInterval(updateWeather, 60000 * 10);
     },
 
     /**
