@@ -44,10 +44,10 @@ test.describe('settings', () => {
     // Lose focus on keyboard to submit password
     await page.getByText('User Data').nth(1).click();
 
-    await takeScreenshot(page, 'dataPreferences-0.png');
-
     // Await for database connection before continuing
     await dbResponsePromise;
+
+    await takeScreenshot(page, 'dataPreferences-0.png');
   });
 
   test('should be on settings page', async ({ page }) => {
