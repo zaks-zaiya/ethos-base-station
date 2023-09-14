@@ -3,6 +3,7 @@ import {
   databaseName,
   fetchRecentDocumentsOfType,
   deleteDocuments,
+  setupDatabase,
 } from 'test/playwright/helpers/database';
 import { takeScreenshot } from 'test/playwright/helpers/screenshot';
 
@@ -21,31 +22,8 @@ test.describe('settings', () => {
     }
     await page.getByRole('button', { name: 'submit' }).click();
 
-    // Start awaiting for response from server before initiating request
-    const dbResponsePromise = page.waitForResponse((response) => {
-      const request = response.request();
-      return (
-        request.method() === 'GET' &&
-        request.url().includes(`${databaseName}/_local/`)
-      );
-    });
-    // Set User ID and Password for Database
-    await page.getByLabel('User ID').click();
-    await page.locator('div').filter({ hasText: /^9$/ }).click();
-    await page.locator('div').filter({ hasText: /^9$/ }).click();
-    await page.locator('div').filter({ hasText: /^9$/ }).click();
-    await page.getByLabel('User Password').click();
-    await page.locator('div').filter({ hasText: /^123$/ }).click();
-    await page.locator('div').filter({ hasText: /^1$/ }).click();
-    await page.locator('div').filter({ hasText: /^2$/ }).click();
-    await page.locator('div').filter({ hasText: /^3$/ }).click();
-    await page.locator('div').filter({ hasText: /^4$/ }).click();
-    await page.locator('div').filter({ hasText: /^5$/ }).click();
-    // Lose focus on keyboard to submit password
-    await page.getByText('User Data').nth(1).click();
-
-    // Await for database connection before continuing
-    await dbResponsePromise;
+    // Setup the database
+    await setupDatabase(page);
 
     await takeScreenshot(page, 'dataPreferences-0.png');
   });
@@ -64,7 +42,7 @@ test.describe('settings', () => {
 
   test('should set user preferences and save to CouchDB', async ({ page }) => {
     // Select preferences tab
-    await page.getByText('assignmentPreferences').click();
+    await page.getByText('Preferences').click();
 
     // Select text to speech alerts radio
     const ttsRadio = page
