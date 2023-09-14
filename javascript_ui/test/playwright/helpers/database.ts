@@ -16,6 +16,11 @@ interface Doc {
   // anything else the document has
 }
 
+/**
+ * Function to setup the database, must be called from the settings page in the 'User Data' tab
+ * @param page The current playwright page
+ * @returns A promise which is resolved once the database acknowledges connection
+ */
 export async function setupDatabase(page: Page) {
   // Start awaiting for response from server before initiating request
   const dbResponsePromise = page.waitForResponse((response) => {
@@ -44,6 +49,11 @@ export async function setupDatabase(page: Page) {
   return dbResponsePromise;
 }
 
+/**
+ * Fetches the recent documents of a specified type from the last minute
+ * @param type The type of document to fetch
+ * @returns A promise that resolves with an array of documents matching the given type
+ */
 export async function fetchRecentDocumentsOfType(type: string): Promise<Doc[]> {
   // Calculate times for the last minute
   const endDate = new Date();
@@ -69,6 +79,11 @@ export async function fetchRecentDocumentsOfType(type: string): Promise<Doc[]> {
   }
 }
 
+/**
+ * Deletes a given array of documents from the database.
+ * @param documents An array of documents to be deleted
+ * @returns A promise that resolves once all the documents are deleted
+ */
 export async function deleteDocuments(documents: Doc[]): Promise<void> {
   try {
     for (const doc of documents) {
