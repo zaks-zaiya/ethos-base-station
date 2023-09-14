@@ -97,7 +97,7 @@ Requirements: _NPM, Yarn, Python 3.9 (with venv) and Docker_
 
 ### Data flow diagram
 
-![ethos-data-flow](https://github.com/climate-ethos/ethos-raspberry-pi/assets/25999161/d875d1a4-6194-4e35-b54b-a58411adab3e)
+![ethos-data-flow](./assets/ethos-data-flow.svg)
 
 Each data type shown in the diagram is explained below:
 
@@ -231,6 +231,8 @@ The `allSensorData` array is initialized with four sensor objects, each having t
 
 The Data User store is designed to manage user-related data, such as geographic location, biometric details, and sex. This is used for calculating core temperature.
 
+- `id`: Holds the ID of the user which is used to connect to the database and store info
+- `password`: Stores the password for the associated user ID to connect tot the database
 - `postcode`: Holds the postcode of the user.
 
 - `latitude`: Holds the latitude coordinate corresponding to the user's postcode.
