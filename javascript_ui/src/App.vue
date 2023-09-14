@@ -13,6 +13,7 @@ import { useDataPreferencesStore } from './stores/dataPreferences';
 import { useDatabaseStore } from './stores/database';
 import { useSurveyStore } from './stores/survey';
 import { useDateTimeStore } from './stores/dateTime';
+import { useDataUserStore } from './stores/dataUser';
 
 export default defineComponent({
   name: 'App',
@@ -40,11 +41,24 @@ export default defineComponent({
     // Initialize database
     const databaseStore = useDatabaseStore();
     databaseStore.initializeDatabase();
+    const dataUserStore = useDataUserStore();
     // Update database link when user id changes
     watch(
-      () => process.env.USER_ID,
-      (newId, oldId) => {
-        if (newId && newId !== oldId) {
+      () => [dataUserStore.id, dataUserStore.password],
+      (newValues, oldValues) => {
+        const [newId, newPassword] = newValues;
+        let oldId = undefined;
+        let oldPassword = undefined;
+        if (oldValues) {
+          [oldId, oldPassword] = oldValues;
+        }
+
+        if (!newId || !newPassword) {
+          console.warn('Database user ID or Password not defined');
+          return;
+        }
+
+        if (newId !== oldId || newPassword !== oldPassword) {
           databaseStore.initializeDatabase();
         }
       },

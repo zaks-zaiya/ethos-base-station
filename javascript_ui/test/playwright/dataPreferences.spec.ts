@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
-import { usernameToDbName } from 'src/helpers/database';
 import {
+  databaseName,
   fetchRecentDocumentsOfType,
   deleteDocuments,
 } from 'test/playwright/helpers/database';
@@ -20,6 +20,23 @@ test.describe('settings', () => {
       await page.getByRole('button', { name: digit }).click();
     }
     await page.getByRole('button', { name: 'submit' }).click();
+
+    // Set User ID and Password for Database
+    await page.getByLabel('User ID').click();
+    await page.locator('div').filter({ hasText: /^9$/ }).click();
+    await page.locator('div').filter({ hasText: /^9$/ }).click();
+    await page.locator('div').filter({ hasText: /^9$/ }).click();
+    await page.getByLabel('User Password').click();
+    await page.locator('div').filter({ hasText: /^123$/ }).click();
+    await page.locator('div').filter({ hasText: /^1$/ }).click();
+    await page.locator('div').filter({ hasText: /^2$/ }).click();
+    await page.locator('div').filter({ hasText: /^3$/ }).click();
+    await page.locator('div').filter({ hasText: /^4$/ }).click();
+    await page.locator('div').filter({ hasText: /^5$/ }).click();
+
+    await takeScreenshot(page, 'dataPreferences-0.png');
+
+    // TODO: Check connection to the database
   });
 
   test('should be on settings page', async ({ page }) => {
@@ -59,13 +76,10 @@ test.describe('settings', () => {
 
     // Start awaiting for response from server before initiating request
     const responsePromise = page.waitForResponse((response) => {
-      const dbName = usernameToDbName(
-        process.env.USER_ID ? process.env.USER_ID : ''
-      );
       const request = response.request();
       return (
         request.method() === 'PUT' &&
-        request.url().includes(`${dbName}/_local/`)
+        request.url().includes(`${databaseName}/_local/`)
       );
     });
     // Navigate home which will trigger posting to database

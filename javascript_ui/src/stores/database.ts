@@ -1,5 +1,6 @@
 // src/stores/database.ts
 import { defineStore } from 'pinia';
+import { useDataUserStore } from './dataUser';
 import { usernameToDbName } from 'src/helpers/database';
 import { replicate } from 'pouchdb';
 import PouchDB from 'pouchdb-browser';
@@ -37,20 +38,23 @@ export const useDatabaseStore = defineStore({
      * 5. Sets up replication on a remote database called user_${id}
      */
     initializeDatabase() {
+      const dataUserStore = useDataUserStore();
+
       console.log('Initializing database...');
       // 1. Checks if user ID and password exists
-      if (!process.env.USER_ID || !process.env.USER_PASSWORD) {
+      if (!dataUserStore.id || !dataUserStore.password) {
         console.error(
-          'Database Error: User ID or password not defined, check .env file'
+          'Database Error: User ID or password not defined, is it defined in the Pinia store?'
         );
         return;
       }
       // 2. Gets the correct database name and remote url
-      const databaseName = usernameToDbName(process.env.USER_ID);
+      const databaseName = usernameToDbName(dataUserStore.id);
       const databaseUrl =
         process.env.NODE_ENV === 'production'
-          ? `https://${process.env.USER_ID}:${process.env.USER_PASSWORD}@${process.env.COUCH_DB_URL}`
-          : `http://${process.env.USER_ID}:${process.env.USER_PASSWORD}@localhost:5984`;
+          ? `https://${dataUserStore.id}:${dataUserStore.password}@${process.env.COUCH_DB_URL}`
+          : `http://${dataUserStore.id}:${dataUserStore.password}@localhost:5984`;
+      console.log(databaseUrl);
       // 3. If an existing database exists, closes it
       if (this.db) {
         this.db.close();
@@ -112,8 +116,10 @@ export const useDatabaseStore = defineStore({
         | SurveyDatabaseStructure
         | AlertDatabaseStructure
     ) {
+      const dataUserStore = useDataUserStore();
+
       // 1. Check that everything is initialised and ready
-      if (!this.db || !process.env.USER_ID) {
+      if (!this.db || !dataUserStore.id) {
         console.error(
           'Trying to post data before database is initialized or no user ID.'
         );
@@ -124,7 +130,7 @@ export const useDatabaseStore = defineStore({
       const baseData: BaseDatabaseStructure = {
         type: type,
         time: new Date(Date.now()),
-        userId: process.env.USER_ID,
+        userId: dataUserStore.id,
       };
       const sentData = { ...baseData, ...data };
 

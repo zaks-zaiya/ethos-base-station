@@ -14,6 +14,7 @@ start_python
 
 # Wait for couchdb to start
 wait_for_couchdb
+
 # Create example user (id: 999)
 create_test_user
 

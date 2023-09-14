@@ -1,10 +1,11 @@
 import axios from 'axios';
 import { usernameToDbName } from 'src/helpers/database';
 
-const databaseName = usernameToDbName(
-  process.env.USER_ID ? process.env.USER_ID : ''
-);
-const databaseUrl = `http://${process.env.USER_ID}:${process.env.USER_PASSWORD}@localhost:5984/${databaseName}`;
+// Database variables
+const testingUserId = 999;
+const testingUserPassword = '12345';
+export const databaseName = usernameToDbName(testingUserId);
+const databaseUrl = `http://${testingUserId}:${testingUserPassword}@localhost:5984/${databaseName}`;
 
 interface Doc {
   _id: string;

@@ -1,12 +1,18 @@
 <template>
   <div class="text-h6 q-mb-md">User Data</div>
   <!-- Inputs below -->
-  <q-input
-    v-model="userId"
-    label="User ID (check that it matches sticker)"
-    class="q-pb-lg"
-    filled
-    disable
+  <input-keyboard
+    v-model.number="dataUserStore.id"
+    :customRule="dataUserStore.checkId"
+    type="number"
+    label="User ID"
+  />
+
+  <input-keyboard
+    v-model="dataUserStore.password"
+    :customRule="dataUserStore.checkPassword"
+    type="text"
+    label="User Password"
   />
 
   <input-keyboard
@@ -57,7 +63,7 @@ export default defineComponent({
   },
   setup() {
     const dataUserStore = useDataUserStore();
-    const userId = computed(() => process.env.USER_ID);
+    const userId = computed(() => dataUserStore.id);
 
     const sexOptions = [
       { label: 'Female', value: 'female' },

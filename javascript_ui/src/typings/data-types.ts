@@ -23,6 +23,8 @@ export enum RiskLevel {
 
 // User data
 export interface UserData {
+  id: undefined | number;
+  password: undefined | string;
   postcode: undefined | number;
   latitude: undefined | number;
   longitude: undefined | number;

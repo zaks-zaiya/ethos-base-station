@@ -5,6 +5,8 @@ export const useDataUserStore = defineStore('dataUser', {
   persist: true,
 
   state: (): UserData => ({
+    id: undefined,
+    password: undefined,
     postcode: undefined,
     latitude: undefined,
     longitude: undefined,
@@ -18,6 +20,8 @@ export const useDataUserStore = defineStore('dataUser', {
     containsUndefined(state) {
       // Inverse (!) has to be used to return boolean
       return (
+        !state.id ||
+        !state.password ||
         !state.postcode ||
         !state.latitude ||
         !state.longitude ||
@@ -71,12 +75,28 @@ export const useDataUserStore = defineStore('dataUser', {
       return false;
     },
 
+    checkId(id: number) {
+      if (id > 0 && id < 1000) {
+        this.id = id;
+        return true;
+      }
+      return 'Invalid id value (should be 1-999)';
+    },
+
+    checkPassword(password: string) {
+      if (password.length > 0) {
+        this.password = password;
+        return true;
+      }
+      return 'Please enter a password';
+    },
+
     checkAge(age: number) {
       if (age > 0 && age < 200) {
         this.ageYears = age;
         return true;
       }
-      return 'Invalid age value (1-199 years)';
+      return 'Invalid age value (should be 1-199 years)';
     },
 
     checkHeight(height: number) {
