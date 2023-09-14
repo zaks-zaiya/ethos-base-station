@@ -21,6 +21,14 @@ test.describe('settings', () => {
     }
     await page.getByRole('button', { name: 'submit' }).click();
 
+    // Start awaiting for response from server before initiating request
+    const dbResponsePromise = page.waitForResponse((response) => {
+      const request = response.request();
+      return (
+        request.method() === 'GET' &&
+        request.url().includes(`${databaseName}/_local/`)
+      );
+    });
     // Set User ID and Password for Database
     await page.getByLabel('User ID').click();
     await page.locator('div').filter({ hasText: /^9$/ }).click();
@@ -33,14 +41,25 @@ test.describe('settings', () => {
     await page.locator('div').filter({ hasText: /^3$/ }).click();
     await page.locator('div').filter({ hasText: /^4$/ }).click();
     await page.locator('div').filter({ hasText: /^5$/ }).click();
+    // Lose focus on keyboard to submit password
+    await page.getByText('User Data').nth(1).click();
 
     await takeScreenshot(page, 'dataPreferences-0.png');
 
-    // TODO: Check connection to the database
+    // Await for database connection before continuing
+    await dbResponsePromise;
   });
 
   test('should be on settings page', async ({ page }) => {
     await expect(page).toHaveURL(settingsUrl);
+  });
+
+  test('should be connected to database', async ({ page }) => {
+    await page.getByText('Debug Info').click();
+    const couchDbStatusDiv = await page
+      .locator('div.debug-section')
+      .filter({ hasText: 'Replication Status' });
+    await expect(couchDbStatusDiv).toContainText('paused');
   });
 
   test('should set user preferences and save to CouchDB', async ({ page }) => {
@@ -75,7 +94,7 @@ test.describe('settings', () => {
     await takeScreenshot(page, 'dataPreferences-1.png');
 
     // Start awaiting for response from server before initiating request
-    const responsePromise = page.waitForResponse((response) => {
+    const dbResponsePromise = page.waitForResponse((response) => {
       const request = response.request();
       return (
         request.method() === 'PUT' &&
@@ -85,7 +104,7 @@ test.describe('settings', () => {
     // Navigate home which will trigger posting to database
     await page.getByRole('link', { name: 'go back to home' }).click();
     // Await for the response from the server
-    await responsePromise;
+    await dbResponsePromise;
 
     await takeScreenshot(page, 'dataPreferences-2.png');
 
