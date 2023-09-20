@@ -15,6 +15,25 @@
     label="User Password"
   />
 
+  <div class="text q-mb-lg">
+    Database connection status:
+    <template v-if="databaseStore.replicationStatus === 'initial'">
+      <q-spinner color="primary" size="lg" :thickness="10" />
+    </template>
+    <template
+      v-else-if="
+        databaseStore.replicationErrorMessage &&
+        databaseStore.replicationErrorMessage.length > 0
+      "
+    >
+      <q-icon name="cancel" color="negative" size="lg" />
+      ({{ databaseStore.replicationErrorMessage }})
+    </template>
+    <template v-else>
+      <q-icon name="check_circle" color="positive" size="lg" />
+    </template>
+  </div>
+
   <input-keyboard
     v-model.number="dataUserStore.postcode"
     :customRule="dataUserStore.checkPostcode"
@@ -54,6 +73,7 @@
 
 <script lang="ts">
 import { useDataUserStore } from 'src/stores/dataUser';
+import { useDatabaseStore } from 'src/stores/database';
 import { computed, defineComponent } from 'vue';
 import InputKeyboard from './InputKeyboard.vue';
 
@@ -63,6 +83,8 @@ export default defineComponent({
   },
   setup() {
     const dataUserStore = useDataUserStore();
+    const databaseStore = useDatabaseStore();
+
     const userId = computed(() => dataUserStore.id);
 
     const sexOptions = [
@@ -73,6 +95,7 @@ export default defineComponent({
 
     return {
       dataUserStore,
+      databaseStore,
       userId,
       sexOptions,
     };

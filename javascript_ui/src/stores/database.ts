@@ -13,6 +13,16 @@ import {
   WeatherDatabaseStructure,
 } from 'src/typings/database-types';
 
+interface ReplicationError {
+  error?: string;
+  message?: string;
+  name?: string;
+  reason?: string;
+  result?: object;
+  stack?: string;
+  status?: number;
+}
+
 export const useDatabaseStore = defineStore({
   id: 'database',
   state: () => ({
@@ -27,6 +37,7 @@ export const useDatabaseStore = defineStore({
       | 'denied'
       | 'complete'
       | 'error',
+    replicationErrorMessage: undefined as undefined | string,
   }),
   actions: {
     /**
@@ -72,30 +83,36 @@ export const useDatabaseStore = defineStore({
         );
         // Replication status callbacks
         this.replicationHandler
-          .on('paused', (err) => {
+          .on('error', (err: ReplicationError) => {
+            console.error('database replication error:', err);
+            this.replicationErrorMessage = err.message;
+            this.replicationStatus = 'error';
+          })
+          .on('denied', (err: ReplicationError) => {
+            console.log('database replication denied:', err);
+            this.replicationErrorMessage = err.message;
+            this.replicationStatus = 'denied';
+          })
+          .on('paused', (err: ReplicationError) => {
             if (err) {
-              console.log('database replication error:', err);
+              console.error('database replication paused, error:', err);
+              this.replicationErrorMessage = err.message;
               this.replicationStatus = 'error';
             } else {
               console.log('database replication paused');
+              this.replicationErrorMessage = undefined;
               this.replicationStatus = 'paused';
             }
           })
           .on('active', () => {
             console.log('database replication active');
+            this.replicationErrorMessage = undefined;
             this.replicationStatus = 'active';
-          })
-          .on('denied', () => {
-            console.log('database replication denied');
-            this.replicationStatus = 'denied';
           })
           .on('complete', () => {
             console.log('database replication complete');
+            this.replicationErrorMessage = undefined;
             this.replicationStatus = 'complete';
-          })
-          .on('error', () => {
-            console.log('database replication error');
-            this.replicationStatus = 'error';
           });
       }
     },
