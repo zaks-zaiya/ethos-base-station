@@ -34,6 +34,12 @@
     <template v-else>
       <q-icon name="check_circle" color="positive" size="lg" />
     </template>
+    <!-- Refresh button -->
+    <q-btn
+      label="refresh"
+      @click="databaseStore.initializeDatabase()"
+      color="primary"
+    />
   </div>
 
   <!-- Postcode -->
