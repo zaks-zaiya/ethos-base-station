@@ -29,7 +29,6 @@
       "
     >
       <q-icon name="cancel" color="negative" size="lg" />
-      ({{ databaseStore.replicationErrorMessage }})
     </template>
     <template v-else>
       <q-icon name="check_circle" color="positive" size="lg" />
@@ -37,9 +36,20 @@
     <!-- Refresh button -->
     <q-btn
       label="refresh"
+      class="q-ml-md"
       @click="databaseStore.initializeDatabase()"
       color="primary"
     />
+    <!-- Error message -->
+    <div
+      class="text-bold"
+      v-if="
+        databaseStore.replicationErrorMessage &&
+        databaseStore.replicationErrorMessage.length > 0
+      "
+    >
+      Error: {{ databaseStore.replicationErrorMessage }}
+    </div>
   </div>
 
   <!-- Postcode -->
