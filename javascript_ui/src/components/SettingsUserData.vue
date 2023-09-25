@@ -1,6 +1,6 @@
 <template>
   <div class="text-h6 q-mb-md">User Data</div>
-  <!-- Inputs below -->
+  <!-- User ID -->
   <input-keyboard
     v-model.number="dataUserStore.id"
     :customRule="dataUserStore.checkId"
@@ -8,6 +8,7 @@
     label="User ID"
   />
 
+  <!-- User DB password -->
   <input-keyboard
     v-model="dataUserStore.password"
     :customRule="dataUserStore.checkPassword"
@@ -15,6 +16,7 @@
     label="User Password"
   />
 
+  <!-- Database connection status -->
   <div class="text q-mb-lg">
     Database connection status:
     <template v-if="databaseStore.replicationStatus === 'initial'">
@@ -34,6 +36,7 @@
     </template>
   </div>
 
+  <!-- Postcode -->
   <input-keyboard
     v-model.number="dataUserStore.postcode"
     :customRule="dataUserStore.checkPostcode"
@@ -42,6 +45,7 @@
     label="Postcode"
   />
 
+  <!-- Age -->
   <input-keyboard
     v-model.number="dataUserStore.ageYears"
     :customRule="dataUserStore.checkAge"
@@ -49,6 +53,7 @@
     label="Age (years)"
   />
 
+  <!-- Height -->
   <input-keyboard
     v-model.number="dataUserStore.heightCm"
     :customRule="dataUserStore.checkHeight"
@@ -56,6 +61,7 @@
     label="Height (cm)"
   />
 
+  <!-- Weight -->
   <input-keyboard
     v-model.number="dataUserStore.weightKg"
     :customRule="dataUserStore.checkWeight"
@@ -63,6 +69,7 @@
     label="Weight (kg)"
   />
 
+  <!-- Sex -->
   <div class="q-mt-lg text-bold">What is your birth sex?</div>
   <q-option-group
     :options="sexOptions"
