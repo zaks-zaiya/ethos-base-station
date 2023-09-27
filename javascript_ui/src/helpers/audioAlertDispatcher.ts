@@ -61,6 +61,11 @@ const playAudioTone = (riskLevel: RiskLevel): Promise<void> => {
 export const playTextToSpeech = (text: string): Promise<void> => {
   const volumeStore = useVolumeStore();
   return new Promise((resolve, reject) => {
+    if (!('SpeechSynthesisUtterance' in window)) {
+      const error = 'SpeechSynthesisUtterance is not supported in this browser';
+      console.error(error);
+      reject(error);
+    }
     try {
       const voices = getSpeechSynthesisVoices();
       const utter = new SpeechSynthesisUtterance();
@@ -76,6 +81,10 @@ export const playTextToSpeech = (text: string): Promise<void> => {
       utter.onend = () => {
         currentUtterance = null;
         resolve();
+      };
+      utter.onerror = (errorEvent) => {
+        console.error('Error during speech synthesis:', errorEvent.error);
+        reject(errorEvent.error);
       };
       speechSynthesis.speak(utter);
       currentUtterance = utter;
