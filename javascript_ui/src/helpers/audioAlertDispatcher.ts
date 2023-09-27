@@ -12,6 +12,7 @@ let currentUtterance: SpeechSynthesisUtterance | null = null;
 export const getSpeechSynthesisVoices = () => {
   window.speechSynthesis.onvoiceschanged = (e) => {
     console.log('Voices loaded:', e);
+    console.log('Voice list:', window.speechSynthesis.getVoices());
   };
   return window.speechSynthesis.getVoices();
 };
