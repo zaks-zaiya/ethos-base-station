@@ -73,6 +73,7 @@ export const playTextToSpeech = (text: string): Promise<void> => {
     try {
       const voices = getSpeechSynthesisVoices();
       const utter = new SpeechSynthesisUtterance();
+      console.log(voices);
       if (voices && voices.length > 0) {
         // Select a local voice (in this case Karen with en-AU lang)
         utter.voice = voices[0];
