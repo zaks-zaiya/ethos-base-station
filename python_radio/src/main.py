@@ -3,6 +3,7 @@ import socketio
 import asyncio
 import sys
 import threading
+from logger import Logger
 
 from core_temperature import RiskLevelData, calculate_predicted_core_temperature
 
@@ -45,7 +46,9 @@ async def calculatePredictedCoreTemperature(sid, data: RiskLevelData):
 
 if __name__ == '__main__':
   production_arg = sys.argv[1] if len(sys.argv) > 1 else False
-  if production_arg == 'prod' or production_arg == 'production':
+  is_production = production_arg == 'prod' or production_arg == 'production'
+  Logger.setup(is_production)
+  if is_production:
     from radio import radio_listen
     rfm9x = radio_init()
     # Start radio listen thread

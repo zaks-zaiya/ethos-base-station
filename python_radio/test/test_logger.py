@@ -14,6 +14,8 @@ class TestLogger(unittest.TestCase):
     }
     self.rssi = "-70dBm"
     self.error_message = "Test error"
+    # Setup logger
+    Logger.setup(is_production=False)
 
   def test_error(self):
     Logger.error(self.error_message)

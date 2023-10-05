@@ -11,7 +11,7 @@ class Logger:
         logging.shutdown()
 
     @staticmethod
-    def setup():
+    def setup(is_production: bool):
         # Clear any previously added handlers
         Logger._logger.handlers = []
 
@@ -26,21 +26,23 @@ class Logger:
         log_directory = os.path.join(parent_directory, "logs")
         if not os.path.exists(log_directory):
             os.makedirs(log_directory)
-        # Create handlers
-        file_handler = logging.FileHandler(os.path.join(log_directory, "radio_data.log"), mode='a')
-        stream_handler = logging.StreamHandler()
 
-        # Create a formatter and attach to handlers
+        # Create a formatter which includes date
         formatter = logging.Formatter(
             fmt='%(asctime)s %(levelname)-8s %(message)s',
             datefmt='%Y-%m-%d %H:%M:%S'
         )
-        file_handler.setFormatter(formatter)
-        stream_handler.setFormatter(formatter)
 
-        # Attach handlers to the logger
-        Logger._logger.addHandler(file_handler)
+        # Create stream handler
+        stream_handler = logging.StreamHandler()
+        stream_handler.setFormatter(formatter)
         Logger._logger.addHandler(stream_handler)
+
+        # Create file handler (only log to file when not in production)
+        if not is_production:
+            file_handler = logging.FileHandler(os.path.join(log_directory, "radio_data.log"), mode='a')
+            file_handler.setFormatter(formatter)
+            Logger._logger.addHandler(file_handler)
 
     @staticmethod
     def log_radio_data(radio_data, rssi):
@@ -56,9 +58,6 @@ class Logger:
     def error(msg):
         # Use the named logger instance to log the error
         Logger._logger.error(msg)
-
-# Setup logger
-Logger.setup()
 
 # Sample usage
 # Logger.log_radio_data({"id": "123", "temperature": "22.5", "humidity": "50.2"}, "-70dBm")
