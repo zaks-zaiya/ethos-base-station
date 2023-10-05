@@ -28,11 +28,13 @@ async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x):
       # Radio data was of wrong type
       continue
 
-    try:
-      acknowledgement_data = bytes("R" + radio_data["id"] + "\r\n","utf-8")
-      rfm9x.send(acknowledgement_data)
-    except Exception as e:
-      Logger.error(f"Error sending acknowledgement: {e}")
+    # Send acknowledgment
+    # This is not performed for now
+    # try:
+    #   acknowledgement_data = bytes("R" + radio_data["id"] + "\r\n","utf-8")
+    #   rfm9x.send(acknowledgement_data)
+    # except Exception as e:
+    #   Logger.error(f"Error sending acknowledgement: {e}")
 
     # Log radio data
     rssi = rfm9x.last_rssi
