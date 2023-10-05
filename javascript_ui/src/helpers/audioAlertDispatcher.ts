@@ -28,6 +28,11 @@ declare const responsiveVoice: ResponsiveVoice | undefined;
 // Manual resolver to allow resolving promise when tts is canceled
 let resolveTextToSpeech: (() => void) | null = null;
 
+// Function to check if text whether responsive voice is available
+export const isResponsiveVoiceDefined = () => {
+  return typeof responsiveVoice !== 'undefined';
+};
+
 const generateTextToSpeech = (
   riskLevel: RiskLevel,
   sensorData?: SensorData
