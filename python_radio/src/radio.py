@@ -14,7 +14,7 @@ async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x):
       continue
 
     if radio_packet is None:
-      print("Nothing received, trying again...")
+      # No data received, listen again
       continue
 
     # Radio packet received
@@ -25,6 +25,7 @@ async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x):
       continue
 
     if radio_data is None:
+      # Radio data was of wrong type
       continue
 
     try:
@@ -43,17 +44,16 @@ async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x):
 
 
 def process_packet(packet: bytearray):
-  print("Packet received:", packet)
   try:
     # Slice packet to the first 14 bytes
     # The radio actually sends 15 bytes, however the last byte is \x00 and can be ignored
     packet = packet[:14]
     packet_text = str(packet, "ascii")
-    print("(ASCII): {0}".format(packet_text))
 
     match = re.match("^I(\d+)T([\d\.]+)H([\d\.]+)", packet_text)
     if match is None:
-      print("Incorrect radio message!")
+      # Regex failed to match
+      # Radio data must be from another device or is corrupted
       return None
 
     return {
