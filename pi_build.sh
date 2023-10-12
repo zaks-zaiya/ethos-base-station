@@ -34,5 +34,5 @@ cd python_radio
 python3 -m venv ./env
 # Use dot as alias for 'source'
 . ./env/bin/activate
-sudo pip3 install -r requirements.txt
+pip3 install -r requirements.txt
 cd ..
