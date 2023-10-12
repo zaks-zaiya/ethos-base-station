@@ -4,6 +4,18 @@ import socketio
 import re
 from logger import Logger
 
+# For radio encryption
+from Crypto.Cipher import AES
+
+# TODO: Replace with a secure key in config file
+AES_KEY = b'\x01\x01\x01\x01\x01\x01\x01\x01\x01\x01\x01\x01\x01\x01\x01\x01'
+
+def decrypt_data(data: bytes) -> bytes:
+    """Decrypt data using AES in ECB mode."""
+    cipher = AES.new(AES_KEY, AES.MODE_ECB)
+    decrypted_data = cipher.decrypt(data)
+    return decrypted_data
+
 async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x):
   # Radio listen loop
   while True:
@@ -17,9 +29,20 @@ async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x):
       # No data received, listen again
       continue
 
-    # Radio packet received
+    if len(radio_packet) != 16:
+      # The radio packet must not be the right type
+      continue
+
+    # Decrypt recieved radio data
     try:
-      radio_data = process_packet(radio_packet)
+      decrypted_packet = decrypt_data(radio_packet)
+    except:
+      Logger.error(f"Error decrypting data")
+      continue
+
+    # Process packet string to radio data
+    try:
+      radio_data = process_packet(decrypted_packet)
     except Exception as e:
       Logger.error(f"Error processing packet: {e}")
       continue
