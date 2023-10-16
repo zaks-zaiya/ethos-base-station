@@ -46,25 +46,48 @@ async def calculatePredictedCoreTemperature(sid, data: RiskLevelData):
   return calculate_predicted_core_temperature(data)
 
 # Function to shutdown the process when termination signal received
-def shutdown(signum, frame):
+def shutdown():
   print("Shutting down Python server...")
-  # Close socket.io
-  sio.stop()
   # Stop the radio thread
   stop_event.set()
-  radio_thread.join()
-  print("Python server has shutdown.")
+  try:
+    radio_thread.join()
+  except:
+    pass
+  # Stop main event loop
+  loop.stop()
+  print("Shutdown function finished")
 
 if __name__ == '__main__':
   production_arg = sys.argv[1] if len(sys.argv) > 1 else False
+  # Create a threading event to signal the radio thread to stop
+  stop_event = threading.Event()
+
   if production_arg == 'prod' or production_arg == 'production':
     from radio import radio_listen
     rfm9x = radio_init()
-    # Create a threading event to signal the radio thread to stop
-    stop_event = threading.Event()
     # Start radio listen thread
     radio_thread = threading.Thread(target=asyncio.run, args=(radio_listen(sio, rfm9x, stop_event),))
     radio_thread.start()
-    # Register the shutdown signal handler
-    signal.signal(signal.SIGTERM, shutdown)
-  web.run_app(app, port=5001)
+
+  # Setup and start the web server
+  loop = asyncio.get_event_loop()
+  web_app_runner = web.AppRunner(app)
+  loop.run_until_complete(web_app_runner.setup())
+  site = web.TCPSite(web_app_runner, port=5001)
+  loop.run_until_complete(site.start())
+
+  # Register the shutdown signal handler
+  loop.add_signal_handler(signal.SIGINT, shutdown)
+  loop.add_signal_handler(signal.SIGTERM, shutdown)
+
+  try:
+    loop.run_forever()
+  except KeyboardInterrupt:
+    pass
+  finally:
+    # Cleanup after app has shutdown
+    loop.run_until_complete(app.shutdown())
+    loop.run_until_complete(web_app_runner.cleanup())
+    loop.close()
+    print("Server stopped")
