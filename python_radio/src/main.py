@@ -46,15 +46,30 @@ async def calculatePredictedCoreTemperature(sid, data: RiskLevelData):
   return calculate_predicted_core_temperature(data)
 
 # Function to shutdown the process when termination signal received
-def shutdown():
+async def shutdown_server(loop):
   print("Shutting down Python server...")
+
   # Stop the radio thread
   stop_event.set()
   try:
-    radio_thread.join()
+    radio_thread.join()  # Wait for the thread to finish
   except:
     pass
-  # Stop main event loop
+  # Stop the site
+  await site.stop()
+  # Clean up the app runner
+  await web_app_runner.cleanup()
+
+  # Cancel remaining tasks
+  tasks = [t for t in asyncio.all_tasks() if t is not asyncio.current_task()]
+  for task in tasks:
+    task.cancel()
+    try:
+      await task
+    except asyncio.CancelledError:
+      pass
+
+  # Stop the event loop
   loop.stop()
   print("Shutdown function finished")
 
@@ -77,17 +92,12 @@ if __name__ == '__main__':
   site = web.TCPSite(web_app_runner, port=5001)
   loop.run_until_complete(site.start())
 
-  # Register the shutdown signal handler
-  loop.add_signal_handler(signal.SIGINT, shutdown)
-  loop.add_signal_handler(signal.SIGTERM, shutdown)
+  # Register the shutdown signal handlers
+  loop.add_signal_handler(signal.SIGTERM, lambda: loop.create_task(shutdown_server(loop)))
+  loop.add_signal_handler(signal.SIGINT, lambda: loop.create_task(shutdown_server(loop)))
 
   try:
     loop.run_forever()
-  except KeyboardInterrupt:
-    pass
   finally:
-    # Cleanup after app has shutdown
-    loop.run_until_complete(app.shutdown())
-    loop.run_until_complete(web_app_runner.cleanup())
     loop.close()
-    print("Server stopped")
+    print("Python server stopped.")
