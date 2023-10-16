@@ -18,7 +18,7 @@ except:
 
 # Function to configure LoRa Radio
 def radio_init():
-  RADIO_FREQ_MHZ = 915.0  # Frequency of the radio in Mhz
+  RADIO_FREQ_MHZ = 915.1  # Frequency of the radio in Mhz
   CS = DigitalInOut(board.CE1)
   RESET = DigitalInOut(board.D25)
   spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
