@@ -4,6 +4,9 @@ import socketio
 import re
 from logger import Logger
 
+# For typing stop_event
+from threading import Event
+
 # For radio encryption
 from Crypto.Cipher import AES
 import os
@@ -22,9 +25,9 @@ def decrypt_data(data: bytes) -> bytes:
     decrypted_data = cipher.decrypt(data)
     return decrypted_data
 
-async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x):
+async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x, stop_event: Event):
   # Radio listen loop
-  while True:
+  while not stop_event.is_set():
     try:
       radio_packet = rfm9x.receive(timeout=5.0)
     except Exception as e:

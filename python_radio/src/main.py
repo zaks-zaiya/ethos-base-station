@@ -3,6 +3,8 @@ import socketio
 import asyncio
 import sys
 import threading
+# For stopping execution when shutting down
+import signal
 
 from core_temperature import RiskLevelData, calculate_predicted_core_temperature
 
@@ -14,8 +16,8 @@ try:
 except:
   print("Unable to import radio modules, are you on RPi?")
 
+# Function to configure LoRa Radio
 def radio_init():
-  # Configure LoRa Radio
   RADIO_FREQ_MHZ = 915.0  # Frequency of the radio in Mhz
   CS = DigitalInOut(board.CE1)
   RESET = DigitalInOut(board.D25)
@@ -43,12 +45,24 @@ def disconnect(sid):
 async def calculatePredictedCoreTemperature(sid, data: RiskLevelData):
   return calculate_predicted_core_temperature(data)
 
+# Function to shutdown the process when termination signal received
+def shutdown(signum, frame):
+  # Close socket.io
+  sio.stop()
+  # Stop the radio thread
+  stop_event.set()
+  radio_thread.join()
+
 if __name__ == '__main__':
   production_arg = sys.argv[1] if len(sys.argv) > 1 else False
   if production_arg == 'prod' or production_arg == 'production':
     from radio import radio_listen
     rfm9x = radio_init()
+    # Create a threading event to signal the radio thread to stop
+    stop_event = threading.Event()
     # Start radio listen thread
-    radio_thread = threading.Thread(target=asyncio.run, args=(radio_listen(sio, rfm9x),))
+    radio_thread = threading.Thread(target=asyncio.run, args=(radio_listen(sio, rfm9x, stop_event),))
     radio_thread.start()
+    # Register the shutdown signal handler
+    signal.signal(signal.SIGTERM, shutdown)
   web.run_app(app, port=5001)
