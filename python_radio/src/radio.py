@@ -17,7 +17,8 @@ dotenv_path = Path('../javascript_ui/.env')
 load_dotenv(dotenv_path=dotenv_path)
 
 # Get the AES_KEY from environment variables
-AES_KEY = bytes(os.getenv('AES_KEY'), encoding="latin1")
+AES_KEY_STRING = os.getenv('AES_KEY')
+AES_KEY = AES_KEY_STRING.encode("utf-8")
 
 def decrypt_data(data: bytes) -> bytes:
     """Decrypt data using AES in ECB mode."""
