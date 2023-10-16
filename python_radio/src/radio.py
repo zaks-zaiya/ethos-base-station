@@ -6,9 +6,15 @@ from logger import Logger
 
 # For radio encryption
 from Crypto.Cipher import AES
+import os
+from dotenv import load_dotenv
+from pathlib import Path
 
-# TODO: Replace with a secure key in config file
-AES_KEY = b'\x01\x01\x01\x01\x01\x01\x01\x01\x01\x01\x01\x01\x01\x01\x01\x01'
+dotenv_path = Path('../javascript_ui/.env')
+load_dotenv(dotenv_path=dotenv_path)
+
+# Get the AES_KEY from environment variables
+AES_KEY = bytes(os.getenv('AES_KEY'), encoding="latin1")
 
 def decrypt_data(data: bytes) -> bytes:
     """Decrypt data using AES in ECB mode."""
