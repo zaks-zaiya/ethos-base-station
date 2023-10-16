@@ -47,11 +47,13 @@ async def calculatePredictedCoreTemperature(sid, data: RiskLevelData):
 
 # Function to shutdown the process when termination signal received
 def shutdown(signum, frame):
+  print("Shutting down Python server...")
   # Close socket.io
   sio.stop()
   # Stop the radio thread
   stop_event.set()
   radio_thread.join()
+  print("Python server has shutdown.")
 
 if __name__ == '__main__':
   production_arg = sys.argv[1] if len(sys.argv) > 1 else False
