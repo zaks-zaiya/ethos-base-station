@@ -21,7 +21,8 @@ class TestLogger(unittest.TestCase):
     self.assertTrue(os.path.exists('logs/radio_data.log'))
     with open('logs/radio_data.log', 'r') as f:
       content = f.read()
-      self.assertTrue(self.error_message in content)
+      # We dont want to save errors to the file
+      self.assertFalse(self.error_message in content)
 
   def test_log_radio_data(self):
     Logger.log_radio_data(self.radio_data)

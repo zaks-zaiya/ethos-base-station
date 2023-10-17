@@ -6,6 +6,11 @@ class Logger:
     # Create a named logger instance
     _logger = logging.getLogger('my_application')
 
+    # Filter to only log INFO level events to the file
+    class InfoFilter(logging.Filter):
+        def filter(self, record):
+            return record.levelno == logging.INFO
+
     @staticmethod
     def shutdown():
         logging.shutdown()
@@ -29,6 +34,9 @@ class Logger:
         # Create handlers
         file_handler = logging.FileHandler(os.path.join(log_directory, "radio_data.log"), mode='a')
         stream_handler = logging.StreamHandler()
+
+        # Add the InfoFilter to the file handler so only INFO logs are written
+        file_handler.addFilter(Logger.InfoFilter())
 
         # Create a formatter and attach to handlers
         formatter = logging.Formatter(
