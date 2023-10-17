@@ -9,10 +9,10 @@ class TestLogger(unittest.TestCase):
     # This method will be called before each test
     self.radio_data = {
       "id": 999,
-      "temperature": 32.3,
-      "humidity": 26.7,
-      "voltage": 3.7,
-      "rssi": -70.6
+      "temperature": 32.39309,
+      "humidity": 26.7323,
+      "voltage": 3.79999,
+      "rssi": -70.6221
     }
     self.error_message = "Test error"
 
@@ -29,8 +29,9 @@ class TestLogger(unittest.TestCase):
     self.assertTrue(os.path.exists('logs/radio_data.log'))
     with open('logs/radio_data.log', 'r') as f:
       content = f.read()
-      # Ensure at least a part of the log message is in the content
-      self.assertTrue(str(self.radio_data['id']) in content)
+      # Ensure the log message is in content, and rounded
+      line = "id: 999, temp: 32.39, RH: 26.73, voltage: 3.8, RSSI: -70.62"
+      self.assertTrue(line in content)
 
 if __name__ == '__main__':
   unittest.main()

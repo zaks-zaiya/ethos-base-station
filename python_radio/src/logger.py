@@ -53,10 +53,11 @@ class Logger:
     @staticmethod
     def log_radio_data(radio_data):
         id = radio_data.get("id", "N/A")
-        temp = radio_data.get("temperature", "N/A")
-        humidity = radio_data.get("humidity", "N/A")
-        voltage = radio_data.get("voltage", "N/A")
-        rssi = radio_data.get("rssi", "N/A")
+        # Check if the value exists and round to 2 decimal places, else assign "N/A"
+        temp = round(float(radio_data["temperature"]), 2) if "temperature" in radio_data else "N/A"
+        humidity = round(float(radio_data["humidity"]), 2) if "humidity" in radio_data else "N/A"
+        voltage = round(float(radio_data["voltage"]), 2) if "voltage" in radio_data else "N/A"
+        rssi = round(float(radio_data["rssi"]), 2) if "rssi" in radio_data else "N/A"
         log_message = "id: {0}, temp: {1}, RH: {2}, voltage: {3}, RSSI: {4}".format(id, temp, humidity, voltage, rssi)
 
         # Use the named logger instance to log the message
