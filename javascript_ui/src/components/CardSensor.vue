@@ -19,14 +19,11 @@
 
     <q-separator />
 
-    <q-card-section
-      class="q-pa-sm"
-      v-if="sensor.temperature && sensor.humidity"
-    >
-      <div class="fontsize-36 text-bold">
+    <q-card-section class="q-pa-sm">
+      <div v-if="sensor.temperature" class="fontsize-36 text-bold">
         {{ sensor.temperature.toFixed(1) }}°C
       </div>
-      <div class="fontsize-30 text-bold">
+      <div v-if="sensor.humidity" class="fontsize-30 text-bold">
         {{ sensor.humidity.toFixed(1) }}% RH
       </div>
       <div class="fontsize-14 text-italic">
