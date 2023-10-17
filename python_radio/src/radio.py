@@ -1,7 +1,7 @@
 
 from adafruit_rfm9x import RFM9x
 import socketio
-import re
+from typing import Union
 from logger import Logger
 # For unpacking binary data
 import struct
@@ -84,7 +84,7 @@ async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x, stop_event: Even
       Logger.error(f"Error emitting data: {e}")
 
 
-def process_packet(packet: bytearray, rssi: float | int):
+def process_packet(packet: bytearray, rssi: Union[float, int]):
   try:
     # Unpack the packet into respective fields "IIIITTTTHHHHVVVV"
     # Where I is ID, T is temperature, H is humidity and V is voltage
