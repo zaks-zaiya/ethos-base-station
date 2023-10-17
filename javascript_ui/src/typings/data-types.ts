@@ -8,8 +8,8 @@ export interface SocketSensorData {
 }
 
 export interface SensorData {
-  name: string | undefined;
   id: number | undefined;
+  location: string | undefined;
   temperature: number | undefined;
   humidity: number | undefined;
   voltage: number | undefined;

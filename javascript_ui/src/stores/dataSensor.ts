@@ -27,7 +27,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
     allSensorData: [
       {
         id: undefined,
-        name: undefined,
+        location: undefined,
         temperature: undefined,
         humidity: undefined,
         voltage: undefined,
@@ -38,7 +38,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
       },
       {
         id: undefined,
-        name: undefined,
+        location: undefined,
         temperature: undefined,
         humidity: undefined,
         voltage: undefined,
@@ -49,7 +49,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
       },
       {
         id: undefined,
-        name: undefined,
+        location: undefined,
         temperature: undefined,
         humidity: undefined,
         voltage: undefined,
@@ -60,7 +60,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
       },
       {
         id: undefined,
-        name: undefined,
+        location: undefined,
         temperature: undefined,
         humidity: undefined,
         voltage: undefined,
@@ -77,7 +77,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
     containsUndefined: (state) => {
       for (const sensor of state.allSensorData) {
         // If no sensor ID or sensor name
-        if (!sensor.id || !sensor.name) {
+        if (!sensor.id || !sensor.location) {
           return true;
         }
       }
@@ -191,7 +191,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
         // Send sensor data to database
         databaseStore.postDocument('sensor', {
           sensorId: sensorData.id,
-          sensorLocation: sensorData.name,
+          sensorLocation: sensorData.location,
           temperature: sensorData.temperature,
           humidity: sensorData.humidity,
           voltage: sensorData.voltage,

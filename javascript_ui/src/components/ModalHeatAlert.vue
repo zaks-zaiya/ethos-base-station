@@ -5,9 +5,9 @@
       <q-card-section v-if="alertSensor">
         <div class="fontsize-30 text-bold">Heat Alert</div>
         <div class="fontsize-20">
-          The <b>{{ alertSensor.name }}</b> has recorded temperature readings
-          which indicate that your body may be beginning to overheat if you are
-          located in that area.
+          The <b>{{ alertSensor.location }}</b> has recorded temperature
+          readings which indicate that your body may be beginning to overheat if
+          you are located in that area.
         </div>
         <div class="fontsize-20 text-bold q-mt-md">
           Your risk level is estimated to be: {{ riskLevelText }}
@@ -19,7 +19,7 @@
 
       <q-card-actions align="right" class="q-mb-lg">
         <q-btn
-          :label="`I am not located at ${alertSensor?.name}`"
+          :label="`I am not located at ${alertSensor?.location}`"
           class="fontsize-15 q-mr-lg"
           color="warning"
           @click="notLocatedAt"
@@ -58,7 +58,9 @@ export default defineComponent({
     const databaseStore = useDatabaseStore();
 
     const alertSensor = computed(() => dataSensorStore.alertSensor);
-    const coolestRoom = computed(() => dataSensorStore.getCoolestSensor?.name);
+    const coolestRoom = computed(
+      () => dataSensorStore.getCoolestSensor?.location
+    );
     const showModal = computed(() => dataSensorStore.alertSensor !== null);
 
     const flashClass = computed(() => {

@@ -10,7 +10,7 @@
 
     <q-card-section class="q-pa-sm">
       <div class="fontsize-22 text-bold">
-        {{ sensor.name ? sensor.name : 'Undefined' }}
+        {{ sensor.location ? sensor.location : 'Undefined' }}
         {{ sensor.id ? '' : '(ID Undefined)' }}
         <span v-if="isOffline">(Offline)</span>
         <span v-if="isCalculating">(Calculating)</span>
@@ -87,7 +87,7 @@ export default defineComponent({
 
     // Check whether the sensor name or id is undefined
     let isUndefined = computed(() => {
-      return !props.sensor.id || !props.sensor.name;
+      return !props.sensor.id || !props.sensor.location;
     });
 
     // Calculate what background color to use for the form card
@@ -168,7 +168,7 @@ export default defineComponent({
     };
 
     const readSensorData = () => {
-      const text = `The ${props.sensor.name} is ${
+      const text = `The ${props.sensor.location} is ${
         props.sensor.temperature
       } degrees celsius, with a relative humidity of ${
         props.sensor.humidity
