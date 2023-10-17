@@ -19,9 +19,16 @@
 
     <q-separator />
 
-    <q-card-section class="q-pa-sm">
-      <div class="fontsize-36 text-bold">{{ sensor.temperature }}°C</div>
-      <div class="fontsize-30 text-bold">{{ sensor.humidity }}% RH</div>
+    <q-card-section
+      class="q-pa-sm"
+      v-if="sensor.temperature && sensor.humidity"
+    >
+      <div class="fontsize-36 text-bold">
+        {{ sensor.temperature.toFixed(1) }}°C
+      </div>
+      <div class="fontsize-30 text-bold">
+        {{ sensor.humidity.toFixed(1) }}% RH
+      </div>
       <div class="fontsize-14 text-italic">
         {{ formattedLastSeen }}
       </div>
@@ -138,7 +145,7 @@ export default defineComponent({
     let formattedLastSeen = computed(() => {
       const lastSeen = props.sensor.lastSeen;
       if (!lastSeen) {
-        return 'Never';
+        return 'Have never received data';
       }
 
       let strTime = lastSeen.toLocaleTimeString('en-US', {
