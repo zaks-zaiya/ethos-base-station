@@ -3,6 +3,8 @@ from adafruit_rfm9x import RFM9x
 import socketio
 import re
 from logger import Logger
+# For unpacking binary data
+import struct
 
 # For typing stop_event
 from threading import Event
@@ -39,9 +41,13 @@ async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x, stop_event: Even
       # No data received, listen again
       continue
 
-    if len(radio_packet) != 16:
+    if len(radio_packet) < 16:
       # The radio packet must not be the right type
       continue
+
+    if len(radio_packet) > 16:
+      # We may have received some extra bytes in transit, try trimming them off the end
+      radio_packet = radio_packet[:16]
 
     # Decrypt recieved radio data
     try:
@@ -51,8 +57,9 @@ async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x, stop_event: Even
       continue
 
     # Process packet string to radio data
+    rssi = rfm9x.last_rssi
     try:
-      radio_data = process_packet(decrypted_packet)
+      radio_data = process_packet(decrypted_packet, rssi)
     except Exception as e:
       Logger.error(f"Error processing packet: {e}")
       continue
@@ -70,31 +77,33 @@ async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x, stop_event: Even
     #   Logger.error(f"Error sending acknowledgement: {e}")
 
     # Log radio data
-    rssi = rfm9x.last_rssi
-    Logger.log_radio_data(radio_data, rssi)
+    Logger.log_radio_data(radio_data)
     try:
       await sio.emit('data', radio_data)
     except Exception as e:
       Logger.error(f"Error emitting data: {e}")
 
 
-def process_packet(packet: bytearray):
+def process_packet(packet: bytearray, rssi: float | int):
   try:
-    # Slice packet to the first 14 bytes
-    # The radio actually sends 15 bytes, however the last byte is \x00 and can be ignored
-    packet = packet[:14]
-    packet_text = str(packet, "ascii")
+    # Unpack the packet into respective fields "IIIITTTTHHHHVVVV"
+    # Where I is ID, T is temperature, H is humidity and V is voltage
+    sensorId, temperatureC, humidityRH, batteryVoltage = struct.unpack('ifff', packet)
 
-    match = re.match("^I(\d+)T([\d\.]+)H([\d\.]+)", packet_text)
-    if match is None:
-      # Regex failed to match
-      # Radio data must be from another device or is corrupted
-      return None
+    # Sanity check values to assure that we are getting correct radio signal
+    if not (0 < sensorId < 1000
+            and -100 < temperatureC < 100
+            and 0 <= humidityRH <= 100
+            and 0 <= batteryVoltage <= 10):
+      raise ValueError("Incorrect data... id: {0}, temp: {1}, RH: {2}, voltage: {3}".format(sensorId, temperatureC, humidityRH, batteryVoltage))
 
     return {
-      "id": match[1],
-      "temperature": match[2],
-      "humidity": match[3]
+      "id": sensorId,
+      "temperature": temperatureC,
+      "humidity": humidityRH,
+      "voltage": batteryVoltage,
+      "rssi": rssi
     }
   except Exception as e:
     Logger.error(f"Error processing packet: {e}")
+    return None

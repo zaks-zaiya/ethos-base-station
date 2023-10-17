@@ -1,8 +1,10 @@
 // Sensor Data
 export interface SocketSensorData {
-  id?: string;
-  temperature?: string;
-  humidity?: string;
+  id: number;
+  temperature: number;
+  humidity: number;
+  voltage: number;
+  rssi: number;
 }
 
 export interface SensorData {
@@ -10,6 +12,8 @@ export interface SensorData {
   id: number | undefined;
   temperature: number | undefined;
   humidity: number | undefined;
+  voltage: number | undefined;
+  rssi: number | undefined;
   lastSeen: Date | undefined;
   coreTemperature: number | undefined;
   riskLevel: RiskLevel | undefined;

@@ -43,11 +43,13 @@ class Logger:
         Logger._logger.addHandler(stream_handler)
 
     @staticmethod
-    def log_radio_data(radio_data, rssi):
-        id = radio_data.get("id", "Missing ID")
-        temp = radio_data.get("temperature", "Missing Temperature")
-        humidity = radio_data.get("humidity", "Missing Humidity")
-        log_message = "Radio received... id: {0}, temp: {1}, RH: {2}, RSSI: {3}".format(id, temp, humidity, rssi)
+    def log_radio_data(radio_data):
+        id = radio_data.get("id", "N/A")
+        temp = radio_data.get("temperature", "N/A")
+        humidity = radio_data.get("humidity", "N/A")
+        voltage = radio_data.get("voltage", "N/A")
+        rssi = radio_data.get("rssi", "N/A")
+        log_message = "Radio received... id: {0}, temp: {1}, RH: {2}, voltage: {3}, RSSI: {4}".format(id, temp, humidity, voltage, rssi)
 
         # Use the named logger instance to log the message
         Logger._logger.info(log_message)
