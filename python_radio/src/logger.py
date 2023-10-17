@@ -57,7 +57,7 @@ class Logger:
         humidity = radio_data.get("humidity", "N/A")
         voltage = radio_data.get("voltage", "N/A")
         rssi = radio_data.get("rssi", "N/A")
-        log_message = "Radio received... id: {0}, temp: {1}, RH: {2}, voltage: {3}, RSSI: {4}".format(id, temp, humidity, voltage, rssi)
+        log_message = "id: {0}, temp: {1}, RH: {2}, voltage: {3}, RSSI: {4}".format(id, temp, humidity, voltage, rssi)
 
         # Use the named logger instance to log the message
         Logger._logger.info(log_message)
