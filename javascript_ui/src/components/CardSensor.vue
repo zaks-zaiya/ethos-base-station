@@ -170,8 +170,10 @@ export default defineComponent({
     const readSensorData = () => {
       const text = `The ${props.sensor.location} is ${
         props.sensor.temperature
+          ? props.sensor.temperature.toFixed(1)
+          : 'undefined'
       } degrees celsius, with a relative humidity of ${
-        props.sensor.humidity
+        props.sensor.humidity ? props.sensor.humidity.toFixed(1) : 'undefined'
       }%. Your risk level in this room is ${readRiskLevel()}`;
 
       playTextToSpeech(text);
