@@ -6,11 +6,23 @@
         <div class="fontsize-30 text-bold">Heat Alert</div>
         <div class="fontsize-20">
           The <b>{{ alertSensor.location }}</b> has recorded temperature
-          readings which indicate that your body may be beginning to overheat if
-          you are located in that area.
+          readings which indicate that your body temperature may be beginning to
+          {{
+            alertSensor.riskLevel === RiskLevel.HIGH ? 'overheat' : 'increase'
+          }}
+          if you are located in that area.
         </div>
         <div class="fontsize-20 text-bold q-mt-md">
           Your risk level is estimated to be: {{ riskLevelText }}
+        </div>
+        <div
+          class="fontsize-20 q-mt-md"
+          v-if="alertSensor.riskLevel === RiskLevel.HIGH"
+        >
+          If your home will continue to heat up and you don't have anyway to
+          cool it (e.g. air conditioning), we would suggest trying to find
+          somewhere cooler to go to that you can get to safely (without exposing
+          yourself to hot outside conditions).
         </div>
         <div v-if="coolestRoom" class="fontsize-20 text-bold q-mt-md">
           The safest room in the house for you is currently: {{ coolestRoom }}
@@ -116,6 +128,7 @@ export default defineComponent({
 
     return {
       alertSensor,
+      RiskLevel,
       coolestRoom,
       showModal,
       riskLevelText,
