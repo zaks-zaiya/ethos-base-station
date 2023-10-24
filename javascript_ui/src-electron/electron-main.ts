@@ -1,7 +1,10 @@
-import { app, BrowserWindow, nativeTheme } from 'electron';
+import { app, BrowserWindow, nativeTheme, ipcMain } from 'electron';
 import path from 'path';
 import os from 'os';
 import PowerSaveBlockerController from './PowerSaveBlockerController';
+
+// So that date can be set
+import { exec } from 'child_process';
 
 // Enable speech synthesis flag
 app.commandLine.appendSwitch('enable-speech-dispatcher');
@@ -81,5 +84,28 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   if (mainWindow === undefined) {
     createWindow();
+  }
+});
+
+const isValidDateTime = (dateTime: string): boolean => {
+  const regex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
+  return regex.test(dateTime);
+};
+
+ipcMain.on('set-system-time', (event, newTime) => {
+  if (newTime && isValidDateTime(newTime)) {
+    exec(`sudo date --set="${newTime}"`, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Error setting time: ${error}`);
+        return;
+      }
+      if (stderr) {
+        console.error(`Stderr setting time: ${stderr}`);
+        return;
+      }
+      console.log(`Time set to: ${stdout}`);
+    });
+  } else {
+    console.error(`Invalid datetime format: ${newTime}`);
   }
 });
