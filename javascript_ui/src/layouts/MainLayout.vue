@@ -15,7 +15,7 @@
           v-if="$route.path !== '/settings'"
           src="ethos.svg"
           height="50"
-          @click="showSettingsButton"
+          @click="showSettingsButtonHandler.handlePress()"
         />
         <q-btn
           v-if="$route.path !== '/' && $route.path !== '/initialize'"
@@ -84,6 +84,7 @@ import { defineComponent, ref, computed, provide } from 'vue';
 
 import { useKeyboardStore } from 'src/stores/keyboard';
 import { useVolumeStore } from 'src/stores/volume';
+import RepeatedPressHandler from 'src/helpers/RepeatedPressHandler';
 
 import BaseNetworkConnection from 'src/components/BaseNetworkConnection.vue';
 import BaseCurrentTime from 'components/BaseCurrentTime.vue';
@@ -121,9 +122,6 @@ export default defineComponent({
     // Provide to allow descendent ancestors to modify
     provide('isShowFanModal', isShowFanModal);
 
-    let timeoutShowSettingsButton: null | number = null;
-    let showSettingsPressedCount = 0;
-
     // Determine volume icon based on volume
     let volumeIcon = computed(() => {
       if (volumeStore.volumePercent === 0) {
@@ -138,24 +136,9 @@ export default defineComponent({
     });
 
     // Function to show settings button if activated multiple times in quick succession
-    let showSettingsButton = () => {
-      // Increment pressed count
-      showSettingsPressedCount++;
-      // Check if the threshold has been met to show the settings button
-      if (showSettingsPressedCount >= 7) {
-        showSettingsPressedCount = 0;
-        isShowSettingsButton.value = true;
-        return;
-      }
-      // Clear the timeout (if it exists)
-      if (timeoutShowSettingsButton) {
-        clearTimeout(timeoutShowSettingsButton);
-      }
-      // Set another timeout that resets logo pressed count when it expires
-      timeoutShowSettingsButton = window.setTimeout(() => {
-        showSettingsPressedCount = 0;
-      }, 3000);
-    };
+    let showSettingsButtonHandler = new RepeatedPressHandler(7, () => {
+      isShowSettingsButton.value = true;
+    });
 
     let hideSettingsButton = () => {
       isShowSettingsButton.value = false;
@@ -169,7 +152,7 @@ export default defineComponent({
       isShowCoolingModal,
       isShowHelpModal,
       isShowFanModal,
-      showSettingsButton,
+      showSettingsButtonHandler,
       hideSettingsButton,
     };
   },
