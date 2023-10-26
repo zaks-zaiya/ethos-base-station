@@ -3,13 +3,15 @@
   <q-dialog v-model="showModal" full-width persistent>
     <q-card :class="flashClass" class="q-pa-xl">
       <div class="bg-white">
-        <q-card-section v-if="alertSensor">
+        <q-card-section v-if="currentRoomsAtRiskLevel">
           <div class="fontsize-20">
-            The <b>{{ alertSensor.location }}</b> has recorded temperature
-            readings which indicate that your body temperature may be beginning
-            to
+            The <b>{{ currentRoomsAtRiskLevel }}</b> sensor/s has recorded
+            temperature readings which indicate that your body temperature may
+            be beginning to
             {{
-              alertSensor.riskLevel === RiskLevel.HIGH ? 'overheat' : 'increase'
+              dataAlertsStore.alertRiskLevel === RiskLevel.HIGH
+                ? 'overheat'
+                : 'increase'
             }}
             if you are located in that area.
           </div>
@@ -18,7 +20,7 @@
           </div>
           <div
             class="fontsize-20 q-mt-md"
-            v-if="alertSensor.riskLevel === RiskLevel.HIGH"
+            v-if="dataAlertsStore.alertRiskLevel === RiskLevel.HIGH"
           >
             If your home will continue to heat up and you don't have anyway to
             cool it (e.g. air conditioning), we would suggest trying to find
@@ -31,7 +33,7 @@
 
         <q-card-actions align="right">
           <q-btn
-            :label="`I am not located at ${alertSensor?.location}`"
+            :label="`I am not located at ${currentRoomsAtRiskLevel}`"
             class="fontsize-15 q-mr-lg"
             color="warning"
             @click="notLocatedAt"
@@ -55,29 +57,79 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
-import { useDataSensorStore } from 'stores/dataSensor';
+import { defineComponent, computed, watch } from 'vue';
 import { RiskLevel } from 'src/typings/data-types';
 import { AlertDatabaseStructure } from 'src/typings/database-types';
+import { isOutdoorSensor } from 'src/helpers/dataSensor';
+import { useDataSensorStore } from 'stores/dataSensor';
 import { useVolumeStore } from 'src/stores/volume';
 import { useDatabaseStore } from 'src/stores/database';
+import { useDataAlertsStore } from 'src/stores/dataAlerts';
 
 export default defineComponent({
   name: 'ModalHeatAlert',
   components: {},
   setup(props, { emit }) {
     const dataSensorStore = useDataSensorStore();
+    const dataAlertsStore = useDataAlertsStore();
     const volumeStore = useVolumeStore();
     const databaseStore = useDatabaseStore();
 
-    const alertSensor = computed(() => dataSensorStore.alertSensor);
+    // The coolest room in the house for alert
     const coolestRoom = computed(
       () => dataSensorStore.getCoolestSensor?.location
     );
-    const showModal = computed(() => dataSensorStore.alertSensor !== null);
 
+    // Whether to show the modal
+    const showModal = computed(
+      () => dataAlertsStore.alertRiskLevel > RiskLevel.LOW
+    );
+
+    // Function to get the current indoor rooms that are at a certain risk level
+    const getCurrentRoomsAtRiskLevel = (riskLevel: RiskLevel) => {
+      return dataSensorStore.allSensorData
+        .filter((sensorData) => {
+          return (
+            !isOutdoorSensor(sensorData) && sensorData.riskLevel === riskLevel
+          );
+        })
+        .map((sensorData) => sensorData.location);
+    };
+
+    // The room locations that currently match alert RiskLevel
+    const currentRoomsAtRiskLevelArray = computed(() => {
+      return getCurrentRoomsAtRiskLevel(dataAlertsStore.alertRiskLevel);
+    });
+
+    // Join array of room names with commas
+    const currentRoomsAtRiskLevel = computed(() =>
+      currentRoomsAtRiskLevelArray.value.join(', ')
+    );
+
+    /**
+     * Watch the current rooms at risk level, and if there are none (e.g. upgraded or downgraded risk),
+     * check through risk levels until rooms are found and update alert risk level.
+     * Don't run this check if risk level is currently low.
+     */
+    watch(currentRoomsAtRiskLevelArray, (newValue) => {
+      if (dataAlertsStore.alertRiskLevel === RiskLevel.LOW) {
+        return;
+      }
+      if (newValue.length === 0) {
+        const riskLevels = [RiskLevel.HIGH, RiskLevel.MEDIUM, RiskLevel.LOW];
+        for (const risk of riskLevels) {
+          const rooms = getCurrentRoomsAtRiskLevel(risk);
+          if (rooms.length > 0) {
+            dataAlertsStore.alertRiskLevel = risk; // Update the alert risk level
+            break;
+          }
+        }
+      }
+    });
+
+    // What color the flash should be
     const flashClass = computed(() => {
-      switch (dataSensorStore.alertSensor?.riskLevel) {
+      switch (dataAlertsStore.alertRiskLevel) {
         case RiskLevel.MEDIUM:
           return 'flash-yellow';
         case RiskLevel.HIGH:
@@ -87,8 +139,9 @@ export default defineComponent({
       }
     });
 
+    // Risk level text
     const riskLevelText = computed(() => {
-      switch (dataSensorStore.alertSensor?.riskLevel) {
+      switch (dataAlertsStore.alertRiskLevel) {
         case RiskLevel.LOW:
           return 'LOW';
         case RiskLevel.MEDIUM:
@@ -100,20 +153,22 @@ export default defineComponent({
       }
     });
 
+    // Send data to database when modal dismissed
     const dismissModalAndSendToDatabase = (
       dismissMethod: AlertDatabaseStructure['dismissMethod']
     ) => {
       // Send alert data to database
       databaseStore.postDocument('alert', {
-        riskLevel: dataSensorStore.alertSensor?.riskLevel,
+        riskLevel: dataAlertsStore.alertRiskLevel,
         volumePercent: volumeStore.volumePercent,
         dismissMethod: dismissMethod,
       });
       // Dismiss modal
-      dataSensorStore.alertSensor = null;
+      dataAlertsStore.alertRiskLevel = RiskLevel.LOW;
     };
 
     const notLocatedAt = () => {
+      // TODO: Show modal asking user what room they re in
       dismissModalAndSendToDatabase('not here');
     };
 
@@ -128,9 +183,10 @@ export default defineComponent({
     };
 
     return {
-      alertSensor,
       RiskLevel,
       coolestRoom,
+      currentRoomsAtRiskLevel,
+      dataAlertsStore,
       showModal,
       riskLevelText,
       flashClass,
