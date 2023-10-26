@@ -179,6 +179,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
         sensorData.lastSeen = new Date(Date.now());
         sensorData.coreTemperature =
           await socketStore.calculatePredictedCoreTemperature(sensorData);
+        const oldRiskLevel = sensorData.riskLevel; // Save old risk level
         sensorData.riskLevel = getRiskLevel(sensorData.coreTemperature);
 
         // Send sensor data to database
@@ -193,7 +194,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
         });
 
         // Check whether to send alert and alert if necessary
-        dataAlertsStore.handleAlertLogic(sensorData);
+        dataAlertsStore.handleAlertLogic(sensorData, oldRiskLevel);
       });
     },
   },

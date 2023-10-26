@@ -46,18 +46,22 @@ export const useDataAlertsStore = defineStore('dataAlerts', {
      * @param sensorData The sensor data of most recently received data
      * @returns void
      */
-    handleAlertLogic(sensorData: SensorData) {
+    handleAlertLogic(
+      sensorData: SensorData,
+      oldRiskLevel: RiskLevel | undefined
+    ) {
       // Sanity check
       if (!sensorData.riskLevel) {
         return;
       }
-      // Check if risk level is low
-      if (sensorData.riskLevel === RiskLevel.LOW) {
-        // No further action needed
-        return;
-      }
-      // Check if is outdoor sensor
-      if (isOutdoorSensor(sensorData)) {
+      // If no previous risk level, assume it to be low
+      oldRiskLevel = oldRiskLevel ? oldRiskLevel : RiskLevel.LOW;
+      // Conditions where we don't need to send an alert
+      if (
+        sensorData.riskLevel === RiskLevel.LOW ||
+        isOutdoorSensor(sensorData) ||
+        oldRiskLevel >= sensorData.riskLevel
+      ) {
         // No further action needed
         return;
       }
