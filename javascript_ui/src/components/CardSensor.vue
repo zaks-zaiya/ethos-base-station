@@ -38,7 +38,7 @@
         <div class="fontsize-22 text-bold">DONT USE FAN</div>
         <q-btn
           icon="question_mark"
-          @click="isShowFanModel = true"
+          @click.stop="isShowFanModel = true"
           class="q-mr-md absolute-right"
           color="warning"
         />
