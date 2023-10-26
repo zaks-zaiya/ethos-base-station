@@ -11,7 +11,7 @@ export default class PowerSaveBlockerController {
       const hours = now.getHours();
 
       // Prevent device screen sleeping between 5am and 9pm
-      if (hours >= 5 && hours <= 21) {
+      if (hours >= 5 && hours < 21) {
         if (this.powerSaveBlockerId === null) {
           this.powerSaveBlockerId = powerSaveBlocker.start(
             'prevent-display-sleep'
