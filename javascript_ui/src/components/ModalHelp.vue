@@ -72,12 +72,12 @@
           </li>
           <li>
             <strong class="text-warning">Medium Risk</strong>: Our algorithm
-            estimates that your core temperature will be above 37.7°C by staying
+            estimates that your core temperature will be above 37.8°C by staying
             in this room.
           </li>
           <li>
             <strong class="text-negative">High Risk</strong>: Our algorithm
-            estimates that your core temperature will be above 38.0°C by staying
+            estimates that your core temperature will be above 37.9°C by staying
             in this room and it may not be safe.
           </li>
         </ul>
