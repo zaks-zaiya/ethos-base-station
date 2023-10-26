@@ -37,6 +37,7 @@ export const useDataAlertsStore = defineStore('dataAlerts', {
   state: () => ({
     alertRiskLevel: RiskLevel.LOW,
     lastAlerts: {} as { [level in RiskLevel]?: Date },
+    isShowRoomSelectModal: false,
     userLocatedAt: '',
   }),
   actions: {

@@ -168,8 +168,9 @@ export default defineComponent({
     };
 
     const notLocatedAt = () => {
-      // TODO: Show modal asking user what room they re in
       dismissModalAndSendToDatabase('not here');
+      // Show a modal where the user can select what room they are in
+      dataAlertsStore.isShowRoomSelectModal = true;
     };
 
     const coolDown = () => {

@@ -5,6 +5,7 @@
     <ModalSurvey />
     <ModalVolume v-model="isShowVolumeModal" />
     <ModalHeatAlert @open-cooling-modal="isShowCoolingModal = true" />
+    <ModalRoomSelection />
     <ModalCoolingInterventions v-model="isShowCoolingModal" />
     <ModalHelp v-model="isShowHelpModal" />
     <ModalFanInfo v-model="isShowFanModal" />
@@ -96,6 +97,7 @@ import ModalHeatAlert from 'src/components/ModalHeatAlert.vue';
 import ModalVolume from 'src/components/ModalVolume.vue';
 import ModalFanInfo from 'src/components/ModalFanInfo.vue';
 import ModalSurvey from 'src/components/ModalSurvey.vue';
+import ModalRoomSelection from 'src/components/ModalRoomSelection.vue';
 
 export default defineComponent({
   name: 'MainLayout',
@@ -110,6 +112,7 @@ export default defineComponent({
     ModalFanInfo,
     BaseNetworkConnection,
     ModalSurvey,
+    ModalRoomSelection,
   },
   setup() {
     const keyboardStore = useKeyboardStore();
