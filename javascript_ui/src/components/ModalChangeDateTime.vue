@@ -13,11 +13,13 @@
               v-model="selectedDateTime"
               mask="YYYY-MM-DD HH:mm"
               color="primary"
+              class="date-time-scale"
             />
             <q-time
               v-model="selectedDateTime"
               mask="YYYY-MM-DD HH:mm"
               color="primary"
+              class="date-time-scale"
             />
           </div>
         </div>
@@ -101,4 +103,11 @@ export default defineComponent({
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.date-time-scale {
+  font-size: 1.5rem;
+  transform: scale(1.5);
+  transform-origin: top left;
+  margin: 0 10rem 10rem 0;
+}
+</style>
