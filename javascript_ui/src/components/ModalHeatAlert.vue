@@ -7,13 +7,13 @@
           <div class="fontsize-20">
             The <b>{{ currentRoomsAtRiskLevel }}</b> sensor/s has recorded
             temperature readings which indicate that your body temperature may
-            be beginning to
+            be become
             {{
               dataAlertsStore.alertRiskLevel === RiskLevel.HIGH
-                ? 'overheat'
-                : 'increase'
+                ? 'unsafely elevated'
+                : 'elevated'
             }}
-            if you are located in that area.
+            if you remain in that area.
           </div>
           <div class="fontsize-20 text-bold q-mt-md">
             Your risk level is estimated to be: {{ riskLevelText }}
@@ -22,12 +22,11 @@
             class="fontsize-20 q-mt-md"
             v-if="dataAlertsStore.alertRiskLevel === RiskLevel.HIGH"
           >
-            If your home will continue to heat up and you don't have anyway to
-            cool it (e.g. air conditioning), we would suggest trying to find
-            somewhere cooler to go to that you can get to safely.
+            Please consider cooling the space with air conditioning or making
+            your way to a cooler location if safe (e.g., shops, library).
           </div>
-          <div v-if="coolestRoom" class="fontsize-20 text-bold q-mt-md">
-            The safest area for you is currently: {{ coolestRoom }}
+          <div v-if="coolestRoomString" class="fontsize-20 text-bold q-mt-md">
+            The lowest risk area for you is currently: {{ coolestRoomString }}
           </div>
         </q-card-section>
 
@@ -76,9 +75,14 @@ export default defineComponent({
     const databaseStore = useDatabaseStore();
 
     // The coolest room in the house for alert
-    const coolestRoom = computed(
-      () => dataSensorStore.getCoolestSensor?.location
-    );
+    const coolestRoomString = computed(() => {
+      const location = dataSensorStore.getCoolestSensor?.location;
+      const riskLevel = dataSensorStore.getCoolestSensor?.riskLevel;
+      if (!location || !riskLevel) {
+        return undefined;
+      }
+      return `${location} (risk level: ${riskLevel})`;
+    });
 
     // Whether to show the modal
     const showModal = computed(
@@ -185,7 +189,7 @@ export default defineComponent({
 
     return {
       RiskLevel,
-      coolestRoom,
+      coolestRoomString,
       currentRoomsAtRiskLevel,
       dataAlertsStore,
       showModal,
