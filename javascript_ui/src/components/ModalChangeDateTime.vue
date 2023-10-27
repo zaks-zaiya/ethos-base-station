@@ -37,6 +37,7 @@
 </template>
 
 <script lang="ts">
+import { useDateTimeStore } from 'src/stores/dateTime';
 import { defineComponent, toRefs, computed, ref, onMounted, watch } from 'vue';
 
 export default defineComponent({
@@ -49,6 +50,7 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
+    const dateTimeStore = useDateTimeStore();
     const { modelValue } = toRefs(props);
     const showModal = computed({
       get() {
@@ -87,7 +89,8 @@ export default defineComponent({
       window.myElectronAPI?.on('set-system-time-response', (response) => {
         if (response.success) {
           console.log(response.message);
-          // TODO: Force refresh of time component
+          // Force refresh of time component
+          dateTimeStore.updateCurrentDate();
         } else {
           console.error(response.message);
         }
