@@ -1,5 +1,5 @@
 <template>
-  <q-dialog v-model="showModal" persistent>
+  <q-dialog v-model="showModal" persistent full-height>
     <q-card style="max-width: 90vw">
       <q-card-section class="row items-center">
         <div class="text-bold">Adjust Datetime</div>
@@ -27,7 +27,7 @@
       <q-card-section>
         <q-btn
           color="positive"
-          class="float-right q-mb-md"
+          class="float-right q-mb-lg"
           @click="setSystemTime"
           >Set Time</q-btn
         >
@@ -83,6 +83,7 @@ export default defineComponent({
     const setSystemTime = () => {
       console.log('Setting time...');
       window.myElectronAPI?.send('set-system-time', selectedDateTime.value);
+      showModal.value = false;
     };
 
     onMounted(() => {
@@ -106,11 +107,14 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .date-time-scale {
-  font-size: 1.5rem;
-  transform: scale(1.5);
+  .q-btn {
+    font-size: 14px;
+  }
+  font-size: 1.3rem;
+  transform: scale(1.3);
   transform-origin: top left;
-  margin: 0 10rem 10rem 0;
+  margin: 0 7rem 7rem 0;
 }
 </style>
