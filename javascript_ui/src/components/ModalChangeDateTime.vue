@@ -1,16 +1,14 @@
 <template>
-  <q-dialog v-model="showModal">
-    <q-card style="width: 800px; max-width: 90vw">
+  <q-dialog v-model="showModal" persistent>
+    <q-card style="max-width: 90vw">
       <q-card-section class="row items-center">
-        <div class="text-bold q-mr-xl">Adjust Datetime</div>
+        <div class="text-bold">Adjust Datetime</div>
         <q-space />
         <q-btn icon="close" color="primary" v-close-popup>Close</q-btn>
       </q-card-section>
-      <q-card-section class="row q-pa-lg">
+      <q-card-section class="-pa-lg">
         <div class="q-pa-md">
-          <div class="text">Current Datetime: {{ selectedDateTime }}</div>
-
-          <div class="q-gutter-md row items-start">
+          <div class="q-gutter-md row">
             <q-date
               v-model="selectedDateTime"
               mask="YYYY-MM-DD HH:mm"
@@ -25,14 +23,19 @@
         </div>
       </q-card-section>
       <q-card-section>
-        <q-btn color="primary" @click="setSystemTime">Set Time</q-btn>
+        <q-btn
+          color="positive"
+          class="float-right q-mb-md"
+          @click="setSystemTime"
+          >Set Time</q-btn
+        >
       </q-card-section>
     </q-card>
   </q-dialog>
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, computed, ref, onMounted } from 'vue';
+import { defineComponent, toRefs, computed, ref, onMounted, watch } from 'vue';
 
 export default defineComponent({
   name: 'ModalVolume',
@@ -65,17 +68,28 @@ export default defineComponent({
 
     const selectedDateTime = ref(formatDate(new Date()));
 
+    // Update time when modal is shwon
+    watch(showModal, (newVal) => {
+      if (newVal) {
+        selectedDateTime.value = formatDate(new Date());
+      }
+    });
+
+    // Funtion to send command to set system time
     const setSystemTime = () => {
+      console.log('Setting time...');
       window.myElectronAPI?.send('set-system-time', selectedDateTime.value);
     };
 
     onMounted(() => {
-      window.myElectronAPI?.on(
-        'set-system-time-response',
-        (event, response) => {
-          console.log(response); // handle the response here, maybe update component data or show a notification
+      window.myElectronAPI?.on('set-system-time-response', (response) => {
+        if (response.success) {
+          console.log(response.message);
+          // TODO: Force refresh of time component
+        } else {
+          console.error(response.message);
         }
-      );
+      });
     });
 
     return {

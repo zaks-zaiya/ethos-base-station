@@ -88,24 +88,36 @@ app.on('activate', () => {
 });
 
 const isValidDateTime = (dateTime: string): boolean => {
-  const regex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
+  const regex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/;
   return regex.test(dateTime);
 };
 
 ipcMain.on('set-system-time', (event, newTime) => {
   if (newTime && isValidDateTime(newTime)) {
-    exec(`sudo date --set="${newTime}"`, (error, stdout, stderr) => {
+    exec(`sudo -n date --set="${newTime}"`, (error, stdout, stderr) => {
       if (error) {
-        console.error(`Error setting time: ${error}`);
+        event.reply('set-system-time-response', {
+          success: false,
+          message: `Error setting time: ${error}`,
+        });
         return;
       }
       if (stderr) {
-        console.error(`Stderr setting time: ${stderr}`);
+        event.reply('set-system-time-response', {
+          success: false,
+          message: `Stderr setting time: ${stderr}`,
+        });
         return;
       }
-      console.log(`Time set to: ${stdout}`);
+      event.reply('set-system-time-response', {
+        success: true,
+        message: `Time set to: ${stdout}`,
+      });
     });
   } else {
-    console.error(`Invalid datetime format: ${newTime}`);
+    event.reply('set-system-time-response', {
+      success: false,
+      message: `Invalid datetime format: ${newTime}`,
+    });
   }
 });

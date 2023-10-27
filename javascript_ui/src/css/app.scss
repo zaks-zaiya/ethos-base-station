@@ -36,8 +36,9 @@ body {
 
 /**
  * BUTTON
+ * Prevent from being applied to q-date component
  */
-.q-btn {
+.q-btn:not(.q-date .q-btn) {
   @extend .fontsize-12;
 }
 
