@@ -23,7 +23,7 @@
 
         <!-- Survey Questions -->
         <div class="q-mt-lg text-bold fontsize-20">
-          Were you home today?
+          Were you home today when any of the Ethos heat alerts came through?
           <span>
             (survey sent on the: {{ surveyStore.surveyDisplayDateString }})
           </span>
