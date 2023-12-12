@@ -9,10 +9,17 @@ export const useSurveyStore = defineStore('survey', {
     alertsSinceLastSurvey: 0,
     // Keep the number of alerts in last time period to display to user
     alertsInLastTimePeriod: 0,
+
+    // Whether there is an active bom alert
+    isActiveBomAlert: false,
+    // Backup of data for survey to know whether to show BOM questions
+    isShowBomQuestions: false,
+
     // Whether to show the survey modal
     isShowSurveyModal: false,
     // When survey is shown
     surveyDisplayDateString: null as null | string,
+
     // User answers to survey
     surveyAnswers: {
       wasHome: undefined,
@@ -31,7 +38,10 @@ export const useSurveyStore = defineStore('survey', {
     checkAndDisplaySurvey() {
       const currentDate = new Date();
       const currentHour = currentDate.getHours();
-      if (currentHour === 19 && this.alertsSinceLastSurvey > 0) {
+      if (
+        currentHour === 19 &&
+        (this.alertsSinceLastSurvey > 0 || this.isActiveBomAlert === true)
+      ) {
         console.log('Showing survey...');
         // Update when string for when survey sent
         this.surveyDisplayDateString = currentDate.toLocaleDateString();
@@ -42,12 +52,20 @@ export const useSurveyStore = defineStore('survey', {
         setTimeout(() => {
           this.surveyDisplayDateString = currentDate.toLocaleDateString();
         }, 10);
+
         // Store number of alerts
         const alertsInLastTimePeriod = this.alertsSinceLastSurvey;
+        // Store current bom status
+        const isShowBomQuestions = this.isActiveBomAlert;
+
         // Reset store (including count)
         this.$reset();
+
         // Set the number of alerts in last time period
         this.alertsInLastTimePeriod = alertsInLastTimePeriod;
+        // Set whether to show bom questions
+        this.isShowBomQuestions = isShowBomQuestions;
+
         // Show modal
         this.isShowSurveyModal = true;
       }
