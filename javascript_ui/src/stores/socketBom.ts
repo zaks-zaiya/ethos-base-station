@@ -17,6 +17,7 @@ export const useSocketBomStore = defineStore('socketBom', {
     showBomSurvey() {
       const surveyStore = useSurveyStore();
       surveyStore.isActiveBomAlert = true;
+      console.log('BOM survey will be displayed at 7pm');
     },
     /**
      * Check whether we should show the bom survey
