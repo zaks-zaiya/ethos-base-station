@@ -22,8 +22,14 @@ export const useSurveyStore = defineStore('survey', {
 
     // User answers to survey
     surveyAnswers: {
-      wasHome: undefined,
+      wasHomeForEthosAlert: undefined,
+      awareOfEthosAlert: undefined,
+      awareOfBomAlert: undefined,
+      howAwareOfBomAlert: [],
+      howAwareOfBomAlertOther: '',
+      wasHomeForCooling: undefined,
       coolingStrategiesUsed: [],
+      coolingStrategiesUsedOther: '',
       howEffective: undefined,
     } as SurveyDatabaseStructure,
   }),
