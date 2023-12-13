@@ -74,6 +74,7 @@ export const useSurveyStore = defineStore('survey', {
 
         // Show modal
         this.isShowSurveyModal = true;
+        console.log('Survey will be displayed at 7pm');
       }
     },
     setup() {
