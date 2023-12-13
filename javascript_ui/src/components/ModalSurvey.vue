@@ -111,6 +111,15 @@
             class="q-mb-xl fontsize-20"
             v-model="surveyStore.surveyAnswers.howAwareOfBomAlert"
           />
+          <input-keyboard
+            v-if="
+              surveyStore.surveyAnswers.howAwareOfBomAlert.includes('other')
+            "
+            v-model="surveyStore.surveyAnswers.howAwareOfBomAlertOther"
+            :custom-rule="() => true"
+            type="text"
+            label="How did you hear of BOM warning? Click here to enter more info..."
+          />
         </template>
 
         <!-- Question 5 -->
@@ -138,6 +147,15 @@
             type="checkbox"
             class="q-mb-xl fontsize-20"
             v-model="surveyStore.surveyAnswers.coolingStrategiesUsed"
+          />
+          <input-keyboard
+            v-if="
+              surveyStore.surveyAnswers.coolingStrategiesUsed.includes('other')
+            "
+            v-model="surveyStore.surveyAnswers.coolingStrategiesUsedOther"
+            :custom-rule="() => true"
+            type="text"
+            label="What other cooling strategies did you use? Click here to enter more info..."
           />
         </template>
 
@@ -176,10 +194,11 @@ import { defineComponent } from 'vue';
 import BaseModalScroll from './BaseModalScroll.vue';
 import { useSurveyStore } from 'src/stores/survey';
 import { coolingStrategies } from 'src/helpers/coolingStrategies';
+import InputKeyboard from 'src/components/InputKeyboard.vue';
 
 export default defineComponent({
   name: 'ModalSurvey',
-  components: { BaseModalScroll },
+  components: { BaseModalScroll, InputKeyboard },
   setup() {
     const surveyStore = useSurveyStore();
 
