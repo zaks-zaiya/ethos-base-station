@@ -244,7 +244,7 @@ export default defineComponent({
         label: 'Word of mouth (e.g. friends or family)',
         value: 'word of mouth',
       },
-      { label: 'The ethos system', value: 4 },
+      { label: 'The ethos system', value: 'ethos' },
       { label: 'Other', value: 'other' },
     ];
 
