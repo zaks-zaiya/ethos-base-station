@@ -172,15 +172,25 @@
             surveyStore.surveyAnswers.coolingStrategiesUsed.length > 0
           "
         >
-          <div class="q-mt-lg text-bold fontsize-20">
-            How effective do you feel the cooling strategies used were?
+          <div
+            v-for="(strategy, index) in surveyStore.surveyAnswers
+              .coolingStrategiesUsed"
+            :key="index"
+            class="q-mt-lg"
+          >
+            <div class="text-bold fontsize-20">
+              How effective do you feel the
+              {{ coolingStrategies[strategy].name }} strategy was?
+            </div>
+            <q-option-group
+              :options="howEffectiveOptions"
+              type="radio"
+              class="q-mb-xl fontsize-20"
+              v-model="
+                surveyStore.surveyAnswers.effectivenessOfStrategies[strategy]
+              "
+            />
           </div>
-          <q-option-group
-            :options="howEffectiveOptions"
-            type="radio"
-            class="q-mb-xl fontsize-20"
-            v-model="surveyStore.surveyAnswers.howEffective"
-          />
         </template>
 
         <q-btn
@@ -271,6 +281,7 @@ export default defineComponent({
       disableCloseButton,
       onHide,
       yesOrNoOptions,
+      coolingStrategies,
       coolingStrategiesUsedOptions,
       howAwareOfBomAlertOptions,
       howEffectiveOptions,
