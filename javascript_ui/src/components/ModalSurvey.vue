@@ -180,7 +180,16 @@
           >
             <div class="text-bold fontsize-20">
               How effective do you feel the
-              {{ coolingStrategies[strategy].name }} strategy was?
+              {{
+                coolingStrategies[strategy]
+                  ? coolingStrategies[strategy].name
+                  : `Other (${
+                      surveyStore.surveyAnswers.coolingStrategiesUsedOther
+                        ? surveyStore.surveyAnswers.coolingStrategiesUsedOther
+                        : 'not specified'
+                    })`
+              }}
+              strategy was?
             </div>
             <q-option-group
               :options="howEffectiveOptions"
