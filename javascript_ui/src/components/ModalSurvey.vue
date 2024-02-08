@@ -249,6 +249,8 @@ export default defineComponent({
       { label: 'Radio', value: 'radio' },
       { label: 'Online news', value: 'online news' },
       { label: 'Social media', value: 'social media' },
+      { label: 'BOM website', value: 'bom website' },
+      { label: 'BOM application', value: 'bom application' },
       {
         label: 'Word of mouth (e.g. friends or family)',
         value: 'word of mouth',
