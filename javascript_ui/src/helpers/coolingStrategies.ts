@@ -296,8 +296,8 @@ export const coolingStrategies: Record<string, CoolingStrategy> = {
     group: 'Water immersion',
     extraInfo: {
       bestUse: [
-        'Immerse your hands and forearms in cool water for about 10-15 minutes at a time.',
-        'Use a large bowl, bucket, or basin filled with cool water with or without ice (5-25 degrees Celsius), and sit comfortably while immersing your hands and forearms.',
+        'Immerse your feet in cool water for about 10-15 minutes at a time.',
+        'Use a large bowl, bucket, or basin filled with cool water with or without ice (5-25 degrees Celsius), and sit comfortably while immersing your feet.',
         'Wiggle your feet and toes every so often to increase circulation and the cooling effect of the water.',
         'Combine with other methods such as a arm immersion bath.',
       ],
