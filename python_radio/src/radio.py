@@ -23,10 +23,10 @@ AES_KEY_STRING = os.getenv('AES_KEY')
 AES_KEY = AES_KEY_STRING.encode("utf-8")
 
 def decrypt_data(data: bytes) -> bytes:
-    """Decrypt data using AES in ECB mode."""
-    cipher = AES.new(AES_KEY, AES.MODE_ECB)
-    decrypted_data = cipher.decrypt(data)
-    return decrypted_data
+  """Decrypt data using AES in ECB mode."""
+  cipher = AES.new(AES_KEY, AES.MODE_ECB)
+  decrypted_data = cipher.decrypt(data)
+  return decrypted_data
 
 async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x, stop_event: Event):
   # Radio listen loop
