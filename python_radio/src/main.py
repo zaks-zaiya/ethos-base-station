@@ -3,10 +3,11 @@ import socketio
 import asyncio
 import sys
 import threading
-# For stopping execution when shutting down
 import signal
-
 from core_temperature import RiskLevelData, calculate_change_core_temperature
+
+# Import the Bluetooth service
+from bluetooth import main as bluetooth_main
 
 try:
   import board
@@ -39,11 +40,14 @@ def connect(sid, environ):
 def disconnect(sid):
   print('disconnect ', sid)
 
-
 # Take in RiskLevelData and return core temperature
 @sio.event
 async def calculateChangeCoreTemperature(sid, data: RiskLevelData):
   return calculate_change_core_temperature(data)
+
+# Function to run the Bluetooth service
+def run_bluetooth_service():
+  asyncio.run(bluetooth_main())
 
 # Function to shutdown the process when termination signal received
 async def shutdown_server(loop):
@@ -55,6 +59,12 @@ async def shutdown_server(loop):
     radio_thread.join()  # Wait for the thread to finish
   except:
     pass
+  # Stop the Bluetooth thread
+  try:
+    bluetooth_thread.join()
+  except:
+    pass
+
   # Stop the site
   await site.stop()
   # Clean up the app runner
@@ -84,6 +94,10 @@ if __name__ == '__main__':
     # Start radio listen thread
     radio_thread = threading.Thread(target=asyncio.run, args=(radio_listen(sio, rfm9x, stop_event),))
     radio_thread.start()
+
+  # Start Bluetooth service thread
+  bluetooth_thread = threading.Thread(target=run_bluetooth_service)
+  bluetooth_thread.start()
 
   # Setup and start the web server
   loop = asyncio.get_event_loop()
