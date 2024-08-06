@@ -53,12 +53,12 @@ class BluetoothEmitter:
     advert = Advertisement("EthosRaspberryPi", [service_uuid], 0x0340, 60)
     await advert.register(self.bus, self.adapter)
 
-  async def emit_data(self, sensorId, temperatureC, humidityRH, batteryVoltage):
+  async def emit_data(self, radio_data: RadioData):
     if self.service is None:
       await self.initialize()
 
-    print(f'Sending sensor data: {sensorId}, {temperatureC}, {humidityRH}, {batteryVoltage}')
-    self.service.update_sensor_data(sensorId, temperatureC, humidityRH, batteryVoltage)
+    print(f'Sending sensor data: {radio_data}')
+    self.service.update_sensor_data(radio_data)
 
 async def main():
   emitter = BluetoothEmitter()
