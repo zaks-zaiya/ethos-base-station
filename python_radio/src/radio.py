@@ -76,7 +76,7 @@ async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x, stop_event: Even
     try:
       await sio.emit('data', radio_data)
       print("calling callback")
-      callback_function(radio_data)
+      await callback_function(radio_data)
     except Exception as e:
       Logger.error(f"Error emitting data to Socket.IO: {e}")
 
