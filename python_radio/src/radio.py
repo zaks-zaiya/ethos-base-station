@@ -1,22 +1,20 @@
-# radio.py
+
 from adafruit_rfm9x import RFM9x
 import socketio
 from typing import Union
 from logger import Logger
-import asyncio
 # For unpacking binary data
 import struct
 
 # For typing stop_event
 from threading import Event
-from encryption import Encryption  # Import the Encryption class
 
-from custom_types.radio import RadioData
+from encryption import Encryption  # Import the Encryption class
 
 # Define class instance
 aesEncryption = Encryption()
 
-async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x, stop_event: Event, data_queue: asyncio.Queue):
+async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x, stop_event: Event):
   # Radio listen loop
   while not stop_event.is_set():
     try:
@@ -24,13 +22,6 @@ async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x, stop_event: Even
     except Exception as e:
       Logger.error(f"Error receiving packet: {e}")
       continue
-
-    sensorId = 1
-    temperature = 25.5
-    humidity = 60.0
-    voltage = 3.7
-    data = struct.pack("<ifff", sensorId, temperature, humidity, voltage)
-    radio_packet = aesEncryption.encrypt(data)
 
     if radio_packet is None:
       # No data received, listen again
@@ -74,13 +65,12 @@ async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x, stop_event: Even
     # Log radio data
     Logger.log_radio_data(radio_data)
     try:
-      # Put data into the queue to emit to the server and via bluetooth
-      await data_queue.put(radio_data)
+      await sio.emit('data', radio_data)
     except Exception as e:
       Logger.error(f"Error emitting data: {e}")
 
 
-def process_packet(packet: bytearray, rssi: Union[float, int]) -> Union[RadioData, None]:
+def process_packet(packet: bytearray, rssi: Union[float, int]):
   try:
     # Unpack the packet into respective fields "IIIITTTTHHHHVVVV"
     # Where I is ID, T is temperature, H is humidity and V is voltage
