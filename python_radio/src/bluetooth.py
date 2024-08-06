@@ -1,3 +1,4 @@
+# bluetooth.py
 from bluez_peripheral.gatt.service import Service
 from bluez_peripheral.gatt.characteristic import characteristic, CharacteristicFlags as CharFlags
 import struct
@@ -11,8 +12,8 @@ from encryption import Encryption
 aesEncryption = Encryption()
 
 # Define a custom service UUID
-service_uuid = "12345678-1234-5678-1234-56789abcdef0"  # Example custom UUID
-characteristic_uuid = "12345678-1234-5678-1234-56789abcdef1"  # Example custom UUID
+service_uuid = "2013E5B6-3C56-4698-B665-7622FA5FBDD8"  # Custom UUID
+characteristic_uuid = "20F05D06-FA4E-48B8-89CF-5BF075ECAFA6"  # Custom UUID
 
 class SensorService(Service):
   def __init__(self):
