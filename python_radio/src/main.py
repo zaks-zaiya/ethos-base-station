@@ -81,16 +81,17 @@ async def shutdown_server(loop):
 
 def callback_function(radio_data: RadioData):
   print("callback:", radio_data)
-  bluetooth_emitter.emit_data(radio_data) # Emit data via Bluetooth
+  asyncio.create_task(bluetooth_emitter.emit_data(radio_data)) # Emit data via Bluetooth
 
 if __name__ == '__main__':
   production_arg = sys.argv[1] if len(sys.argv) > 1 else False
   # Create a threading event to signal the radio thread to stop
   stop_event = threading.Event()
+  loop = asyncio.get_event_loop()
 
   if production_arg == 'prod' or production_arg == 'production':
     # Init bluetooth
-    bluetooth_emitter.initialize()
+    loop.run_until_complete(bluetooth_emitter.initialize())
     # Init radio
     from radio import radio_listen
     rfm9x = radio_init()
@@ -99,7 +100,6 @@ if __name__ == '__main__':
     radio_thread.start()
 
   # Setup and start the web server
-  loop = asyncio.get_event_loop()
   web_app_runner = web.AppRunner(app)
   loop.run_until_complete(web_app_runner.setup())
   site = web.TCPSite(web_app_runner, port=5001)
