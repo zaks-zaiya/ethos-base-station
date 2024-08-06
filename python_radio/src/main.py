@@ -8,7 +8,10 @@ import signal
 from core_temperature import RiskLevelData, calculate_change_core_temperature
 
 # Import the Bluetooth service
-from bluetooth import main as bluetooth_main
+try:
+  from bluetooth import main as bluetooth_main
+except:
+  print("Unable to import bluetooth modules, are you on Linux with Bluez installed?")
 
 try:
   import board
@@ -96,9 +99,9 @@ if __name__ == '__main__':
     radio_thread = threading.Thread(target=asyncio.run, args=(radio_listen(sio, rfm9x, stop_event),))
     radio_thread.start()
 
-  # Start Bluetooth service thread
-  bluetooth_thread = threading.Thread(target=run_bluetooth_service)
-  bluetooth_thread.start()
+    # Start Bluetooth service thread
+    bluetooth_thread = threading.Thread(target=run_bluetooth_service)
+    bluetooth_thread.start()
 
   # Setup and start the web server
   loop = asyncio.get_event_loop()
