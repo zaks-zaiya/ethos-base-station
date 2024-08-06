@@ -36,7 +36,6 @@ class BluetoothEmitter:
     self.bus = None
     self.service = None
     self.adapter = None
-    self.advert = None
 
   async def initialize(self):
     print('Getting message bus...')
@@ -51,17 +50,8 @@ class BluetoothEmitter:
     self.adapter = await Adapter.get_first(self.bus)
 
     print('Advertising EthosRaspberryPi...')
-    self.advert = Advertisement("EthosRaspberryPi", [service_uuid], 0x0340, 60)
-    await self.advert.register(self.bus, self.adapter)
-
-    asyncio.create_task(self.keep_advertising())
-
-  async def keep_advertising(self):
-    while True:
-      await asyncio.sleep(55)  # Sleep for slightly less than the advertisement duration
-      print('Re-registering advertisement...')
-      await self.advert.unregister()  # Unregister the current advertisement
-      await self.advert.register(self.bus, self.adapter)  # Register again
+    advert = Advertisement("EthosRaspberryPi", [service_uuid], 0x0340, 60)
+    await advert.register(self.bus, self.adapter)
 
   async def emit_data(self, radio_data: RadioData):
     print('Emitting data...')
