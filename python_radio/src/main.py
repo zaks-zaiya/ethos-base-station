@@ -9,6 +9,8 @@ import signal
 
 from core_temperature import RiskLevelData, calculate_change_core_temperature
 
+from custom_types.radio import RadioData
+
 try:
   import board
   import busio
@@ -74,6 +76,9 @@ async def shutdown_server(loop):
   loop.stop()
   print("Shutdown function finished")
 
+def callback_function(radio_data: RadioData):
+  print("callback:", radio_data)
+
 if __name__ == '__main__':
   production_arg = sys.argv[1] if len(sys.argv) > 1 else False
   # Create a threading event to signal the radio thread to stop
@@ -83,7 +88,7 @@ if __name__ == '__main__':
     from radio import radio_listen
     rfm9x = radio_init()
     # Start radio listen thread
-    radio_thread = threading.Thread(target=asyncio.run, args=(radio_listen(sio, rfm9x, stop_event),))
+    radio_thread = threading.Thread(target=asyncio.run, args=(radio_listen(sio, rfm9x, stop_event, callback_function),))
     radio_thread.start()
 
   # Setup and start the web server
