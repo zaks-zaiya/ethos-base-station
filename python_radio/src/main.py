@@ -81,6 +81,7 @@ async def shutdown_server(loop):
 
 async def main(production_arg, stop_event):
   data_queue = None  # Initialize data_queue
+  radio_task = None  # Keep a reference to the radio task
   if production_arg == 'prod' or production_arg == 'production':
     # Setup bluetooth
     bluetooth_emitter = BluetoothEmitter()
@@ -94,7 +95,7 @@ async def main(production_arg, stop_event):
     data_queue = asyncio.Queue()
 
     # Start radio listener in a separate task
-    loop.create_task(radio_listen(sio, rfm9x, stop_event, data_queue))
+    radio_task = asyncio.create_task(radio_listen(sio, rfm9x, stop_event, data_queue))
 
   # Register the shutdown signal handlers
   loop.add_signal_handler(signal.SIGTERM, lambda: loop.create_task(shutdown_server(loop)))
@@ -113,6 +114,9 @@ async def main(production_arg, stop_event):
       await asyncio.sleep(1)
     except asyncio.CancelledError:
       break
+
+  if radio_task:
+      await radio_task
 
 
 if __name__ == '__main__':
