@@ -20,6 +20,13 @@ async def radio_listen(rfm9x: RFM9x, stop_event: Event, callback_function):
     try:
       radio_packet = rfm9x.receive(timeout=5.0)
 
+      sensorId = 1
+      temperature = 25.5
+      humidity = 60.0
+      voltage = 3.7
+      data = struct.pack("<ifff", sensorId, temperature, humidity, voltage)
+      radio_packet = aesEncryption.encrypt(data)
+
       if radio_packet is not None:
         # Create and start a new thread to handle the processing
         thread = threading.Thread(target=process_and_callback, args=(radio_packet, rfm9x.last_rssi, callback_function))
