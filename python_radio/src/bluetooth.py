@@ -58,4 +58,5 @@ class BluetoothEmitter:
       await self.initialize()
 
     print(f'Sending sensor data: {radio_data}')
-    self.service.update_sensor_data(radio_data)
+    # Run update_sensor_data in a separate thread
+    asyncio.to_thread(self.service.update_sensor_data, radio_data)
