@@ -10,9 +10,7 @@ import signal
 from core_temperature import RiskLevelData, calculate_change_core_temperature
 
 from custom_types.radio import RadioData
-
-from bluetooth import BluetoothEmitter
-bluetooth_emitter = BluetoothEmitter()
+from bluetooth import BluetoothEmitter  # Import the BluetoothEmitter class
 
 try:
   import board
@@ -36,6 +34,9 @@ def radio_init():
 sio = socketio.AsyncServer(cors_allowed_origins='*')
 app = web.Application()
 sio.attach(app)
+
+# Create an instance of BluetoothEmitter
+bluetooth_emitter = BluetoothEmitter()
 
 @sio.event
 def connect(sid, environ):
@@ -61,6 +62,7 @@ async def shutdown_server(loop):
     radio_thread.join()  # Wait for the thread to finish
   except:
     pass
+
   # Stop the site
   await site.stop()
   # Clean up the app runner
@@ -79,9 +81,10 @@ async def shutdown_server(loop):
   loop.stop()
   print("Shutdown function finished")
 
-def callback_function(radio_data: RadioData):
+async def callback_function(radio_data: RadioData):
   print("callback:", radio_data)
-  asyncio.create_task(bluetooth_emitter.emit_data(radio_data)) # Emit data via Bluetooth
+  # Transmit data over Bluetooth
+  await bluetooth_emitter.emit_data(radio_data)
 
 if __name__ == '__main__':
   production_arg = sys.argv[1] if len(sys.argv) > 1 else False
@@ -92,8 +95,6 @@ if __name__ == '__main__':
   asyncio.set_event_loop(loop)
 
   if production_arg == 'prod' or production_arg == 'production':
-    # Init bluetooth
-    loop.run_until_complete(bluetooth_emitter.initialize())
     # Init radio
     from radio import radio_listen
     rfm9x = radio_init()

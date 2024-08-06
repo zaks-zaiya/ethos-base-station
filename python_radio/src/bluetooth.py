@@ -54,9 +54,12 @@ class BluetoothEmitter:
     await advert.register(self.bus, self.adapter)
 
   async def emit_data(self, radio_data: RadioData):
+    print('Emitting data...')
     if self.service is None:
       await self.initialize()
 
     print(f'Sending sensor data: {radio_data}')
-    # Run update_sensor_data in a separate thread
-    asyncio.to_thread(self.service.update_sensor_data, radio_data)
+    # Use asyncio.to_thread to run the update in a separate thread
+    await asyncio.to_thread(self.service.update_sensor_data, radio_data)
+    # Yield to the event loop to avoid blocking
+    await asyncio.sleep(0)
