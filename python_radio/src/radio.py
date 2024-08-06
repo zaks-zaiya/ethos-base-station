@@ -21,6 +21,7 @@ aesEncryption = Encryption()
 bluetooth_emitter = BluetoothEmitter()
 
 async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x, stop_event: Event):
+  await bluetooth_emitter.initialize()
   # Radio listen loop
   while not stop_event.is_set():
     try:
