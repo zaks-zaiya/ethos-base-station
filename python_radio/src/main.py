@@ -11,6 +11,9 @@ from core_temperature import RiskLevelData, calculate_change_core_temperature
 
 from custom_types.radio import RadioData
 
+from bluetooth import BluetoothEmitter
+bluetooth_emitter = BluetoothEmitter()
+
 try:
   import board
   import busio
@@ -78,6 +81,7 @@ async def shutdown_server(loop):
 
 def callback_function(radio_data: RadioData):
   print("callback:", radio_data)
+  bluetooth_emitter.emit_data(radio_data) # Emit data via Bluetooth
 
 if __name__ == '__main__':
   production_arg = sys.argv[1] if len(sys.argv) > 1 else False
@@ -85,6 +89,9 @@ if __name__ == '__main__':
   stop_event = threading.Event()
 
   if production_arg == 'prod' or production_arg == 'production':
+    # Init bluetooth
+    bluetooth_emitter.initialize()
+    # Init radio
     from radio import radio_listen
     rfm9x = radio_init()
     # Start radio listen thread

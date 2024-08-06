@@ -11,17 +11,10 @@ from threading import Event
 
 from encryption import Encryption  # Import the Encryption class
 
-# Import the BluetoothEmitter class
-from bluetooth import BluetoothEmitter
-
 # Define class instance
 aesEncryption = Encryption()
 
-# Initialize BluetoothEmitter
-bluetooth_emitter = BluetoothEmitter()
-
 async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x, stop_event: Event, callback_function):
-  await bluetooth_emitter.initialize()
   # Radio listen loop
   while not stop_event.is_set():
     try:
@@ -86,12 +79,6 @@ async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x, stop_event: Even
       callback_function(radio_data)
     except Exception as e:
       Logger.error(f"Error emitting data to Socket.IO: {e}")
-
-    # Emit data via Bluetooth
-    try:
-      await bluetooth_emitter.emit_data(radio_data)
-    except Exception as e:
-      Logger.error(f"Error emitting data to Bluetooth: {e}")
 
 
 def process_packet(packet: bytearray, rssi: Union[float, int]):
