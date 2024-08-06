@@ -95,6 +95,8 @@ if __name__ == '__main__':
   asyncio.set_event_loop(loop)
 
   if production_arg == 'prod' or production_arg == 'production':
+    # Init bluetooth
+    loop.run_until_complete(bluetooth_emitter.initialize())
     # Init radio
     from radio import radio_listen
     rfm9x = radio_init()
