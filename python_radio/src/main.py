@@ -87,7 +87,9 @@ if __name__ == '__main__':
   production_arg = sys.argv[1] if len(sys.argv) > 1 else False
   # Create a threading event to signal the radio thread to stop
   stop_event = threading.Event()
-  loop = asyncio.get_event_loop()
+  # Use a multi-threaded event loop
+  loop = asyncio.new_event_loop()
+  asyncio.set_event_loop(loop)
 
   if production_arg == 'prod' or production_arg == 'production':
     # Init bluetooth
