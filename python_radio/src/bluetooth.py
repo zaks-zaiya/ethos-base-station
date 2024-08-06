@@ -50,7 +50,8 @@ class BluetoothEmitter:
     self.adapter = await Adapter.get_first(self.bus)
 
     print('Advertising EthosRaspberryPi...')
-    advert = Advertisement("EthosRaspberryPi", [service_uuid], 0x0340, 60)
+    # Always advertise
+    advert = Advertisement("EthosRaspberryPi", [service_uuid], 0x0340, 0)
     await advert.register(self.bus, self.adapter)
 
   async def emit_data(self, radio_data: RadioData):
