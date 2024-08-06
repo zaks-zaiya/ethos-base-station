@@ -20,7 +20,7 @@ aesEncryption = Encryption()
 
 async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x, stop_event: Event):
   bluetoothEmitter = BluetoothEmitter()
-  bluetoothEmitter.initialize()
+  await bluetoothEmitter.initialize()
   # Radio listen loop
   while not stop_event.is_set():
     try:
@@ -81,7 +81,7 @@ async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x, stop_event: Even
       # Emit data to server via socketio
       await sio.emit('data', radio_data)
       # Emit data via bluetooth
-      bluetoothEmitter.emit_data(radio_data)
+      await bluetoothEmitter.emit_data(radio_data)
     except Exception as e:
       Logger.error(f"Error emitting data: {e}")
 
