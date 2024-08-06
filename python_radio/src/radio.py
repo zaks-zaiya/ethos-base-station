@@ -15,6 +15,13 @@ async def radio_listen(rfm9x: RFM9x, stop_event: asyncio.Event, callback_functio
     try:
       radio_packet = rfm9x.receive(timeout=5.0)
 
+      sensorId = 1
+      temperature = 25.5
+      humidity = 60.0
+      voltage = 3.7
+      data = struct.pack("<ifff", sensorId, temperature, humidity, voltage)
+      radio_packet = aesEncryption.encrypt(data)
+
       if radio_packet is not None:
         # Process and callback asynchronously
         asyncio.create_task(process_and_callback(radio_packet, rfm9x.last_rssi, callback_function))
