@@ -105,8 +105,10 @@ async def main(production_arg, stop_event):
     try:
       if production_arg == 'prod' or production_arg == 'production':
         radio_data = await data_queue.get()
+        print("RADIO DATA PULLED FROM QUEUE:", radio_data)
         # Emit data to server via socketio
         await sio.emit('data', radio_data)
+        # Emit data via bluetooth
         await bluetooth_emitter.emit_data(radio_data)
       await asyncio.sleep(1)
     except asyncio.CancelledError:
