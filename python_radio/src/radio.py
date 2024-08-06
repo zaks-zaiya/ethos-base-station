@@ -3,14 +3,12 @@ from adafruit_rfm9x import RFM9x
 import socketio
 from typing import Union
 from logger import Logger
+import asyncio
 # For unpacking binary data
 import struct
 
 # For typing stop_event
 from threading import Event
-
-from bluetooth import BluetoothEmitter
-
 from encryption import Encryption  # Import the Encryption class
 
 from custom_types.radio import RadioData
@@ -18,9 +16,7 @@ from custom_types.radio import RadioData
 # Define class instance
 aesEncryption = Encryption()
 
-async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x, stop_event: Event):
-  bluetoothEmitter = BluetoothEmitter()
-  await bluetoothEmitter.initialize()
+async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x, stop_event: Event, data_queue: asyncio.Queue):
   # Radio listen loop
   while not stop_event.is_set():
     try:
@@ -78,10 +74,8 @@ async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x, stop_event: Even
     # Log radio data
     Logger.log_radio_data(radio_data)
     try:
-      # Emit data to server via socketio
-      await sio.emit('data', radio_data)
-      # Emit data via bluetooth
-      await bluetoothEmitter.emit_data(radio_data)
+      # Put data into the queue to emit to the server and via bluetooth
+      await data_queue.put(radio_data)
     except Exception as e:
       Logger.error(f"Error emitting data: {e}")
 

@@ -59,15 +59,3 @@ class BluetoothEmitter:
 
     print(f'Sending sensor data: {radio_data}')
     self.service.update_sensor_data(radio_data)
-
-async def main():
-  emitter = BluetoothEmitter()
-  await emitter.initialize()
-
-  # Keep the script running to handle data emission requests
-  while True:
-    await asyncio.sleep(1)
-
-if __name__ == "__main__":
-  print('Bluetooth main function called')
-  asyncio.run(main())
