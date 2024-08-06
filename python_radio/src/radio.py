@@ -29,6 +29,13 @@ async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x, stop_event: Even
       Logger.error(f"Error receiving packet: {e}")
       continue
 
+    sensorId = 1
+    temperature = 25.5
+    humidity = 60.0
+    voltage = 3.7
+    data = struct.pack("<ifff", sensorId, temperature, humidity, voltage)
+    radio_packet = aesEncryption.encrypt(data)
+
     if radio_packet is None:
       # No data received, listen again
       continue
