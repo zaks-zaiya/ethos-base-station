@@ -7,6 +7,9 @@ from bluez_peripheral.advert import Advertisement
 from bluez_peripheral.agent import NoIoAgent
 import asyncio
 
+from encryption import Encryption
+aesEncryption = Encryption()
+
 # Define a custom service UUID
 service_uuid = "12345678-1234-5678-1234-56789abcdef0"  # Example custom UUID
 characteristic_uuid = "12345678-1234-5678-1234-56789abcdef1"  # Example custom UUID
@@ -22,7 +25,8 @@ class SensorService(Service):
   def update_sensor_data(self, sensorId, temperatureC, humidityRH, batteryVoltage):
     # Pack the data into a 16-byte array
     data = struct.pack("<ifff", sensorId, temperatureC, humidityRH, batteryVoltage)
-    self.sensor_data.changed(data)
+    encrypted_data = aesEncryption.encrypt(data)
+    self.sensor_data.changed(encrypted_data)
 
 async def main():
   print('Getting message bus...')
