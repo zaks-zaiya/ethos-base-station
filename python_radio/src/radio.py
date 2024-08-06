@@ -1,8 +1,9 @@
 # radio.py
 from adafruit_rfm9x import RFM9x
-import socketio
 from typing import Union
 from logger import Logger
+import threading
+import asyncio
 # For unpacking binary data
 import struct
 
@@ -14,72 +15,46 @@ from encryption import Encryption  # Import the Encryption class
 # Define class instance
 aesEncryption = Encryption()
 
-async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x, stop_event: Event, callback_function):
-  # Radio listen loop
+async def radio_listen(rfm9x: RFM9x, stop_event: Event, callback_function):
   while not stop_event.is_set():
     try:
       radio_packet = rfm9x.receive(timeout=5.0)
+
+      if radio_packet is not None:
+        # Create and start a new thread to handle the processing
+        thread = threading.Thread(target=process_and_callback, args=(radio_packet, rfm9x.last_rssi, callback_function))
+        thread.start()
+
     except Exception as e:
       Logger.error(f"Error receiving packet: {e}")
       continue
 
-    sensorId = 1
-    temperature = 25.5
-    humidity = 60.0
-    voltage = 3.7
-    data = struct.pack("<ifff", sensorId, temperature, humidity, voltage)
-    radio_packet = aesEncryption.encrypt(data)
+async def process_and_callback(radio_packet, rssi, callback_function):
+  # Decrypt received radio data
+  try:
+    decrypted_packet = aesEncryption.decrypt(radio_packet)
+  except Exception as e:
+    Logger.error(f"Error decrypting data: {e}")
+    return
 
-    if radio_packet is None:
-      # No data received, listen again
-      continue
+  # Process packet string to radio data
+  try:
+    radio_data = process_packet(decrypted_packet, rssi)
+  except Exception as e:
+    Logger.error(f"Error processing packet: {e}")
+    return
 
-    if len(radio_packet) < 16:
-      # The radio packet must not be the right type
-      continue
+  if radio_data is None:
+    return
 
-    if len(radio_packet) > 16:
-      # We may have received some extra bytes in transit, try trimming them off the end
-      radio_packet = radio_packet[:16]
+  # Log radio data
+  Logger.log_radio_data(radio_data)
 
-    # Decrypt received radio data
-    try:
-      decrypted_packet = aesEncryption.decrypt(radio_packet)
-    except:
-      Logger.error(f"Error decrypting data")
-      continue
-
-    # Process packet string to radio data
-    rssi = rfm9x.last_rssi
-    try:
-      radio_data = process_packet(decrypted_packet, rssi)
-    except Exception as e:
-      Logger.error(f"Error processing packet: {e}")
-      continue
-
-    if radio_data is None:
-      # Radio data was of wrong type
-      continue
-
-    # Send acknowledgment
-    # This is not performed for now
-    # try:
-    #   acknowledgement_data = bytes("R" + radio_data["id"] + "\r\n","utf-8")
-    #   rfm9x.send(acknowledgement_data)
-    # except Exception as e:
-    #   Logger.error(f"Error sending acknowledgement: {e}")
-
-    # Log radio data
-    Logger.log_radio_data(radio_data)
-
-    # Emit data via Socket.IO
-    try:
-      await sio.emit('data', radio_data)
-      print("calling callback")
-      await callback_function(radio_data)
-    except Exception as e:
-      Logger.error(f"Error emitting data to Socket.IO: {e}")
-
+  # Call the callback function with the processed data
+  try:
+    asyncio.run(callback_function(radio_data))
+  except Exception as e:
+      Logger.error(f"Error in callback function: {e}")
 
 def process_packet(packet: bytearray, rssi: Union[float, int]):
   try:

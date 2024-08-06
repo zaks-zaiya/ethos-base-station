@@ -7,6 +7,8 @@ import threading
 # For stopping execution when shutting down
 import signal
 
+from logger import Logger
+
 from core_temperature import RiskLevelData, calculate_change_core_temperature
 
 from custom_types.radio import RadioData
@@ -81,10 +83,18 @@ async def shutdown_server(loop):
   loop.stop()
   print("Shutdown function finished")
 
+# Callback function which emits data to socket.io and
 async def callback_function(radio_data: RadioData):
-  print("callback:", radio_data)
-  # Transmit data over Bluetooth
-  await bluetooth_emitter.emit_data(radio_data)
+  # Emit via socket.io
+  try:
+    await sio.emit('data', radio_data)
+  except Exception as e:
+    Logger.error(f"Error emitting data to Socket.IO: {e}")
+  # Emit via bluetooth
+  try:
+    await bluetooth_emitter.emit_data(radio_data)
+  except Exception as e:
+    Logger.error(f"Error emitting data via Bluetooth: {e}")
 
 if __name__ == '__main__':
   production_arg = sys.argv[1] if len(sys.argv) > 1 else False
@@ -101,7 +111,7 @@ if __name__ == '__main__':
     from radio import radio_listen
     rfm9x = radio_init()
     # Start radio listen thread
-    radio_thread = threading.Thread(target=asyncio.run, args=(radio_listen(sio, rfm9x, stop_event, callback_function),))
+    radio_thread = threading.Thread(target=asyncio.run, args=(radio_listen(rfm9x, stop_event, callback_function),))
     radio_thread.start()
 
   # Setup and start the web server
