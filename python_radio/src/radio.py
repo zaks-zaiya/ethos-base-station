@@ -1,4 +1,4 @@
-
+# radio.py
 from adafruit_rfm9x import RFM9x
 import socketio
 from typing import Union
@@ -11,8 +11,14 @@ from threading import Event
 
 from encryption import Encryption  # Import the Encryption class
 
+# Import the BluetoothEmitter class
+from bluetooth import BluetoothEmitter
+
 # Define class instance
 aesEncryption = Encryption()
+
+# Initialize BluetoothEmitter
+bluetooth_emitter = BluetoothEmitter()
 
 async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x, stop_event: Event):
   # Radio listen loop
@@ -64,10 +70,18 @@ async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x, stop_event: Even
 
     # Log radio data
     Logger.log_radio_data(radio_data)
+
+    # Emit data via Socket.IO
     try:
       await sio.emit('data', radio_data)
     except Exception as e:
-      Logger.error(f"Error emitting data: {e}")
+      Logger.error(f"Error emitting data to Socket.IO: {e}")
+
+    # Emit data via Bluetooth
+    try:
+      await bluetooth_emitter.emit_data(radio_data)
+    except Exception as e:
+      Logger.error(f"Error emitting data to Bluetooth: {e}")
 
 
 def process_packet(packet: bytearray, rssi: Union[float, int]):
