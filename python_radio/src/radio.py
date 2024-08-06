@@ -36,7 +36,7 @@ async def radio_listen(rfm9x: RFM9x, stop_event: Event, callback_function):
       Logger.error(f"Error receiving packet: {e}")
       continue
 
-async def process_and_callback(radio_packet, rssi, callback_function):
+def process_and_callback(radio_packet, rssi, callback_function):
   # Decrypt received radio data
   try:
     decrypted_packet = aesEncryption.decrypt(radio_packet)
