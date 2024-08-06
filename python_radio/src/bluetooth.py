@@ -36,6 +36,7 @@ class SensorService(Service):
     self.sensor_measurement.changed(rate)
 
 async def main():
+  print('Getting message bus...')
   # Alternatively you can request this bus directly from dbus_next.
   bus = await get_message_bus()
 
@@ -50,10 +51,12 @@ async def main():
   adapter = await Adapter.get_first(bus)
 
   # Start an advert that will last for 60 seconds.
+  print('Advertising EthosRaspberryPi...')
   advert = Advertisement("EthosRaspberryPi", [service_uuid], 0x0340, 60)
   await advert.register(bus, adapter)
 
   while True:
+    print('Sending test sensor measurement...')
     # Update the sensor
     service.update_sensor_measurement(120)
     # Handle dbus requests.
@@ -62,4 +65,5 @@ async def main():
   await bus.wait_for_disconnect()
 
 if __name__ == "__main__":
+  print('Bluetooth main function called')
   asyncio.run(main())
