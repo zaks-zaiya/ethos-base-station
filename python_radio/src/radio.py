@@ -9,24 +9,10 @@ import struct
 # For typing stop_event
 from threading import Event
 
-# For radio encryption
-from Crypto.Cipher import AES
-import os
-from dotenv import load_dotenv
-from pathlib import Path
+from encryption import Encryption  # Import the Encryption class
 
-dotenv_path = Path('../javascript_ui/.env')
-load_dotenv(dotenv_path=dotenv_path)
-
-# Get the AES_KEY from environment variables
-AES_KEY_STRING = os.getenv('AES_KEY')
-AES_KEY = AES_KEY_STRING.encode("utf-8")
-
-def decrypt_data(data: bytes) -> bytes:
-  """Decrypt data using AES in ECB mode."""
-  cipher = AES.new(AES_KEY, AES.MODE_ECB)
-  decrypted_data = cipher.decrypt(data)
-  return decrypted_data
+# Define class instance
+aesEncryption = Encryption()
 
 async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x, stop_event: Event):
   # Radio listen loop
@@ -49,9 +35,9 @@ async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x, stop_event: Even
       # We may have received some extra bytes in transit, try trimming them off the end
       radio_packet = radio_packet[:16]
 
-    # Decrypt recieved radio data
+    # Decrypt received radio data
     try:
-      decrypted_packet = decrypt_data(radio_packet)
+      decrypted_packet = aesEncryption.decrypt(radio_packet)
     except:
       Logger.error(f"Error decrypting data")
       continue
