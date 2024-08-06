@@ -1,7 +1,7 @@
 # radio.py
 from adafruit_rfm9x import RFM9x
 import socketio
-from typing import Union, TypedDict
+from typing import Union
 from logger import Logger
 # For unpacking binary data
 import struct
@@ -13,17 +13,10 @@ from bluetooth import BluetoothEmitter
 
 from encryption import Encryption  # Import the Encryption class
 
+from custom_types.radio import RadioData
+
 # Define class instance
 aesEncryption = Encryption()
-
-# Define RadioData type
-class RadioData(TypedDict):
-  id: int
-  temperature: float
-  humidity: float
-  voltage: float
-  rssi: Union[float, int]
-
 
 async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x, stop_event: Event):
   bluetoothEmitter = BluetoothEmitter()

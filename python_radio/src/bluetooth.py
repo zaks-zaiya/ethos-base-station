@@ -8,7 +8,7 @@ from bluez_peripheral.advert import Advertisement
 from bluez_peripheral.agent import NoIoAgent
 import asyncio
 
-from radio import RadioData
+from custom_types.radio import RadioData
 
 from encryption import Encryption
 aesEncryption = Encryption()
