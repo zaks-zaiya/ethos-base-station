@@ -1,7 +1,7 @@
 # radio.py
 from adafruit_rfm9x import RFM9x
 import socketio
-from typing import Union
+from typing import Union, TypedDict
 from logger import Logger
 # For unpacking binary data
 import struct
@@ -9,12 +9,24 @@ import struct
 # For typing stop_event
 from threading import Event
 
+from bluetooth import BluetoothEmitter
+
 from encryption import Encryption  # Import the Encryption class
 
 # Define class instance
 aesEncryption = Encryption()
 
+# Define RadioData type
+class RadioData(TypedDict):
+  id: int
+  temperature: float
+  humidity: float
+  voltage: float
+  rssi: Union[float, int]
+
+
 async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x, stop_event: Event):
+  bluetoothEmitter = BluetoothEmitter()
   # Radio listen loop
   while not stop_event.is_set():
     try:
@@ -65,12 +77,15 @@ async def radio_listen(sio: socketio.AsyncServer, rfm9x: RFM9x, stop_event: Even
     # Log radio data
     Logger.log_radio_data(radio_data)
     try:
+      # Emit data to server via socketio
       await sio.emit('data', radio_data)
+      # Emit data via bluetooth
+      bluetoothEmitter.emit_data(radio_data)
     except Exception as e:
       Logger.error(f"Error emitting data: {e}")
 
 
-def process_packet(packet: bytearray, rssi: Union[float, int]):
+def process_packet(packet: bytearray, rssi: Union[float, int]) -> Union[RadioData, None]:
   try:
     # Unpack the packet into respective fields "IIIITTTTHHHHVVVV"
     # Where I is ID, T is temperature, H is humidity and V is voltage

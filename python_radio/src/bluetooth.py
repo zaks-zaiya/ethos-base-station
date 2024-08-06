@@ -8,6 +8,8 @@ from bluez_peripheral.advert import Advertisement
 from bluez_peripheral.agent import NoIoAgent
 import asyncio
 
+from radio import RadioData
+
 from encryption import Encryption
 aesEncryption = Encryption()
 
@@ -23,40 +25,48 @@ class SensorService(Service):
   def sensor_data(self, options):
     pass
 
-  def update_sensor_data(self, sensorId, temperatureC, humidityRH, batteryVoltage):
+  def update_sensor_data(self, radio_data: RadioData):
     # Pack the data into a 16-byte array
-    data = struct.pack("<ifff", sensorId, temperatureC, humidityRH, batteryVoltage)
+    data = struct.pack("<ifff", radio_data["id"], radio_data["temperature"], radio_data["humidity"], radio_data["voltage"])
     encrypted_data = aesEncryption.encrypt(data)
     self.sensor_data.changed(encrypted_data)
 
+class BluetoothEmitter:
+  def __init__(self):
+    self.bus = None
+    self.service = None
+    self.adapter = None
+
+  async def initialize(self):
+    print('Getting message bus...')
+    self.bus = await get_message_bus()
+
+    self.service = SensorService()
+    await self.service.register(self.bus)
+
+    agent = NoIoAgent()
+    await agent.register(self.bus)
+
+    self.adapter = await Adapter.get_first(self.bus)
+
+    print('Advertising EthosRaspberryPi...')
+    advert = Advertisement("EthosRaspberryPi", [service_uuid], 0x0340, 60)
+    await advert.register(self.bus, self.adapter)
+
+  async def emit_data(self, sensorId, temperatureC, humidityRH, batteryVoltage):
+    if self.service is None:
+      await self.initialize()
+
+    print(f'Sending sensor data: {sensorId}, {temperatureC}, {humidityRH}, {batteryVoltage}')
+    self.service.update_sensor_data(sensorId, temperatureC, humidityRH, batteryVoltage)
+
 async def main():
-  print('Getting message bus...')
-  bus = await get_message_bus()
+  emitter = BluetoothEmitter()
+  await emitter.initialize()
 
-  service = SensorService()
-  await service.register(bus)
-
-  agent = NoIoAgent()
-  await agent.register(bus)
-
-  adapter = await Adapter.get_first(bus)
-
-  print('Advertising EthosRaspberryPi...')
-  advert = Advertisement("EthosRaspberryPi", [service_uuid], 0x0340, 60)
-  await advert.register(bus, adapter)
-
+  # Keep the script running to handle data emission requests
   while True:
-    print('Sending test sensor data...')
-    # Generate some sample data
-    sensorId = 1
-    temperatureC = 25.5
-    humidityRH = 60.0
-    batteryVoltage = 3.7
-
-    service.update_sensor_data(sensorId, temperatureC, humidityRH, batteryVoltage)
-    await asyncio.sleep(5)
-
-  await bus.wait_for_disconnect()
+    await asyncio.sleep(1)
 
 if __name__ == "__main__":
   print('Bluetooth main function called')
