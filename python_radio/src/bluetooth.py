@@ -26,8 +26,9 @@ class SensorService(Service):
     pass
 
   def update_sensor_data(self, radio_data: RadioData):
-    # Pack the data into a 16-byte array
-    data = struct.pack("<ifff", radio_data["id"], radio_data["temperature"], radio_data["humidity"], radio_data["voltage"])
+    # Pack the data into a 20-byte array (4 bytes for RSSI as float)
+    data = struct.pack("<iffff", radio_data["id"], radio_data["temperature"],
+               radio_data["humidity"], radio_data["voltage"], float(radio_data["rssi"]))
     encrypted_data = aesEncryption.encrypt(data)
     self.sensor_data.changed(encrypted_data)
 
