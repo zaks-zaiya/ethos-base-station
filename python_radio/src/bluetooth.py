@@ -26,10 +26,16 @@ class SensorService(Service):
     pass
 
   def update_sensor_data(self, radio_data: RadioData):
-    # Pack the data into a 20-byte array (4 bytes for RSSI as float)
+    # Pack the data into a byte array
     data = struct.pack("<iffff", radio_data["id"], radio_data["temperature"],
                radio_data["humidity"], radio_data["voltage"], float(radio_data["rssi"]))
-    encrypted_data = aesEncryption.encrypt(data)
+
+    # Pad the data to meet the block size requirement (assuming AES with 16-byte block size)
+    block_size = 16
+    padding_length = block_size - (len(data) % block_size)
+    padded_data = data + bytes([padding_length] * padding_length)
+
+    encrypted_data = aesEncryption.encrypt(padded_data)
     self.sensor_data.changed(encrypted_data)
 
 class BluetoothEmitter:
