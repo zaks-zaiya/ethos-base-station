@@ -182,6 +182,14 @@ export const useDataSensorStore = defineStore('dataSensor', {
         const oldRiskLevel = sensorData.riskLevel; // Save old risk level
         sensorData.riskLevel = getRiskLevel(sensorData.coreTemperatureDelta);
 
+        // Send sensor data via bluetooth
+        const bluetoothSuccess = await socketStore.sendBluetoothData(
+          sensorData
+        );
+        if (!bluetoothSuccess) {
+          console.error('Error sending bluetooth data');
+        }
+
         // Send sensor data to database
         databaseStore.postDocument('sensor', {
           sensorId: sensorData.id,

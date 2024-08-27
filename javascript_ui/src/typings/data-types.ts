@@ -7,6 +7,11 @@ export interface SocketSensorData {
   rssi: number;
 }
 
+export interface TrimmedSensorData extends SocketSensorData {
+  location: string;
+  coreTemperatureDelta: number;
+}
+
 export interface SensorData {
   id: number | undefined;
   location: string | undefined;

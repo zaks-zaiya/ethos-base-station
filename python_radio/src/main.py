@@ -12,7 +12,7 @@ from logger import Logger
 from core_temperature import RiskLevelData, calculate_change_core_temperature
 
 from custom_types.radio import RadioData
-from bluetooth import BluetoothEmitter  # Import the BluetoothEmitter class
+from bluetooth import BluetoothEmitter, TrimmedSensorData
 
 try:
   import board
@@ -54,6 +54,16 @@ def disconnect(sid):
 async def calculateChangeCoreTemperature(sid, data: RiskLevelData):
   return calculate_change_core_temperature(data)
 
+# Send data via bluetooth
+@sio.event
+async def sendBluetoothData(sid, sensorData: TrimmedSensorData):
+  try:
+    await bluetooth_emitter.emit_data(sensorData)
+    return True
+  except Exception as e:
+    Logger.error(f"Error emitting data via Bluetooth: {e}")
+    return False
+
 # Function to shutdown the process when termination signal received
 async def shutdown_server(loop):
   print("Shutting down Python server...")
@@ -90,11 +100,6 @@ async def callback_function(radio_data: RadioData):
     await sio.emit('data', radio_data)
   except Exception as e:
     Logger.error(f"Error emitting data to Socket.IO: {e}")
-  # Emit via bluetooth
-  try:
-    await bluetooth_emitter.emit_data(radio_data)
-  except Exception as e:
-    Logger.error(f"Error emitting data via Bluetooth: {e}")
 
 if __name__ == '__main__':
   production_arg = sys.argv[1] if len(sys.argv) > 1 else False

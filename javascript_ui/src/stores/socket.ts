@@ -1,7 +1,11 @@
 import { defineStore } from 'pinia';
 import { io, Socket } from 'socket.io-client';
 
-import { SensorData, SocketSensorData } from 'src/typings/data-types';
+import {
+  SensorData,
+  SocketSensorData,
+  TrimmedSensorData,
+} from 'src/typings/data-types';
 import { useDataUserStore } from './dataUser';
 
 interface SensorDataCallback {
@@ -24,6 +28,10 @@ interface ClientToServerEvents {
   calculateChangeCoreTemperature: (
     data: SocketEnvironmentalConditions,
     callback: (response: number) => void
+  ) => void;
+  sendBluetoothData: (
+    sensorData: TrimmedSensorData,
+    callback: (response: boolean) => void
   ) => void;
 }
 
@@ -59,6 +67,60 @@ export const useSocketStore = defineStore('socket', {
      */
     onSensorData(callback: SensorDataCallback) {
       this.socket?.on('data', callback);
+    },
+
+    /**
+     * Function to send socket communication to python process to emit BLE data
+     * @param sensorData The current sensorData
+     * @returns `true` if BLE emission succeeds, otherwise `false`
+     */
+    sendBluetoothData(sensorData: SensorData): Promise<boolean> {
+      return new Promise((resolve) => {
+        // Check socket exists & initialized
+        if (!this.socket) {
+          console.error('Socket not initialized');
+          resolve(false);
+          return;
+        }
+
+        // Check required variables exist
+        if (
+          !(
+            sensorData.id &&
+            sensorData.location &&
+            sensorData.temperature &&
+            sensorData.humidity &&
+            sensorData.voltage &&
+            sensorData.rssi &&
+            sensorData.coreTemperatureDelta
+          )
+        ) {
+          console.error('sendBluetoothData is missing data');
+          resolve(false);
+          return;
+        }
+
+        // Construct data to send
+        const trimmedSensorData: TrimmedSensorData = {
+          id: sensorData.id,
+          location: sensorData.location,
+          temperature: sensorData.temperature,
+          humidity: sensorData.humidity,
+          voltage: sensorData.voltage,
+          rssi: sensorData.rssi,
+          coreTemperatureDelta: sensorData.coreTemperatureDelta,
+        };
+
+        // Resolve the response from the server (which should be core temperature)
+        this.socket.emit('sendBluetoothData', trimmedSensorData, (response) => {
+          if (response) {
+            resolve(true);
+          } else {
+            console.error('SocketError: sendBluetoothData');
+            resolve(false);
+          }
+        });
+      });
     },
 
     /**
