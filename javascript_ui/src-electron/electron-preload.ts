@@ -35,7 +35,7 @@ contextBridge.exposeInMainWorld('myElectronAPI', {
     app.quit();
   },
   send: (channel, data) => {
-    const validChannels = ['set-system-time'];
+    const validChannels = ['set-system-time', 'sleep-device'];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
     }
