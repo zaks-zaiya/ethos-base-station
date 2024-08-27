@@ -50,10 +50,10 @@ class SensorService(Service):
     # Combine all data
     combined_data = numeric_data + location_data
 
-    # Pad the data to meet the block size requirement (assuming AES with 16-byte block size)
+    # Pad with null bytes to reach a multiple of the block size
     block_size = 16
-    padding_length = block_size - (len(combined_data) % block_size)
-    padded_data = combined_data + bytes([padding_length] * padding_length)
+    padding_length = (block_size - len(combined_data) % block_size) % block_size
+    padded_data = combined_data + b'\x00' * padding_length
 
     encrypted_data = aesEncryption.encrypt(padded_data)
     self.sensor_data.changed(encrypted_data)
