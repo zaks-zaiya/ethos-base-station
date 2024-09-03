@@ -92,6 +92,10 @@ const isValidDateTime = (dateTime: string): boolean => {
   return regex.test(dateTime);
 };
 
+ipcMain.on('sleep-device', (event) => {
+  powerSaveBlockerController.sleepDevice(event);
+});
+
 ipcMain.on('set-system-time', (event, newTime) => {
   if (newTime && isValidDateTime(newTime)) {
     exec(`sudo -n date --set="${newTime}"`, (error, stdout, stderr) => {

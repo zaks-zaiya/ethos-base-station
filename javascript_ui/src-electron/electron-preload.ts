@@ -34,20 +34,23 @@ contextBridge.exposeInMainWorld('myElectronAPI', {
   quit() {
     app.quit();
   },
-  send: (channel, data) => {
+  send: (channel: string, data: any) => {
     const validChannels = ['set-system-time', 'sleep-device'];
     if (validChannels.includes(channel)) {
+      console.log(`Sending ${channel} command to electron with data: ${data}`);
       ipcRenderer.send(channel, data);
+    } else {
+      console.error('Invalid electron command:', channel);
     }
   },
-  on: (channel, func) => {
-    const validChannels = ['set-system-time-response'];
+  on: (channel: string, func: any) => {
+    const validChannels = ['set-system-time-response', 'sleep-device-response'];
     if (validChannels.includes(channel)) {
       // Use a wrapper to call the passed function
       ipcRenderer.on(channel, (event, ...args) => func(...args));
     }
   },
-  removeAllListeners: (channel) => {
+  removeAllListeners: (channel: string) => {
     ipcRenderer.removeAllListeners(channel);
   },
 });

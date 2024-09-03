@@ -9,14 +9,7 @@ export default class PowerSaveBlockerController {
   private intervalId: NodeJS.Timeout | null = null;
 
   constructor() {
-    this.setupIpcListeners();
     this.setupPowerMonitor();
-  }
-
-  private setupIpcListeners() {
-    ipcMain.on('sleep-device', () => {
-      this.sleepDevice();
-    });
   }
 
   private setupPowerMonitor() {
@@ -63,14 +56,21 @@ export default class PowerSaveBlockerController {
     this.stopPowerSaveBlocker();
   }
 
-  async sleepDevice() {
-    this.stopPowerSaveBlocker();
+  async sleepDevice(event: Electron.IpcMainEvent) {
     console.log('Putting Raspberry Pi to sleep...');
+    this.stopPowerSaveBlocker();
     try {
       // Use 'sudo' to run the sleep command with elevated privileges
       await execPromise('sudo systemctl suspend');
-      console.log('Sleep command executed successfully');
+      event.reply('set-system-time-response', {
+        success: true,
+        message: 'Sleeping device',
+      });
     } catch (error) {
+      event.reply('sleep-device-response', {
+        success: false,
+        message: `Error setting time: ${error}`,
+      });
       console.error('Failed to put device to sleep:', error);
     }
   }

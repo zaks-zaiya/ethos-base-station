@@ -96,6 +96,13 @@ export default defineComponent({
           console.error(response.message);
         }
       });
+      window.myElectronAPI?.on('sleep-device-response', (response) => {
+        if (response.success) {
+          console.log(response.message);
+        } else {
+          console.error(response.message);
+        }
+      });
     });
 
     return {
