@@ -35,6 +35,8 @@
 
         <q-toolbar-title></q-toolbar-title>
 
+        <SleepButton />
+
         <q-btn
           v-if="$route.path !== '/settings'"
           @click="isShowCoolingModal = true"
@@ -96,6 +98,7 @@ import BaseCurrentTime from 'components/BaseCurrentTime.vue';
 import ModalNoConnection from 'components/ModalNoConnection.vue';
 import ModalCoolingInterventions from 'components/ModalCoolingInterventions.vue';
 import SimpleKeyboard from 'src/components/SimpleKeyboard.vue';
+import SleepButton from 'src/components/SleepButton.vue';
 import ModalHelp from 'src/components/ModalHelp.vue';
 import ModalHeatAlert from 'src/components/ModalHeatAlert.vue';
 import ModalVolume from 'src/components/ModalVolume.vue';
@@ -113,6 +116,7 @@ export default defineComponent({
     ModalHeatAlert,
     SimpleKeyboard,
     BaseCurrentTime,
+    SleepButton,
     ModalVolume,
     ModalFanInfo,
     BaseNetworkConnection,
