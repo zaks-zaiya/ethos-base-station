@@ -20,6 +20,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
   },
 
   state: () => ({
+    numberOfSensors: 4,
     allSensorData: [
       {
         id: undefined,
