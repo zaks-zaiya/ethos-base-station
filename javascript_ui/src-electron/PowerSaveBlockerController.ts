@@ -1,4 +1,4 @@
-import { powerSaveBlocker, ipcMain, powerMonitor } from 'electron';
+import { powerSaveBlocker, powerMonitor } from 'electron';
 import { exec } from 'child_process';
 import util from 'util';
 
@@ -60,8 +60,7 @@ export default class PowerSaveBlockerController {
     console.log('Putting Raspberry Pi to sleep...');
     this.stopPowerSaveBlocker();
     try {
-      // Use 'sudo' to run the sleep command with elevated privileges
-      await execPromise('sudo systemctl suspend');
+      await execPromise('xset dpms force off');
       event.reply('set-system-time-response', {
         success: true,
         message: 'Sleeping device',
