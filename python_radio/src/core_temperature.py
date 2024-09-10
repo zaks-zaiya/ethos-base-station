@@ -1,7 +1,11 @@
-import jos3
 from typing import TypedDict, Literal, Union
 from logger import Logger
 
+from helpers.machine_learning import load_model, load_scalers, simulate_initial, simulate_heat_exposure
+
+# Load scalers and model
+features_scaler, output_scaler = load_scalers()
+model = load_model()
 
 # Define data which is provided to core temp algorithm
 class RiskLevelData(TypedDict):
@@ -27,18 +31,20 @@ def calculate_change_core_temperature(data: RiskLevelData) -> Union[None, float]
     Logger.error('Error calculating core temp: missing parameters')
     return None
 
-  # This needs to be done as the JOS model seems to work best at
-  # exact decades (e.g., 50, 60, 70) up to the age of 70 years old
-  ageYears = ageYears // 10 * 10 # Round down age to nearest decade
-  ageYears = min(ageYears, 70) # Cap age to 70 years old
+  # Calculate core temperature using ridge regression model
 
-  model = jos3.JOS3(height=heightM, weight=weightKg, age=ageYears, sex=sex)
-  model.Ta = Ta
-  model.RH = RH
-  model.Va = 0.1
-  model.PAR = 1.6
-  model.simulate(180)
+  # Prepare input data
+  female = 1 if sex == 'female' else 0
+  body_parameters = [female, ageYears, heightM * 100, weightKg]
+  ambient_conditions = [Ta, RH]
 
-  start_core_temp = model.dict_results()['TcrPelvis'][0]
-  final_core_temp = model.dict_results()['TcrPelvis'][-1]
+  # Get starting core and skin temp
+  initial_body_conditions = simulate_initial(body_parameters, features_scaler, output_scaler, model)
+
+  # Simulate for the required time steps
+  custom_input = body_parameters + ambient_conditions + initial_body_conditions
+  time_steps = 540
+  final_core_temp, final_mtsk = simulate_heat_exposure(custom_input, features_scaler, output_scaler, model, time_steps)
+  start_core_temp, initial_mtsk = initial_body_conditions
+
   return final_core_temp - start_core_temp
