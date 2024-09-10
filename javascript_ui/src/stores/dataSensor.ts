@@ -168,7 +168,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
         const { id, temperature, humidity, voltage, rssi } = data;
 
         // Check it exists in the array
-        const i = this.allSensorData.findIndex(
+        const i = this.visibleSensors.findIndex(
           (dataSensor) => dataSensor.id == id
         );
         if (i < 0) {
