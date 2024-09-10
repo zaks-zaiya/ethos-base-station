@@ -14,7 +14,11 @@
   </div>
 
   <!-- For each sensor -->
-  <div v-for="(sensor, index) in visibleSensors" :key="index" class="q-mb-md">
+  <div
+    v-for="(sensor, index) in dataSensorStore.visibleSensors"
+    :key="index"
+    class="q-mb-md"
+  >
     <div class="row q-mb-md">
       <!-- Display sensor number -->
       <div class="col-2 text-bold">Sensor {{ index + 1 }}</div>
@@ -45,14 +49,13 @@
 
 <script lang="ts">
 import { useDataSensorStore } from 'src/stores/dataSensor';
-import { defineComponent, computed } from 'vue';
+import { defineComponent } from 'vue';
 import InputKeyboard from './InputKeyboard.vue';
 
 export default defineComponent({
   components: { InputKeyboard },
   setup() {
     const dataSensorStore = useDataSensorStore();
-    const { allSensorData } = useDataSensorStore();
     const roomTypes = [
       'Outside',
       'Main bedroom',
@@ -79,17 +82,11 @@ export default defineComponent({
       return 'Enter a valid ID (1-999)';
     };
 
-    const visibleSensors = computed(() => {
-      return allSensorData.slice(0, dataSensorStore.numberOfSensors);
-    });
-
     return {
       dataSensorStore,
-      allSensorData,
       roomTypes,
       checkSensorId,
       sensorOptions,
-      visibleSensors,
     };
   },
 });

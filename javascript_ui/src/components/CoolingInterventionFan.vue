@@ -65,7 +65,7 @@ export default defineComponent({
     }
 
     const sensorsWithIconData = computed(() => {
-      return dataSensorStore.allSensorData.map((sensor) => {
+      return dataSensorStore.visibleSensors.map((sensor) => {
         // Calculate status, and display icon accordingly
         let fanUse = getIconColor(shouldUseFan(sensor));
         // Extend sensor with icon and color data for fan use and blind use
