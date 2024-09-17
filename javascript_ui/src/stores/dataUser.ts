@@ -1,34 +1,6 @@
 import { defineStore } from 'pinia';
 import { UserData } from 'src/typings/data-types';
 
-function parseAustralianPhoneNumber(phoneNumber: string) {
-  // Remove all non-numeric characters (except '+')
-  const cleaned = phoneNumber.replace(/[^\d+]/g, '');
-
-  // Handle phone numbers starting with '+61'
-  if (cleaned.startsWith('+61')) {
-    return cleaned;
-  }
-
-  // Handle phone numbers starting with '61'
-  if (cleaned.startsWith('61')) {
-    return '+' + cleaned;
-  }
-
-  // Handle phone numbers starting with '04' (convert to '+614')
-  if (cleaned.startsWith('04')) {
-    return '+61' + cleaned.slice(1);
-  }
-
-  // Handle phone numbers starting with just 4
-  if (cleaned.startsWith('4')) {
-    return '+61' + cleaned;
-  }
-
-  // Default case: if the input doesn't match any expected format, return null
-  return null;
-}
-
 export const useDataUserStore = defineStore('dataUser', {
   persist: true,
 
@@ -42,8 +14,6 @@ export const useDataUserStore = defineStore('dataUser', {
     heightCm: undefined,
     weightKg: undefined,
     sex: undefined,
-    isSmsNotificationsEnabled: false,
-    phoneNumbers: [''],
   }),
 
   getters: {
@@ -59,11 +29,6 @@ export const useDataUserStore = defineStore('dataUser', {
         !state.heightCm ||
         !state.weightKg ||
         !state.sex
-      );
-    },
-    getParsedPhoneNumbers(state) {
-      return state.phoneNumbers.map((number) =>
-        parseAustralianPhoneNumber(number)
       );
     },
   },
@@ -148,20 +113,6 @@ export const useDataUserStore = defineStore('dataUser', {
         return true;
       }
       return 'Invalid weight value (1-399kg)';
-    },
-
-    checkPhoneNumber(phoneNumber: string) {
-      // Parse the phone number into a standardized format
-      const parsedNumber = parseAustralianPhoneNumber(phoneNumber);
-      // Define regex to check if parsed number is valid
-      const validPhoneNumberRegex = /^\+614\d{8}$/; // Should be +614 followed by 8 digits
-
-      if (!parsedNumber || !validPhoneNumberRegex.test(parsedNumber)) {
-        // Invalid number
-        return 'Invalid phone number';
-      }
-
-      return true;
     },
   },
 });

@@ -97,22 +97,23 @@
   <div class="q-mt-lg text-bold">Do you want to enable SMS notifications?</div>
   <div class="q-mt-lg">
     <q-toggle
-      v-model="dataUserStore.isSmsNotificationsEnabled"
+      v-model="dataPhoneNumberStore.isSmsNotificationsEnabled"
       label="Enable SMS Notifications"
     />
   </div>
 
   <!-- Phone Numbers -->
   <input-phone-numbers
-    v-if="dataUserStore.isSmsNotificationsEnabled"
-    v-model="dataUserStore.phoneNumbers"
-    :checkPhoneNumber="dataUserStore.checkPhoneNumber"
-    :parsePhoneNumber="dataUserStore.getParsedPhoneNumbers"
+    v-if="dataPhoneNumberStore.isSmsNotificationsEnabled"
+    v-model="dataPhoneNumberStore.phoneNumbers"
+    :checkPhoneNumber="dataPhoneNumberStore.checkPhoneNumber"
+    :parsePhoneNumber="dataPhoneNumberStore.getParsedPhoneNumbers"
   />
 </template>
 
 <script lang="ts">
 import { useDataUserStore } from 'src/stores/dataUser';
+import { useDataPhoneNumberStore } from 'src/stores/dataPhoneNumberStore';
 import { useDatabaseStore } from 'src/stores/database';
 import { computed, defineComponent } from 'vue';
 import InputKeyboard from './InputKeyboard.vue';
@@ -125,6 +126,7 @@ export default defineComponent({
   },
   setup() {
     const dataUserStore = useDataUserStore();
+    const dataPhoneNumberStore = useDataPhoneNumberStore();
     const databaseStore = useDatabaseStore();
 
     const userId = computed(() => dataUserStore.id);
@@ -136,15 +138,16 @@ export default defineComponent({
     ];
 
     const addPhoneNumber = () => {
-      dataUserStore.phoneNumbers.push('');
+      dataPhoneNumberStore.phoneNumbers.push('');
     };
 
     const removePhoneNumber = (index: number) => {
-      dataUserStore.phoneNumbers.splice(index, 1);
+      dataPhoneNumberStore.phoneNumbers.splice(index, 1);
     };
 
     return {
       dataUserStore,
+      dataPhoneNumberStore,
       databaseStore,
       userId,
       sexOptions,
