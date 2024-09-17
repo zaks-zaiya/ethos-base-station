@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 
 import { playAudio } from 'src/helpers/audioAlertDispatcher';
 import { useDataPreferencesStore } from 'src/stores/dataPreferences';
+import { useDataPhoneNumberStore } from 'src/stores/dataPhoneNumberStore';
 import { useDatabaseStore } from 'src/stores/database';
 import { useVolumeStore } from 'src/stores/volume';
 import { useSurveyStore } from 'src/stores/survey';
@@ -101,6 +102,7 @@ export const useDataAlertsStore = defineStore('dataAlerts', {
       const volumeStore = useVolumeStore();
       const surveyStore = useSurveyStore();
       const dataPreferencesStore = useDataPreferencesStore();
+      const dataPhoneNumberStore = useDataPhoneNumberStore();
 
       // Sanity check
       if (!sensorData.riskLevel) {
@@ -131,6 +133,14 @@ export const useDataAlertsStore = defineStore('dataAlerts', {
         volumePercent: volumeStore.volumePercent,
         dismissMethod: null,
       });
+
+      // Send SMS notification if risk level is high
+      if (sensorData.riskLevel === RiskLevel.HIGH && sensorData.location) {
+        dataPhoneNumberStore.sendSmsNotifications(
+          sensorData.location,
+          sensorData.riskLevel
+        );
+      }
     },
   },
 });
