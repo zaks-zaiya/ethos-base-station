@@ -48,7 +48,7 @@ export default defineComponent({
 
     const selectedRoom = ref<string | null>(null);
 
-    const availableRooms = dataSensorStore.allSensorData.map(
+    const availableRooms = dataSensorStore.visibleSensors.map(
       (sensorData) => sensorData.location
     );
 

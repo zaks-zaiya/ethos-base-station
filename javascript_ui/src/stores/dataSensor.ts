@@ -20,6 +20,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
   },
 
   state: () => ({
+    numberOfSensors: 4,
     allSensorData: [
       {
         id: undefined,
@@ -69,9 +70,13 @@ export const useDataSensorStore = defineStore('dataSensor', {
   }),
 
   getters: {
+    // The sensors that are visible based on how many were picked during setup
+    visibleSensors: (state) => {
+      return state.allSensorData.slice(0, state.numberOfSensors);
+    },
     // Check whether either the name or id of ANY of the sensors are undefined
-    containsUndefined: (state) => {
-      for (const sensor of state.allSensorData) {
+    containsUndefined() {
+      for (const sensor of this.visibleSensors) {
         // If no sensor ID or sensor name
         if (!sensor.id || !sensor.location) {
           return true;
@@ -109,8 +114,8 @@ export const useDataSensorStore = defineStore('dataSensor', {
       return coolestSensor;
     },
     // Return outdoor sensor values
-    getOutdoorSensor: (state) => {
-      const outsideIndex = findOutdoorSensorIndex(state.allSensorData);
+    getOutdoorSensor(state) {
+      const outsideIndex = findOutdoorSensorIndex(this.visibleSensors);
       return state.allSensorData[outsideIndex];
     },
     // Get deep copy of sensor data
@@ -118,9 +123,11 @@ export const useDataSensorStore = defineStore('dataSensor', {
       return deserializeSensorData(JSON.stringify(state)).allSensorData;
     },
     // Get sorted sensor data, where the outside sensor comes last in the list
-    getSortedSensorData: (state) => {
+    getSortedSensorData(state) {
       // Take a shallow copy of the array to prevent data mutation
-      const copyOfSensorData = [...state.allSensorData];
+      let copyOfSensorData = [...state.allSensorData];
+      // Slice array to length of visible sensors
+      copyOfSensorData = copyOfSensorData.slice(0, state.numberOfSensors);
       // Find index of the sensor that has 'out' in its name
       const outsideIndex = findOutdoorSensorIndex(copyOfSensorData);
       // If a sensor matches outside, push it to the end of the array
@@ -161,7 +168,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
         const { id, temperature, humidity, voltage, rssi } = data;
 
         // Check it exists in the array
-        const i = this.allSensorData.findIndex(
+        const i = this.visibleSensors.findIndex(
           (dataSensor) => dataSensor.id == id
         );
         if (i < 0) {

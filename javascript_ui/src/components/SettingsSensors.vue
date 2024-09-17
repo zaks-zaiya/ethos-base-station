@@ -1,6 +1,24 @@
 <template>
+  <!-- Dropdown to select the number of sensors -->
+  <div class="q-mb-md">
+    <q-select
+      outlined
+      v-model="dataSensorStore.numberOfSensors"
+      :options="sensorOptions"
+      class="q-mb-md"
+      label="Number of Sensors"
+      hint="How many sensors will be installed in this home?"
+      behavior="menu"
+    />
+    <q-separator />
+  </div>
+
   <!-- For each sensor -->
-  <div v-for="(sensor, index) in allSensorData" :key="index" class="q-mb-md">
+  <div
+    v-for="(sensor, index) in dataSensorStore.visibleSensors"
+    :key="index"
+    class="q-mb-md"
+  >
     <div class="row q-mb-md">
       <!-- Display sensor number -->
       <div class="col-2 text-bold">Sensor {{ index + 1 }}</div>
@@ -37,7 +55,7 @@ import InputKeyboard from './InputKeyboard.vue';
 export default defineComponent({
   components: { InputKeyboard },
   setup() {
-    const { allSensorData } = useDataSensorStore();
+    const dataSensorStore = useDataSensorStore();
     const roomTypes = [
       'Outside',
       'Main bedroom',
@@ -54,6 +72,8 @@ export default defineComponent({
       'Hallway',
     ];
 
+    const sensorOptions = Array.from({ length: 4 }, (_, i) => i + 1); // Options for 1 to 4 sensors
+
     const checkSensorId = (newId: number) => {
       // Check if ID is valid
       if (newId > 0 && newId < 1000) {
@@ -63,12 +83,11 @@ export default defineComponent({
     };
 
     return {
-      allSensorData,
+      dataSensorStore,
       roomTypes,
       checkSensorId,
+      sensorOptions,
     };
   },
 });
 </script>
-
-<style scoped lang="scss"></style>

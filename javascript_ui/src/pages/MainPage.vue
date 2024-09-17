@@ -1,13 +1,28 @@
 <template>
   <q-page class="row">
     <div
-      class="col-xs-6 col-sm-4 display-component"
-      v-for="sensor in sortedSensorData"
+      :class="[
+        'display-component',
+        dataSensorStore.numberOfSensors > 2
+          ? 'col-xs-6 col-sm-4'
+          : dataSensorStore.numberOfSensors === 1
+          ? 'col-xs-6 col-sm-12'
+          : 'col-xs-6 col-sm-6',
+      ]"
+      v-for="sensor in dataSensorStore.getSortedSensorData"
       :key="sensor.id"
     >
       <CardSensor :sensor="sensor"></CardSensor>
     </div>
-    <div v-if="true" class="col-xs-12 col-sm-8 display-component">
+    <div
+      v-if="true"
+      :class="[
+        'display-component',
+        dataSensorStore.numberOfSensors < 4
+          ? 'col-xs-12 col-sm-12'
+          : 'col-xs-12 col-sm-8',
+      ]"
+    >
       <CardForecast />
     </div>
   </q-page>
@@ -24,8 +39,8 @@ export default defineComponent({
   name: 'MainPage',
   components: { CardSensor, CardForecast },
   setup() {
-    const sortedSensorData = useDataSensorStore().getSortedSensorData;
-    return { sortedSensorData };
+    const dataSensorStore = useDataSensorStore();
+    return { dataSensorStore };
   },
 });
 </script>

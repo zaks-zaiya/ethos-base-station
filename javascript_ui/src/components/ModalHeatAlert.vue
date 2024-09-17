@@ -94,7 +94,7 @@ export default defineComponent({
 
     // Function to get the current indoor rooms that are at a certain risk level
     const getCurrentRoomsAtRiskLevel = (riskLevel: RiskLevel) => {
-      return dataSensorStore.allSensorData
+      return dataSensorStore.visibleSensors
         .filter((sensorData) => {
           return (
             !isOutdoorSensor(sensorData) && sensorData.riskLevel === riskLevel
