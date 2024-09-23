@@ -25,7 +25,7 @@ export const useSocketBomStore = defineStore('socketBom', {
     async checkForBomSurvey() {
       try {
         const response = await fetch(
-          `https://${process.env.COUCH_DB_URL}:8080/displaySurvey`
+          `https://${process.env.COUCH_DB_URL}/server/displaySurvey`
         );
         if (!response.ok) {
           throw new Error('Network response was not ok');

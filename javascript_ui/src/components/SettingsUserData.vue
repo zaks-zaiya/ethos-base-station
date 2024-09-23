@@ -92,20 +92,41 @@
     type="radio"
     v-model="dataUserStore.sex"
   />
+
+  <!-- SMS Notifications -->
+  <div class="q-mt-lg text-bold">Do you want to enable SMS notifications?</div>
+  <div class="q-mt-lg">
+    <q-toggle
+      v-model="dataPhoneNumberStore.isSmsNotificationsEnabled"
+      label="Enable SMS Notifications"
+    />
+  </div>
+
+  <!-- Phone Numbers -->
+  <input-phone-numbers
+    v-if="dataPhoneNumberStore.isSmsNotificationsEnabled"
+    v-model="dataPhoneNumberStore.phoneNumbers"
+    :checkPhoneNumber="dataPhoneNumberStore.checkPhoneNumber"
+    :parsePhoneNumber="dataPhoneNumberStore.getParsedPhoneNumbers"
+  />
 </template>
 
 <script lang="ts">
 import { useDataUserStore } from 'src/stores/dataUser';
+import { useDataPhoneNumberStore } from 'src/stores/dataPhoneNumberStore';
 import { useDatabaseStore } from 'src/stores/database';
 import { computed, defineComponent } from 'vue';
 import InputKeyboard from './InputKeyboard.vue';
+import InputPhoneNumbers from './InputPhoneNumbers.vue';
 
 export default defineComponent({
   components: {
     InputKeyboard,
+    InputPhoneNumbers,
   },
   setup() {
     const dataUserStore = useDataUserStore();
+    const dataPhoneNumberStore = useDataPhoneNumberStore();
     const databaseStore = useDatabaseStore();
 
     const userId = computed(() => dataUserStore.id);
@@ -116,11 +137,22 @@ export default defineComponent({
       { label: 'Intersex/Prefer not to say', value: 'other' },
     ];
 
+    const addPhoneNumber = () => {
+      dataPhoneNumberStore.phoneNumbers.push('');
+    };
+
+    const removePhoneNumber = (index: number) => {
+      dataPhoneNumberStore.phoneNumbers.splice(index, 1);
+    };
+
     return {
       dataUserStore,
+      dataPhoneNumberStore,
       databaseStore,
       userId,
       sexOptions,
+      addPhoneNumber,
+      removePhoneNumber,
     };
   },
 });
