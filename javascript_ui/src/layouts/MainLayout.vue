@@ -20,7 +20,11 @@
           @click="showSettingsButtonHandler.handlePress()"
         />
         <q-btn
-          v-if="$route.path !== '/' && $route.path !== '/initialize'"
+          v-if="
+            $route.path !== '/' &&
+            $route.path !== '/initialize' &&
+            $route.path !== '/phoneAppHome'
+          "
           to="/"
           color="info"
           label="go back to home"
@@ -38,7 +42,7 @@
         <SleepButton />
 
         <q-btn
-          v-if="$route.path !== '/settings'"
+          v-if="$route.path !== '/settings' && $route.path !== '/phoneAppHome'"
           @click="isShowCoolingModal = true"
           class="q-mr-lg fontsize-16"
           color="info"
@@ -46,7 +50,7 @@
           icon="ac_unit"
         />
         <q-btn
-          v-if="$route.path !== '/settings'"
+          v-if="$route.path !== '/settings' && $route.path !== '/phoneAppHome'"
           @click="isShowHelpModal = true"
           class="q-mr-lg fontsize-16"
           color="primary"
@@ -54,6 +58,7 @@
           icon="question_mark"
         />
         <q-btn
+          v-if="$route.path !== '/phoneAppHome'"
           @click="isShowVolumeModal = true"
           class="fontsize-16"
           color="primary"

@@ -41,9 +41,16 @@ export default route(function (/* { store, ssrContext } */) {
   const dataUserStore = useDataUserStore();
   const dataSensorStore = useDataSensorStore();
   Router.beforeEach((to) => {
+    const homePath = '/';
+    const phoneAppHomePath = '/phoneAppHome';
     const initializePath = '/initialize';
     const settingsPath = '/settings';
     console.log(to.path);
+
+    // New route guard for phone app group
+    if (to.path === homePath && dataUserStore.isPhoneAppGroup) {
+      return phoneAppHomePath;
+    }
 
     if (
       // Any data is undefined

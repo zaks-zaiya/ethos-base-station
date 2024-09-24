@@ -8,6 +8,12 @@ const routes: RouteRecordRaw[] = [
   },
 
   {
+    path: '/phoneAppHome',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [{ path: '', component: () => import('pages/PhoneAppPage.vue') }],
+  },
+
+  {
     path: '/settings',
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', component: () => import('pages/SettingsPage.vue') }],
