@@ -10,6 +10,7 @@ import { SensorData, SocketSensorData } from 'src/typings/data-types';
 import { useSocketStore } from 'src/stores/socket';
 import { useDatabaseStore } from 'src/stores/database';
 import { useDataAlertsStore } from './dataAlerts';
+import { useDataUserStore } from './dataUser';
 
 export const useDataSensorStore = defineStore('dataSensor', {
   persist: {
@@ -143,6 +144,7 @@ export const useDataSensorStore = defineStore('dataSensor', {
       // Load stores
       const databaseStore = useDatabaseStore();
       const dataAlertsStore = useDataAlertsStore();
+      const dataUserStore = useDataUserStore();
       // Setup socket store if it is not yet ready
       const socketStore = useSocketStore();
       if (!socketStore.isConnected) {
@@ -189,12 +191,14 @@ export const useDataSensorStore = defineStore('dataSensor', {
         const oldRiskLevel = sensorData.riskLevel; // Save old risk level
         sensorData.riskLevel = getRiskLevel(sensorData.coreTemperatureDelta);
 
-        // Send sensor data via bluetooth
-        const bluetoothSuccess = await socketStore.sendBluetoothData(
-          sensorData
-        );
-        if (!bluetoothSuccess) {
-          console.error('Error sending bluetooth data');
+        // Send sensor data via bluetooth (if app group)
+        if (dataUserStore.isPhoneAppGroup) {
+          const bluetoothSuccess = await socketStore.sendBluetoothData(
+            sensorData
+          );
+          if (!bluetoothSuccess) {
+            console.error('Error sending bluetooth data');
+          }
         }
 
         // Send sensor data to database
