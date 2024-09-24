@@ -41,6 +41,7 @@ export interface UserData {
   heightCm: undefined | number;
   weightKg: undefined | number;
   sex: undefined | 'male' | 'female' | 'other';
+  isPhoneAppGroup: boolean;
 }
 
 // Preferences

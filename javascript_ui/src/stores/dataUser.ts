@@ -14,6 +14,7 @@ export const useDataUserStore = defineStore('dataUser', {
     heightCm: undefined,
     weightKg: undefined,
     sex: undefined,
+    isPhoneAppGroup: true,
   }),
 
   getters: {

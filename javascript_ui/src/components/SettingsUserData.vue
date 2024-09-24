@@ -1,5 +1,18 @@
 <template>
   <div class="text-h6 q-mb-md">User Data</div>
+  <!-- Carer group or App group -->
+  <div class="q-mt-lg text-bold">
+    Is this user part of the Phone App group or Carer group?
+  </div>
+  <q-option-group
+    :options="researchGroupOptions"
+    size="lg"
+    class="q-mb-lg text"
+    type="radio"
+    v-model="dataUserStore.isPhoneAppGroup"
+  />
+
+  <div class="q-mt-lg text-bold">Database information</div>
   <!-- User ID -->
   <input-keyboard
     v-model.number="dataUserStore.id"
@@ -52,6 +65,7 @@
     </div>
   </div>
 
+  <div class="q-mt-lg text-bold">User information</div>
   <!-- Postcode -->
   <input-keyboard
     v-model.number="dataUserStore.postcode"
@@ -89,6 +103,8 @@
   <div class="q-mt-lg text-bold">What is your birth sex?</div>
   <q-option-group
     :options="sexOptions"
+    size="lg"
+    class="text"
     type="radio"
     v-model="dataUserStore.sex"
   />
@@ -137,6 +153,14 @@ export default defineComponent({
       { label: 'Intersex/Prefer not to say', value: 'other' },
     ];
 
+    const researchGroupOptions = [
+      {
+        label: 'Phone app group (will install app on own phone)',
+        value: true,
+      },
+      { label: 'Carer group (will use base station)', value: false },
+    ];
+
     const addPhoneNumber = () => {
       dataPhoneNumberStore.phoneNumbers.push('');
     };
@@ -151,6 +175,7 @@ export default defineComponent({
       databaseStore,
       userId,
       sexOptions,
+      researchGroupOptions,
       addPhoneNumber,
       removePhoneNumber,
     };
