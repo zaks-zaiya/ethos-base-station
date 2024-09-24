@@ -4,7 +4,8 @@
       You can press the power button at the top right to sleep the device
     </div>
     <div class="image-container">
-      <img src="ethos.svg" height="250" />
+      <img src="ethos.svg" height="100" class="q-mr-xl" />
+      <img src="griffith.svg" height="85" />
     </div>
   </q-page>
 </template>
