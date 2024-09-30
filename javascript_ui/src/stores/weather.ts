@@ -48,6 +48,10 @@ export const useWeatherStore = defineStore('weather', {
       const updateWeather = async () => {
         const latitude = dataUserStore.latitude;
         const longitude = dataUserStore.longitude;
+        if (dataUserStore.isPhoneAppGroup) {
+          console.log('Skipping weather check, user is in phone app group');
+          return;
+        }
         console.log('Updating weather...');
         if (!(latitude && longitude)) {
           this.errorMessage =
