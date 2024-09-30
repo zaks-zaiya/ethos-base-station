@@ -7,6 +7,7 @@ const execPromise = util.promisify(exec);
 export default class PowerSaveBlockerController {
   private powerSaveBlockerId: number | null = null;
   private intervalId: NodeJS.Timeout | null = null;
+  private shouldPreventDisplaySleep = false;
 
   constructor() {
     this.setupPowerMonitor();
@@ -29,7 +30,7 @@ export default class PowerSaveBlockerController {
     const now = new Date();
     const hours = now.getHours();
 
-    if (hours >= 5 && hours < 21) {
+    if (this.shouldPreventDisplaySleep && hours >= 5 && hours < 21) {
       this.startPowerSaveBlocker();
     } else {
       this.stopPowerSaveBlocker();
@@ -71,6 +72,26 @@ export default class PowerSaveBlockerController {
         message: `Error setting time: ${error}`,
       });
       console.error('Failed to put device to sleep:', error);
+    }
+  }
+
+  setShouldPreventDisplaySleep(
+    event: Electron.IpcMainEvent,
+    isPreventSleep: boolean
+  ) {
+    try {
+      this.shouldPreventDisplaySleep = isPreventSleep;
+      this.updatePowerSaveBlocker();
+      event.reply('update-prevent-display-sleep-response', {
+        success: true,
+        message: `Set shouldPreventDisplaySleep to: ${isPreventSleep}`,
+      });
+    } catch (error) {
+      event.reply('update-prevent-display-sleep-response', {
+        success: false,
+        message: `Error setting shouldPreventDisplaySleep: ${error}`,
+      });
+      console.error('Failed to update shouldPreventDisplaySleep:', error);
     }
   }
 

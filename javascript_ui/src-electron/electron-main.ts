@@ -96,6 +96,13 @@ ipcMain.on('sleep-device', (event) => {
   powerSaveBlockerController.sleepDevice(event);
 });
 
+ipcMain.on('update-prevent-display-sleep', (event, isPreventSleep) => {
+  powerSaveBlockerController.setShouldPreventDisplaySleep(
+    event,
+    isPreventSleep
+  );
+});
+
 ipcMain.on('set-system-time', (event, newTime) => {
   if (newTime && isValidDateTime(newTime)) {
     exec(`sudo -n date --set="${newTime}"`, (error, stdout, stderr) => {

@@ -42,6 +42,35 @@ export default defineComponent({
     const databaseStore = useDatabaseStore();
     databaseStore.initializeDatabase();
     const dataUserStore = useDataUserStore();
+    // Set prevent display sleep depending on the group
+    window.myElectronAPI?.send(
+      'update-prevent-display-sleep',
+      !dataUserStore.isPhoneAppGroup
+    );
+    watch(
+      () => dataUserStore.isPhoneAppGroup,
+      (newValue) => {
+        // Prevent display sleeping for non-phone group, but allow sleeping for phone app group
+        // This is why we inverse
+        const isPreventSleep = !newValue;
+        console.log('Updating to prevent display sleeping:', isPreventSleep);
+        window.myElectronAPI?.send(
+          'update-prevent-display-sleep',
+          isPreventSleep
+        );
+      }
+    );
+    // Listen to response for preventing display sleep
+    window.myElectronAPI?.on(
+      'update-prevent-display-sleep-response',
+      (response) => {
+        if (response.success) {
+          console.log(response.message);
+        } else {
+          console.error(response.message);
+        }
+      }
+    );
     // Update database link when user id changes
     watch(
       () => [dataUserStore.id, dataUserStore.password],
