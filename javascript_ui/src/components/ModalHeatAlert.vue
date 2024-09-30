@@ -66,6 +66,7 @@ import { useDataSensorStore } from 'stores/dataSensor';
 import { useVolumeStore } from 'src/stores/volume';
 import { useDatabaseStore } from 'src/stores/database';
 import { useDataAlertsStore } from 'src/stores/dataAlerts';
+import { useDataUserStore } from 'src/stores/dataUser';
 
 export default defineComponent({
   name: 'ModalHeatAlert',
@@ -73,6 +74,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const dataSensorStore = useDataSensorStore();
     const dataAlertsStore = useDataAlertsStore();
+    const dataUserStore = useDataUserStore();
     const volumeStore = useVolumeStore();
     const databaseStore = useDatabaseStore();
 
@@ -89,7 +91,10 @@ export default defineComponent({
 
     // Whether to show the modal
     const showModal = computed(
-      () => dataAlertsStore.alertRiskLevel > RiskLevel.LOW
+      () =>
+        // Don't show modal in phone app group
+        !dataUserStore.isPhoneAppGroup &&
+        dataAlertsStore.alertRiskLevel > RiskLevel.LOW
     );
 
     // Function to get the current indoor rooms that are at a certain risk level

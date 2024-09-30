@@ -13,7 +13,7 @@
     full-width
     full-height
     persistent
-    v-model="surveyStore.isShowSurveyModal"
+    v-model="isShowModal"
     @hide="onHide"
   >
     <BaseModalScroll>
@@ -215,19 +215,28 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, watch, ref } from 'vue';
+import { defineComponent, watch, ref, computed } from 'vue';
 import BaseModalScroll from './BaseModalScroll.vue';
 import { useSurveyStore } from 'src/stores/survey';
 import { coolingStrategies } from 'src/helpers/coolingStrategies';
 import InputKeyboard from 'src/components/InputKeyboard.vue';
 import { useKeyboardStore } from 'src/stores/keyboard';
+import { useDataUserStore } from 'src/stores/dataUser';
 
 export default defineComponent({
   name: 'ModalSurvey',
   components: { BaseModalScroll, InputKeyboard },
   setup() {
     const surveyStore = useSurveyStore();
+    const dataUserStore = useDataUserStore();
     const keyboardStore = useKeyboardStore();
+
+    // Whether to show the modal
+    const isShowModal = computed(
+      () =>
+        // Don't show modal in phone app group
+        !dataUserStore.isPhoneAppGroup && surveyStore.isShowSurveyModal
+    );
 
     const onHide = () => {
       // Post data to store when survey closed
@@ -288,6 +297,7 @@ export default defineComponent({
     );
 
     return {
+      isShowModal,
       surveyStore,
       disableCloseButton,
       onHide,

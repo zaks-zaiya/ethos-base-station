@@ -9,6 +9,7 @@ import { useSurveyStore } from 'src/stores/survey';
 
 import { RiskLevel, SensorData } from 'src/typings/data-types';
 import { isOutdoorSensor } from 'src/helpers/dataSensor';
+import { useDataUserStore } from './dataUser';
 
 /**
  * Deserialize a given string representation of sensor data.
@@ -103,14 +104,17 @@ export const useDataAlertsStore = defineStore('dataAlerts', {
       const surveyStore = useSurveyStore();
       const dataPreferencesStore = useDataPreferencesStore();
       const dataPhoneNumberStore = useDataPhoneNumberStore();
+      const dataUserStore = useDataUserStore();
 
       // Sanity check
       if (!sensorData.riskLevel) {
         return;
       }
 
-      // Display alert
+      // Increment alert count for survey
       surveyStore.incrementAlertCount();
+
+      // Display alert
       this.alertRiskLevel = sensorData.riskLevel;
 
       // Update last alert time
@@ -120,12 +124,14 @@ export const useDataAlertsStore = defineStore('dataAlerts', {
         this.lastAlerts[RiskLevel.MEDIUM] = currentTime;
       }
 
-      // Play audio
-      playAudio(
-        dataPreferencesStore.audioType,
-        sensorData.riskLevel,
-        sensorData
-      );
+      // Play audio (if not phone app group)
+      if (!dataUserStore.isPhoneAppGroup) {
+        playAudio(
+          dataPreferencesStore.audioType,
+          sensorData.riskLevel,
+          sensorData
+        );
+      }
 
       // Record alert in database
       databaseStore.postDocument('alert', {
@@ -135,7 +141,7 @@ export const useDataAlertsStore = defineStore('dataAlerts', {
       });
 
       // Send push notifications
-      if (sensorData.location) {
+      if (sensorData.location && dataUserStore.isPhoneAppGroup) {
         dataPhoneNumberStore.sendAlertPushNotifications(
           sensorData.location,
           sensorData.riskLevel
