@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { useDataUserStore } from 'src/stores/dataUser';
 import { RiskLevel } from 'src/typings/data-types';
+import { makeApiRequest } from 'src/helpers/server';
 
 interface PhoneNumberState {
   isSmsNotificationsEnabled: boolean;
@@ -33,45 +34,6 @@ function parseAustralianPhoneNumber(phoneNumber: string) {
 
   // Default case: if the input doesn't match any expected format, return null
   return null;
-}
-
-async function sendSMSAlert(
-  userId: string | number,
-  phoneNumber: string,
-  roomName: string,
-  severity: string
-) {
-  const url = `https://${process.env.COUCH_DB_URL}/server/displaySurvey`;
-  const data = { userId, phoneNumber, roomName, severity };
-
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization:
-          'Basic ' +
-          // TODO: Implement Username and Password for middleware
-          btoa(
-            import.meta.env.VITE_SMS_USERNAME +
-              ':' +
-              import.meta.env.VITE_SMS_PASSWORD
-          ),
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const result = await response.text();
-    console.log(result);
-    return result;
-  } catch (error) {
-    console.error('Error:', error);
-    return null;
-  }
 }
 
 export const useDataPhoneNumberStore = defineStore('dataPhoneNumber', {
@@ -112,7 +74,7 @@ export const useDataPhoneNumberStore = defineStore('dataPhoneNumber', {
         return;
       }
 
-      let severityString = '';
+      let severityString: 'medium' | 'high' = 'medium';
       if (severity === RiskLevel.LOW) {
         // Dont send alert
         console.warn('Trying to send text message alert at low severity');
@@ -131,12 +93,12 @@ export const useDataPhoneNumberStore = defineStore('dataPhoneNumber', {
       );
 
       for (const phoneNumber of validPhoneNumbers) {
-        const result = await sendSMSAlert(
-          id,
+        const result = await makeApiRequest('sendSMSNotification', {
+          userId: id.toString(),
           phoneNumber,
           roomName,
-          severityString
-        );
+          severity: severityString,
+        });
         if (result) {
           console.log(`Alert sent to ${phoneNumber}`);
         } else {
@@ -157,6 +119,63 @@ export const useDataPhoneNumberStore = defineStore('dataPhoneNumber', {
       }
 
       return true;
+    },
+
+    async sendAlertPushNotifications(roomName: string, severity: RiskLevel) {
+      const { id } = useDataUserStore();
+      if (!id) {
+        console.warn('User ID undefined');
+        return;
+      }
+
+      let severityString: 'medium' | 'high' = 'medium';
+      if (severity === RiskLevel.LOW) {
+        console.warn('Trying to send push notification at low severity');
+        return;
+      } else if (severity === RiskLevel.MEDIUM) {
+        severityString = 'medium';
+      } else if (severity === RiskLevel.HIGH) {
+        severityString = 'high';
+      } else {
+        console.error('Invalid severity level passed to push notifications');
+        return;
+      }
+
+      const result = await makeApiRequest('sendAlertPushNotification', {
+        identity: id.toString(),
+        roomName,
+        severity: severityString,
+      });
+      if (result) {
+        console.log('Push notification sent');
+      } else {
+        console.error('Failed to send push notification');
+      }
+    },
+
+    async sendSurveyNotification(surveyType: 'bom' | 'alert' | 'both') {
+      const { id, isPhoneAppGroup } = useDataUserStore();
+      if (!isPhoneAppGroup) {
+        console.warn(
+          'Not in phone app group, not sending survey push notification'
+        );
+      }
+      if (!id) {
+        console.warn('User ID undefined');
+        return;
+      }
+
+      const result = await makeApiRequest('sendSurveyPushNotification', {
+        identity: id.toString(),
+        surveyType,
+      });
+      if (result) {
+        console.log(`Survey notification sent for ${surveyType} survey(s)`);
+      } else {
+        console.error(
+          `Failed to send survey notification for ${surveyType} survey(s)`
+        );
+      }
     },
   },
 });

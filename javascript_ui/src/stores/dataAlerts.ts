@@ -134,6 +134,14 @@ export const useDataAlertsStore = defineStore('dataAlerts', {
         dismissMethod: null,
       });
 
+      // Send push notifications
+      if (sensorData.location) {
+        dataPhoneNumberStore.sendAlertPushNotifications(
+          sensorData.location,
+          sensorData.riskLevel
+        );
+      }
+
       // Send SMS notification if risk level is high
       if (sensorData.riskLevel === RiskLevel.HIGH && sensorData.location) {
         dataPhoneNumberStore.sendSmsNotifications(
