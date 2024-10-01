@@ -68,6 +68,7 @@
   <div class="q-mt-lg text-bold">User information</div>
   <!-- Postcode -->
   <input-keyboard
+    v-if="!dataUserStore.isPhoneAppGroup"
     v-model.number="dataUserStore.postcode"
     :customRule="dataUserStore.checkPostcode"
     :hint="`Lat: ${dataUserStore.latitude}, Lon: ${dataUserStore.longitude}`"

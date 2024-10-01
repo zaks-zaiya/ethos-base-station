@@ -23,9 +23,9 @@ export const useDataUserStore = defineStore('dataUser', {
       return (
         !state.id ||
         !state.password ||
-        !state.postcode ||
-        !state.latitude ||
-        !state.longitude ||
+        (!state.isPhoneAppGroup && !state.postcode) ||
+        (!state.isPhoneAppGroup && !state.latitude) ||
+        (!state.isPhoneAppGroup && !state.longitude) ||
         !state.ageYears ||
         !state.heightCm ||
         !state.weightKg ||
