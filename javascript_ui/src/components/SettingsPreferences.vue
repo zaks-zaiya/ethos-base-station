@@ -17,26 +17,6 @@
           :val="props.row.value"
         />
         {{ props.row.label }}
-        <!-- Show status of TTS with reload button if offline -->
-        <template
-          v-if="props.row.value === AudioType.TTS && !isTextToSpeechAvailable"
-        >
-          (Offline)
-          <div>
-            <q-spinner
-              v-if="isTextToSpeechAvailable === undefined"
-              color="primary"
-              size="2em"
-              :thickness="10"
-            />
-            <q-btn
-              v-else
-              label="Reload"
-              color="primary"
-              @click.stop="reloadResponsiveVoice()"
-            ></q-btn>
-          </div>
-        </template>
       </q-td>
     </template>
     <template v-slot:body-cell-medium-priority="props">
@@ -155,23 +135,11 @@
 
 <script lang="ts">
 import { QTableProps } from 'quasar';
-import {
-  playAudio,
-  stopAudio,
-  isResponsiveVoiceDefined,
-} from 'src/helpers/audioAlertDispatcher';
+import { playAudio, stopAudio } from 'src/helpers/audioAlertDispatcher';
 import { coolingStrategies } from 'src/helpers/coolingStrategies';
 import { useDataPreferencesStore } from 'src/stores/dataPreferences';
 import InputKeyboard from './InputKeyboard.vue';
-import {
-  Ref,
-  computed,
-  defineComponent,
-  onBeforeUnmount,
-  onMounted,
-  reactive,
-  ref,
-} from 'vue';
+import { computed, defineComponent, onBeforeUnmount, reactive } from 'vue';
 import { AudioType, RiskLevel } from 'src/typings/data-types';
 
 interface TableOptions {
@@ -183,11 +151,6 @@ export default defineComponent({
   components: { InputKeyboard },
   setup() {
     const dataPreferencesStore = useDataPreferencesStore();
-    const isTextToSpeechAvailable: Ref<boolean | undefined> = ref(false);
-
-    onMounted(() => {
-      isTextToSpeechAvailable.value = isResponsiveVoiceDefined();
-    });
 
     onBeforeUnmount(() => {
       dataPreferencesStore.postToDatabase();
@@ -196,22 +159,16 @@ export default defineComponent({
     // AUDIO TONE OPTIONS
     const isPlayingMedium = reactive<Record<AudioType, boolean>>({
       [AudioType.TONE]: false,
-      [AudioType.TTS]: false,
     });
 
     const isPlayingHigh = reactive<Record<AudioType, boolean>>({
       [AudioType.TONE]: false,
-      [AudioType.TTS]: false,
     });
 
     let audioOptions: Array<TableOptions> = [
       {
         label: 'Tone alerts',
         value: AudioType.TONE,
-      },
-      {
-        label: 'Text to speech alerts',
-        value: AudioType.TTS,
       },
     ];
 
@@ -245,7 +202,7 @@ export default defineComponent({
           stopAudio();
         } else {
           isPlayingMedium[row.value] = true;
-          await playAudio(row.value, riskLevel);
+          await playAudio(riskLevel);
           isPlayingMedium[row.value] = false;
         }
       } else if (riskLevel === RiskLevel.HIGH) {
@@ -253,7 +210,7 @@ export default defineComponent({
           stopAudio();
         } else {
           isPlayingHigh[row.value] = true;
-          await playAudio(row.value, riskLevel);
+          await playAudio(riskLevel);
           isPlayingHigh[row.value] = false;
         }
       }
@@ -262,42 +219,6 @@ export default defineComponent({
     const rowClick = (evt: Event, row: TableOptions) => {
       // Update group to be the value of the clicked row
       dataPreferencesStore.audioType = row.value;
-    };
-
-    const reloadResponsiveVoice = () => {
-      // Set the status as undefined to trigger spinner
-      isTextToSpeechAvailable.value = undefined;
-
-      // Get the existing script element
-      const existingScript = document.querySelector(
-        'script[src^="https://code.responsivevoice.org/responsivevoice.js"]'
-      );
-
-      // If the script exists, remove it from the document
-      if (existingScript) {
-        existingScript.remove();
-      }
-
-      // Create a new script element
-      const newScript = document.createElement('script');
-      newScript.src =
-        'https://code.responsivevoice.org/responsivevoice.js?key=' +
-        process.env.RESPONSIVE_VOICE_API_KEY;
-
-      // Event listener for successful script load
-      newScript.addEventListener('load', () => {
-        console.log('Responsive voice loaded');
-        isTextToSpeechAvailable.value = isResponsiveVoiceDefined();
-      });
-
-      // Event listener for script load failure
-      newScript.addEventListener('error', (err) => {
-        console.error('Failed to load ResponsiveVoice script:', err);
-        isTextToSpeechAvailable.value = isResponsiveVoiceDefined();
-      });
-
-      // Load script
-      document.body.appendChild(newScript);
     };
 
     const coolingStrategyColumns: QTableProps['columns'] = [
@@ -371,14 +292,12 @@ export default defineComponent({
     return {
       coolingStrategies,
       AudioType,
-      isTextToSpeechAvailable,
       RiskLevel,
       dataPreferencesStore,
       audioOptions,
       audioColumns,
       playDemoAudio,
       rowClick,
-      reloadResponsiveVoice,
       isPlayingMedium,
       isPlayingHigh,
       coolingStrategyColumns,

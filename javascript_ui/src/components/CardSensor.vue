@@ -1,5 +1,5 @@
 <template>
-  <q-card class="full-height" :class="backgroundColor" @click="readSensorData">
+  <q-card class="full-height" :class="backgroundColor">
     <q-icon
       style="margin-top: 70px"
       class="absolute-right q-ma-sm"
@@ -56,7 +56,6 @@
 import { defineComponent, PropType, computed, inject } from 'vue';
 import { isOfflineSensor } from 'src/helpers/dataSensor';
 import { SensorData, RiskLevel } from 'src/typings/data-types';
-import { playTextToSpeech } from 'src/helpers/audioAlertDispatcher';
 import { shouldUseFan } from 'src/helpers/fanAndWindowUse';
 import { useDateTimeStore } from 'src/stores/dateTime';
 
@@ -170,32 +169,6 @@ export default defineComponent({
       return strTime + ', ' + lastSeen.toLocaleDateString();
     });
 
-    let readRiskLevel = () => {
-      switch (props.sensor.riskLevel) {
-        case RiskLevel.LOW:
-          return 'low';
-        case RiskLevel.MEDIUM:
-          return 'medium';
-        case RiskLevel.HIGH:
-          return 'high';
-        default:
-          // No emoticon
-          return '';
-      }
-    };
-
-    const readSensorData = () => {
-      const text = `The ${props.sensor.location} is ${
-        props.sensor.temperature
-          ? props.sensor.temperature.toFixed(1)
-          : 'undefined'
-      } degrees celsius, with a relative humidity of ${
-        props.sensor.humidity ? props.sensor.humidity.toFixed(1) : 'undefined'
-      }%. Your risk level in this room is ${readRiskLevel()}`;
-
-      playTextToSpeech(text);
-    };
-
     return {
       isShowFanModel,
       isDisplayFanWarning,
@@ -206,7 +179,6 @@ export default defineComponent({
       backgroundColor,
       formattedLastSeen,
       emoticonStyle,
-      readSensorData,
     };
   },
 });

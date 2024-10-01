@@ -44,13 +44,6 @@ test.describe('settings', () => {
     // Select preferences tab
     await page.getByText('Preferences').click();
 
-    // Select text to speech alerts radio
-    const ttsRadio = page
-      .getByRole('cell', { name: 'Text to speech alerts' })
-      .getByRole('radio');
-    await ttsRadio.click();
-    expect(await ttsRadio.isChecked()).toBe(true);
-
     // Select that don't have access to air conditioning
     const tableCell = page
       .locator('tr:has-text("Air conditioning")')

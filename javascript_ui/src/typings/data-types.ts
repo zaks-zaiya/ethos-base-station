@@ -66,5 +66,4 @@ export interface CoolingStrategy {
 
 export enum AudioType {
   TONE = 'tone',
-  TTS = 'text-to-speech',
 }

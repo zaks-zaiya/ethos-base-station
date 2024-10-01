@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
 
 import { playAudio } from 'src/helpers/audioAlertDispatcher';
-import { useDataPreferencesStore } from 'src/stores/dataPreferences';
 import { useDataPhoneNumberStore } from 'src/stores/dataPhoneNumberStore';
 import { useDatabaseStore } from 'src/stores/database';
 import { useVolumeStore } from 'src/stores/volume';
@@ -102,7 +101,6 @@ export const useDataAlertsStore = defineStore('dataAlerts', {
       const databaseStore = useDatabaseStore();
       const volumeStore = useVolumeStore();
       const surveyStore = useSurveyStore();
-      const dataPreferencesStore = useDataPreferencesStore();
       const dataPhoneNumberStore = useDataPhoneNumberStore();
       const dataUserStore = useDataUserStore();
 
@@ -126,11 +124,7 @@ export const useDataAlertsStore = defineStore('dataAlerts', {
 
       // Play audio (if not phone app group)
       if (!dataUserStore.isPhoneAppGroup) {
-        playAudio(
-          dataPreferencesStore.audioType,
-          sensorData.riskLevel,
-          sensorData
-        );
+        playAudio(sensorData.riskLevel);
       }
 
       // Record alert in database

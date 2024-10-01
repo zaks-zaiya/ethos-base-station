@@ -6,9 +6,6 @@ import PowerSaveBlockerController from './PowerSaveBlockerController';
 // So that date can be set
 import { exec } from 'child_process';
 
-// Enable speech synthesis flag
-app.commandLine.appendSwitch('enable-speech-dispatcher');
-
 // Controller which handles logic to prevent device screen sleep during day
 const powerSaveBlockerController = new PowerSaveBlockerController();
 
