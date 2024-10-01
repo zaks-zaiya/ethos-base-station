@@ -57,7 +57,7 @@
             text-color="white"
             class="scroll-indicator-top"
             v-show="showTopScrollIndicator"
-            @click="scrollTo(0)"
+            @click="scrollPage('up')"
           />
           <q-avatar
             icon="arrow_downward"
@@ -66,7 +66,7 @@
             text-color="white"
             class="scroll-indicator-bottom"
             v-show="showBottomScrollIndicator"
-            @click="scrollTo(1)"
+            @click="scrollPage('down')"
           />
         </div>
         <div class="col-4 q-pl-lg">
@@ -212,27 +212,35 @@ export default defineComponent({
       }
     };
 
-    const scrollTo = (percent: number) => {
+    const scrollPage = (direction: 'up' | 'down') => {
       const table = tableRef.value?.$el;
       if (!table) {
         return;
       }
       const tableBody = table.querySelector('.q-table__middle.scroll');
       if (tableBody) {
+        const scrollAmount = tableBody.clientHeight * 0.9; // 90% of visible height
+        const targetScroll =
+          direction === 'up'
+            ? tableBody.scrollTop - scrollAmount
+            : tableBody.scrollTop + scrollAmount;
+
         const start = tableBody.scrollTop;
-        const end = percent * tableBody.scrollHeight;
-        const change = end - start;
-        const duration = 200; // Duration in ms
+        const change = targetScroll - start;
+        const duration = 300; // Duration in ms
         const startTime = performance.now();
 
         const animateScroll = (currentTime: number) => {
           const elapsedTime = currentTime - startTime;
-          const progress = elapsedTime / duration;
+          const progress = Math.min(elapsedTime / duration, 1);
 
           tableBody.scrollTop = start + change * easeInOutQuad(progress);
 
           if (progress < 1) {
             window.requestAnimationFrame(animateScroll);
+          } else {
+            // Update indicators after scrolling
+            handleScroll({ target: tableBody } as unknown as UIEvent);
           }
         };
 
@@ -260,7 +268,7 @@ export default defineComponent({
       showBottomScrollIndicator,
       showTopScrollIndicator,
       onRowClick,
-      scrollTo,
+      scrollPage,
     };
   },
 });

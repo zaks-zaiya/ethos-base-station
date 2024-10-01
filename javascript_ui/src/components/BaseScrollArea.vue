@@ -25,7 +25,7 @@
         transform: translateX(-50%);
       "
       v-show="isContentBelow"
-      @click="scrollToPercent(1)"
+      @click="scrollPageDown"
     />
 
     <q-avatar
@@ -40,7 +40,7 @@
         transform: translateX(-50%);
       "
       v-show="isContentAbove"
-      @click="scrollToPercent(0)"
+      @click="scrollPageUp"
     />
   </div>
 </template>
@@ -114,12 +114,28 @@ export default defineComponent({
       return false;
     });
 
-    /**
-     * Scroll to a certain point in the scroll area, over 200ms
-     * @param percent A number between 0 and 1 which specifies how far to scroll
-     */
-    const scrollToPercent = (percent: number) => {
-      scrollArea.value?.setScrollPercentage('vertical', percent, 200);
+    const scrollPageDown = () => {
+      if (scrollArea.value) {
+        const { verticalPosition, verticalContainerSize, verticalSize } =
+          scrollArea.value.getScroll();
+        const newPosition = Math.min(
+          verticalPosition + verticalContainerSize,
+          verticalSize
+        );
+        scrollArea.value.setScrollPosition('vertical', newPosition, 200);
+      }
+    };
+
+    const scrollPageUp = () => {
+      if (scrollArea.value) {
+        const { verticalPosition, verticalContainerSize } =
+          scrollArea.value.getScroll();
+        const newPosition = Math.max(
+          verticalPosition - verticalContainerSize,
+          0
+        );
+        scrollArea.value.setScrollPosition('vertical', newPosition, 200);
+      }
     };
 
     return {
@@ -128,7 +144,8 @@ export default defineComponent({
       scrollArea,
       isContentBelow,
       isContentAbove,
-      scrollToPercent,
+      scrollPageDown,
+      scrollPageUp,
       thumbStyle: {
         right: '4px',
         borderRadius: '5px',
