@@ -42,6 +42,7 @@ export interface UserData {
   weightKg: undefined | number;
   sex: undefined | 'male' | 'female' | 'other';
   isPhoneAppGroup: boolean;
+  isFitbitUser: boolean;
 }
 
 // Preferences

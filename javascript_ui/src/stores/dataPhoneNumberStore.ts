@@ -177,5 +177,22 @@ export const useDataPhoneNumberStore = defineStore('dataPhoneNumber', {
         );
       }
     },
+
+    async sendFitbitNotification() {
+      const { id } = useDataUserStore();
+      if (!id) {
+        console.warn('User ID undefined');
+        return;
+      }
+
+      const result = await makeApiRequest('sendFitbitPushNotification', {
+        identity: id.toString(),
+      });
+      if (result) {
+        console.log('Fitbit notification sent!');
+      } else {
+        console.error('Failed to send fitbit notification');
+      }
+    },
   },
 });

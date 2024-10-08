@@ -5,6 +5,7 @@
 <script lang="ts">
 import { defineComponent, watch } from 'vue';
 
+import { useFitbitNotificationStore } from 'stores/fitbitNotification';
 import { useDataSensorStore } from 'stores/dataSensor';
 import { useWeatherStore } from 'stores/weather';
 import { useDataPreferencesStore } from './stores/dataPreferences';
@@ -37,6 +38,10 @@ export default defineComponent({
     // Setup BOM survey pooling
     const socketBomStore = useSocketBomStore();
     socketBomStore.startPolling();
+
+    // Start Fitbit notification service
+    const fitbitNotificationStore = useFitbitNotificationStore();
+    fitbitNotificationStore.startNotificationSchedule();
 
     // Initialize database
     const databaseStore = useDatabaseStore();

@@ -18,13 +18,22 @@ interface SurveyPushNotificationData {
   surveyType: 'bom' | 'alert' | 'both';
 }
 
+interface FitbitPushNotificationData {
+  identity: string;
+}
+
 // Generic function to handle API calls
 export async function makeApiRequest(
   urlPath:
     | 'sendSMSNotification'
     | 'sendAlertPushNotification'
-    | 'sendSurveyPushNotification',
-  data: SMSAlertData | PushNotificationData | SurveyPushNotificationData
+    | 'sendSurveyPushNotification'
+    | 'sendFitbitPushNotification',
+  data:
+    | SMSAlertData
+    | PushNotificationData
+    | SurveyPushNotificationData
+    | FitbitPushNotificationData
 ): Promise<string | null> {
   const url = `https://${process.env.COUCH_DB_URL}/server/${urlPath}`;
   const dataUserStore = useDataUserStore();

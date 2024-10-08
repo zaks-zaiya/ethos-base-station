@@ -15,6 +15,7 @@ export const useDataUserStore = defineStore('dataUser', {
     weightKg: undefined,
     sex: undefined,
     isPhoneAppGroup: true,
+    isFitbitUser: false,
   }),
 
   getters: {

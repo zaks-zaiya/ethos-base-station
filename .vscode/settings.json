@@ -12,6 +12,7 @@
     "axios",
     "bksp",
     "eventlet",
+    "Fitbit",
     "fontsize",
     "Persistedstate",
     "pinia",

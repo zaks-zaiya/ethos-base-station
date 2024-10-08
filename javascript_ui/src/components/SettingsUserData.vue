@@ -12,6 +12,19 @@
     v-model="dataUserStore.isPhoneAppGroup"
   />
 
+  <!-- Is a Fitbit user? -->
+  <template v-if="dataUserStore.isPhoneAppGroup">
+    <div class="q-mt-lg text-bold">
+      Will this user be receiving a Fitbit to use during the trial?
+    </div>
+    <q-toggle
+      size="lg"
+      class="q-mb-lg text"
+      :label="dataUserStore.isFitbitUser ? 'Yes' : 'No'"
+      v-model="dataUserStore.isFitbitUser"
+    />
+  </template>
+
   <div class="q-mt-lg text-bold">Database information</div>
   <!-- User ID -->
   <input-keyboard
