@@ -22,7 +22,7 @@ greenlet==2.0.1
 idna==3.4
 joblib==1.4.2
 multidict==6.0.4
-numpy==2.1.1
+numpy==2.0.1
 pycryptodome==3.19.0
 pyftdi==0.54.0
 pyserial==3.5
