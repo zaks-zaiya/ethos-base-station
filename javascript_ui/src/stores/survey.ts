@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { SurveyDatabaseStructure } from 'src/typings/database-types';
 import { useDatabaseStore } from './database';
 import { useDataPhoneNumberStore } from './dataPhoneNumberStore';
+import { useDataUserStore } from './dataUser';
 
 export const useSurveyStore = defineStore('survey', {
   persist: true,
@@ -73,20 +74,25 @@ export const useSurveyStore = defineStore('survey', {
         // Set whether to show bom questions
         this.isShowBomQuestions = isShowBomQuestions;
 
-        // Send push notification for survey
         const dataPhoneNumberStore = useDataPhoneNumberStore();
-        if (this.alertsInLastTimePeriod > 0 && this.isShowBomQuestions) {
-          dataPhoneNumberStore.sendSurveyNotification('both');
-        } else if (this.alertsInLastTimePeriod > 0) {
-          dataPhoneNumberStore.sendSurveyNotification('alert');
-        } else if (this.isShowBomQuestions) {
-          dataPhoneNumberStore.sendSurveyNotification('bom');
-        } else {
-          console.error('Not sending survey, something has gone wrong');
-        }
+        const dataUserStore = useDataUserStore();
 
-        // Show modal
-        this.isShowSurveyModal = true;
+        if (dataUserStore.isPhoneAppGroup) {
+          // Send push notification for survey (phone app group)
+          // This will also set the displayUserSurvey endpoint to true for that user
+          if (this.alertsInLastTimePeriod > 0 && this.isShowBomQuestions) {
+            dataPhoneNumberStore.sendSurveyNotification('both');
+          } else if (this.alertsInLastTimePeriod > 0) {
+            dataPhoneNumberStore.sendSurveyNotification('alert');
+          } else if (this.isShowBomQuestions) {
+            dataPhoneNumberStore.sendSurveyNotification('bom');
+          } else {
+            console.error('Not sending survey, something has gone wrong');
+          }
+        } else {
+          // Show modal (base station group)
+          this.isShowSurveyModal = true;
+        }
       }
     },
     setup() {

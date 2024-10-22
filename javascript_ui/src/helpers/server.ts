@@ -22,18 +22,23 @@ interface FitbitPushNotificationData {
   identity: string;
 }
 
-// Generic function to handle API calls
+interface UserSurveyData {
+  newValue: boolean;
+}
+
 export async function makeApiRequest(
   urlPath:
     | 'sendSMSNotification'
     | 'sendAlertPushNotification'
     | 'sendSurveyPushNotification'
-    | 'sendFitbitPushNotification',
+    | 'sendFitbitPushNotification'
+    | 'displayUserSurvey',
   data:
     | SMSAlertData
     | PushNotificationData
     | SurveyPushNotificationData
     | FitbitPushNotificationData
+    | UserSurveyData
 ): Promise<string | null> {
   const url = `https://${process.env.COUCH_DB_URL}/server/${urlPath}`;
   const dataUserStore = useDataUserStore();
@@ -61,4 +66,11 @@ export async function makeApiRequest(
     console.error('Error:', error);
     return null;
   }
+}
+
+// Helper function specifically for updating user survey display
+export async function setDisplayUserSurvey(
+  newValue: boolean
+): Promise<string | null> {
+  return makeApiRequest('displayUserSurvey', { newValue });
 }
