@@ -7,7 +7,7 @@
           <div class="fontsize-20">
             The <b>{{ currentRoomsAtRiskLevel }}</b> sensor/s has recorded
             temperature readings which indicate that your body temperature may
-            be become
+            become
             {{
               dataAlertsStore.alertRiskLevel === RiskLevel.HIGH
                 ? 'unsafely elevated'
