@@ -41,6 +41,7 @@ export async function makeApiRequest(
     | FitbitPushNotificationData
     | UserSurveyData
 ): Promise<string | null> {
+  console.log(`Making API request to ${urlPath} with data: ${data}`);
   const url = `https://${process.env.COUCH_DB_URL}/server/${urlPath}`;
   const dataUserStore = useDataUserStore();
 

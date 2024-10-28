@@ -41,6 +41,8 @@ function parseAustralianPhoneNumber(phoneNumber: string) {
 }
 
 export const useDataPhoneNumberStore = defineStore('dataPhoneNumber', {
+  persist: true,
+
   state: (): PhoneNumberState => ({
     isSmsNotificationsEnabled: false,
     phoneNumbers: [''],
@@ -71,6 +73,8 @@ export const useDataPhoneNumberStore = defineStore('dataPhoneNumber', {
       if (!this.isSmsNotificationsEnabled) {
         return;
       }
+
+      console.log('Sending SMS notification');
 
       const { id } = useDataUserStore();
       if (!id) {
