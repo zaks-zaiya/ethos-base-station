@@ -1,7 +1,11 @@
 import { defineStore } from 'pinia';
 import { useDataUserStore } from 'src/stores/dataUser';
 import { RiskLevel } from 'src/typings/data-types';
-import { makeApiRequest, setDisplayUserSurvey } from 'src/helpers/server';
+import {
+  makeApiRequest,
+  setDisplayUserHeatSurvey,
+  setDisplayUserBomSurvey,
+} from 'src/helpers/server';
 
 interface PhoneNumberState {
   isSmsNotificationsEnabled: boolean;
@@ -166,9 +170,15 @@ export const useDataPhoneNumberStore = defineStore('dataPhoneNumber', {
       }
 
       if (surveyType === 'both' || surveyType === 'alert') {
-        // Set displayUserSurvey endpoint to true for phone app
-        // This is so the phone app knows to display the user survey
-        setDisplayUserSurvey(true);
+        // Set displayUserHeatSurvey endpoint to true for phone app
+        // This is so the phone app knows to display the user heat survey
+        setDisplayUserHeatSurvey(true);
+      }
+
+      if (surveyType === 'both' || surveyType === 'bom') {
+        // Set displayUserBomSurvey endpoint to true for phone app
+        // This is so the phone app knows to display the BOM survey
+        setDisplayUserBomSurvey(true);
       }
 
       // Send survey push notification

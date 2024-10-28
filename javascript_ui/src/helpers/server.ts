@@ -32,7 +32,8 @@ export async function makeApiRequest(
     | 'sendAlertPushNotification'
     | 'sendSurveyPushNotification'
     | 'sendFitbitPushNotification'
-    | 'displayUserSurvey',
+    | 'displayUserHeatSurvey'
+    | 'displayUserBomSurvey',
   data:
     | SMSAlertData
     | PushNotificationData
@@ -68,9 +69,16 @@ export async function makeApiRequest(
   }
 }
 
-// Helper function specifically for updating user survey display
-export async function setDisplayUserSurvey(
+// Helper function specifically for updating heat survey display
+export async function setDisplayUserHeatSurvey(
   newValue: boolean
 ): Promise<string | null> {
-  return makeApiRequest('displayUserSurvey', { newValue });
+  return makeApiRequest('displayUserHeatSurvey', { newValue });
+}
+
+// Helper function specifically for updating bom survey display
+export async function setDisplayUserBomSurvey(
+  newValue: boolean
+): Promise<string | null> {
+  return makeApiRequest('displayUserBomSurvey', { newValue });
 }
