@@ -44,6 +44,7 @@ import { useDataPreferencesStore } from 'src/stores/dataPreferences';
 import { useDatabaseStore } from 'src/stores/database';
 import { useDataAlertsStore } from 'src/stores/dataAlerts';
 import { useWeatherStore } from 'src/stores/weather';
+import { useDataPhoneNumberStore } from 'src/stores/dataPhoneNumberStore';
 
 export default defineComponent({
   setup() {
@@ -52,6 +53,7 @@ export default defineComponent({
     const dataAlertsStore = useDataAlertsStore();
     const dataUserStore = useDataUserStore();
     const dataSensorStore = useDataSensorStore();
+    const dataPhoneNumberStore = useDataPhoneNumberStore();
     const dataPreferencesStore = useDataPreferencesStore();
     const volumeStore = useVolumeStore();
     const databaseStore = useDatabaseStore();
@@ -63,6 +65,7 @@ export default defineComponent({
       dataAlertsStore.$reset();
       dataUserStore.$reset();
       dataSensorStore.$reset();
+      dataPhoneNumberStore.$reset();
       dataPreferencesStore.$reset();
       dataSensorStore.setup();
       // Destroy database and clear data
