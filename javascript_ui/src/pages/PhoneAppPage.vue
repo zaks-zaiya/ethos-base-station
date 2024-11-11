@@ -3,6 +3,15 @@
     <div class="text-h2 text-grey text-center text-weight-bold text-container">
       You can press the power button at the top right to sleep the device
     </div>
+    <q-list>
+      <div class="text">Sensor Status:</div>
+      <div
+        v-for="sensor in dataSensorStore.getSortedSensorData"
+        :key="sensor.id"
+      >
+        <CardSensorBasic :sensor="sensor"></CardSensorBasic>
+      </div>
+    </q-list>
     <div class="image-container">
       <img src="ethos.svg" height="100" class="q-mr-xl" />
       <img src="griffith.svg" height="85" />
@@ -10,7 +19,12 @@
   </q-page>
 </template>
 
-<script lang="ts"></script>
+<script setup lang="ts">
+import CardSensorBasic from 'components/CardSensorBasic.vue';
+import { useDataSensorStore } from 'src/stores/dataSensor';
+
+const dataSensorStore = useDataSensorStore();
+</script>
 
 <style scoped>
 .text-container {

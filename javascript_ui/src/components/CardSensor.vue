@@ -12,7 +12,7 @@
       <div class="fontsize-22 text-bold">
         {{ sensor.location ? sensor.location : 'Undefined' }}
         {{ sensor.id ? '' : '(ID Undefined)' }}
-        <span v-if="isOffline">(Offline)</span>
+        <span v-if="sensorState.isOffline">(Offline)</span>
         <span v-if="isCalculating">(Calculating)</span>
       </div>
     </q-card-section>
@@ -27,17 +27,19 @@
         {{ sensor.humidity.toFixed(1) }}% RH
       </div>
       <div>
-        <span class="fontsize-14 text-italic">{{ formattedLastSeen }}</span>
+        <span class="fontsize-14 text-italic">{{
+          sensorState.formattedLastSeen
+        }}</span>
         <q-icon
           class="q-mr-md float-right"
           size="md"
-          :name="signalStrengthIcon"
+          :name="sensorState.signalStrengthIcon.value"
         />
       </div>
     </q-card-section>
 
     <!-- Fan use -->
-    <div v-if="isDisplayFanWarning && !isOffline">
+    <div v-if="isDisplayFanWarning && !sensorState.isOffline">
       <q-separator />
       <q-card-section class="q-ml-sm q-pa-none row">
         <div class="fontsize-22 text-bold">DONT USE FAN</div>
@@ -54,10 +56,10 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed, inject } from 'vue';
-import { isOfflineSensor } from 'src/helpers/dataSensor';
 import { SensorData, RiskLevel } from 'src/typings/data-types';
 import { shouldUseFan } from 'src/helpers/fanAndWindowUse';
 import { useDateTimeStore } from 'src/stores/dateTime';
+import { useSensorState } from 'src/composables/useSensorState';
 
 export default defineComponent({
   name: 'CardSensor',
@@ -68,18 +70,13 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const dateTimeStore = useDateTimeStore();
+    const sensorState = useSensorState(props.sensor);
     const isShowFanModel = inject('isShowFanModal');
 
     // Whether we should display 'DON'T USE FAN' at bottom of component
     const isDisplayFanWarning = computed(
       () => shouldUseFan(props.sensor) === 'no'
     );
-
-    // Calculate whether the sensor is offline using currentTime and lastSeen
-    let isOffline = computed(() => {
-      return isOfflineSensor(props.sensor, dateTimeStore.currentDate.getTime());
-    });
 
     // Whether the risk level is currently being calculated
     let isCalculating = computed(() => {
@@ -94,18 +91,6 @@ export default defineComponent({
       return !props.sensor.id || !props.sensor.location;
     });
 
-    const signalStrengthIcon = computed(() => {
-      if (!props.sensor.rssi) {
-        return '';
-      } else if (props.sensor.rssi > -80) {
-        return 'signal_cellular_alt';
-      } else if (props.sensor.rssi > -95) {
-        return 'signal_cellular_alt_2_bar';
-      } else {
-        return 'signal_cellular_alt_1_bar';
-      }
-    });
-
     // Calculate what background color to use for the form card
     let backgroundColor = computed(() => {
       if (
@@ -115,7 +100,7 @@ export default defineComponent({
       ) {
         // Sensor is undefined
         return 'bg-grey-8 text-grey';
-      } else if (isOffline.value) {
+      } else if (sensorState.isOffline.value) {
         // Sensor is offline
         return 'bg-grey text-grey-8';
       } else if (isCalculating.value) {
@@ -155,29 +140,13 @@ export default defineComponent({
       }
     });
 
-    let formattedLastSeen = computed(() => {
-      const lastSeen = props.sensor.lastSeen;
-      if (!lastSeen) {
-        return 'Have never received data';
-      }
-
-      let strTime = lastSeen.toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-      });
-
-      return strTime + ', ' + lastSeen.toLocaleDateString();
-    });
-
     return {
+      sensorState,
       isShowFanModel,
       isDisplayFanWarning,
       isUndefined,
-      isOffline,
       isCalculating,
-      signalStrengthIcon,
       backgroundColor,
-      formattedLastSeen,
       emoticonStyle,
     };
   },
