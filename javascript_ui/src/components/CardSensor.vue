@@ -58,7 +58,6 @@
 import { defineComponent, PropType, computed, inject } from 'vue';
 import { SensorData, RiskLevel } from 'src/typings/data-types';
 import { shouldUseFan } from 'src/helpers/fanAndWindowUse';
-import { useDateTimeStore } from 'src/stores/dateTime';
 import { useSensorState } from 'src/composables/useSensorState';
 
 export default defineComponent({
