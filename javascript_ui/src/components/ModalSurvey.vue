@@ -86,7 +86,7 @@
         <!-- Question 3 -->
         <template v-if="surveyStore.isShowBomQuestions">
           <div class="q-mt-lg text-bold fontsize-20">
-            Were you aware of any heatwave alerts from The Bureau of Metrology
+            Were you aware of any heatwave alerts from The Bureau of Meteorology
             (BOM) for the date of the survey?
             <span>
               (survey sent on the: {{ surveyStore.surveyDisplayDateString }})
