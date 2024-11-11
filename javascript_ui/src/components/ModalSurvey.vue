@@ -13,7 +13,8 @@
     full-width
     full-height
     persistent
-    v-model="isShowModal"
+    :model-value="isShowModal"
+    @update:model-value="surveyStore.isShowSurveyModal = $event"
     @hide="onHide"
   >
     <BaseModalScroll>
