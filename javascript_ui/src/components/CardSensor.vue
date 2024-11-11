@@ -12,7 +12,7 @@
       <div class="fontsize-22 text-bold">
         {{ sensor.location ? sensor.location : 'Undefined' }}
         {{ sensor.id ? '' : '(ID Undefined)' }}
-        <span v-if="sensorState.isOffline">(Offline)</span>
+        <span v-if="sensorState.isOffline.value">(Offline)</span>
         <span v-if="isCalculating">(Calculating)</span>
       </div>
     </q-card-section>
@@ -28,7 +28,7 @@
       </div>
       <div>
         <span class="fontsize-14 text-italic">{{
-          sensorState.formattedLastSeen
+          sensorState.formattedLastSeen.value
         }}</span>
         <q-icon
           class="q-mr-md float-right"
@@ -39,7 +39,7 @@
     </q-card-section>
 
     <!-- Fan use -->
-    <div v-if="isDisplayFanWarning && !sensorState.isOffline">
+    <div v-if="isDisplayFanWarning && !sensorState.isOffline.value">
       <q-separator />
       <q-card-section class="q-ml-sm q-pa-none row">
         <div class="fontsize-22 text-bold">DONT USE FAN</div>

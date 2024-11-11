@@ -1,8 +1,8 @@
 <template>
   <q-item class="q-py-sm items-center">
     <q-icon
-      :name="sensorState.isOffline ? 'close' : 'check'"
-      :color="sensorState.isOffline ? 'negative' : 'positive'"
+      :name="sensorState.isOffline.value ? 'close' : 'check'"
+      :color="sensorState.isOffline.value ? 'negative' : 'positive'"
       size="sm"
       class="q-mx-sm"
     />
@@ -13,7 +13,7 @@
     />
     {{ sensor.location || 'Undefined' }}
     ({{ sensor.id || 'No ID' }})
-    {{ sensorState.formattedLastSeen }}
+    {{ sensorState.formattedLastSeen.value }}
   </q-item>
 </template>
 
