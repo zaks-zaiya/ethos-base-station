@@ -18,6 +18,7 @@
               If you do not intend to be here please contact the Ethos team:
             </div>
             <CardContact />
+            <div class="q-mt-lg">App version: {{ version }}</div>
           </div>
         </base-scroll-area>
       </q-step>
@@ -96,6 +97,7 @@ import { useDataSensorStore } from 'src/stores/dataSensor';
 import { useKeyboardStore } from 'src/stores/keyboard';
 import { QStepper } from 'quasar';
 import BaseScrollArea from 'src/components/BaseScrollArea.vue';
+import { version } from '../../package.json';
 
 export default defineComponent({
   components: {
@@ -150,6 +152,7 @@ export default defineComponent({
       isNextStepAvailable,
       keyboardStore,
       nextStep,
+      version,
     };
   },
 });
