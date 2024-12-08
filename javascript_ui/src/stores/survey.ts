@@ -17,6 +17,9 @@ export const useSurveyStore = defineStore('survey', {
     // Backup of data for survey to know whether to show BOM questions
     isShowBomQuestions: false,
 
+    // Store when bom survey notification was last sent
+    bomPushNotificationLastSentDate: undefined as undefined | Date,
+
     // Whether to show the survey modal
     isShowSurveyModal: false,
     // When survey is shown
@@ -46,6 +49,7 @@ export const useSurveyStore = defineStore('survey', {
     checkAndDisplaySurvey() {
       const currentDate = new Date();
       const currentHour = currentDate.getHours();
+      const ONE_HOUR = 60 * 60 * 1000; // ms
       if (
         currentHour === 19 &&
         (this.alertsSinceLastSurvey > 0 || this.isActiveBomAlert === true)
@@ -77,15 +81,23 @@ export const useSurveyStore = defineStore('survey', {
         const dataPhoneNumberStore = useDataPhoneNumberStore();
         const dataUserStore = useDataUserStore();
 
-        if (dataUserStore.isPhoneAppGroup) {
+        if (
+          dataUserStore.isPhoneAppGroup &&
+          (!this.bomPushNotificationLastSentDate ||
+            Date.now() - this.bomPushNotificationLastSentDate.getTime() >
+              ONE_HOUR)
+        ) {
           // Send push notification for survey (phone app group)
           // This will also set the displayUserSurvey endpoint to true for that user
           if (this.alertsInLastTimePeriod > 0 && this.isShowBomQuestions) {
             dataPhoneNumberStore.sendSurveyNotification('both');
+            this.bomPushNotificationLastSentDate = new Date();
           } else if (this.alertsInLastTimePeriod > 0) {
             dataPhoneNumberStore.sendSurveyNotification('alert');
+            this.bomPushNotificationLastSentDate = new Date();
           } else if (this.isShowBomQuestions) {
             dataPhoneNumberStore.sendSurveyNotification('bom');
+            this.bomPushNotificationLastSentDate = new Date();
           } else {
             console.error('Not sending survey, something has gone wrong');
           }
