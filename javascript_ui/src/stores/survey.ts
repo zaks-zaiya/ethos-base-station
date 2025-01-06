@@ -18,7 +18,7 @@ export const useSurveyStore = defineStore('survey', {
     isShowBomQuestions: false,
 
     // Store when bom survey notification was last sent
-    bomPushNotificationLastSentDate: undefined as undefined | Date,
+    surveyPushNotificationLastSentDate: undefined as undefined | Date,
 
     // Whether to show the survey modal
     isShowSurveyModal: false,
@@ -69,6 +69,9 @@ export const useSurveyStore = defineStore('survey', {
         const alertsInLastTimePeriod = this.alertsSinceLastSurvey;
         // Store current bom status
         const isShowBomQuestions = this.isActiveBomAlert;
+        // Store last sent notification date
+        const surveyPushNotificationLastSentDate =
+          this.surveyPushNotificationLastSentDate;
 
         // Reset store (including count)
         this.$reset();
@@ -77,27 +80,30 @@ export const useSurveyStore = defineStore('survey', {
         this.alertsInLastTimePeriod = alertsInLastTimePeriod;
         // Set whether to show bom questions
         this.isShowBomQuestions = isShowBomQuestions;
+        // Restore last sent notification date
+        this.surveyPushNotificationLastSentDate =
+          surveyPushNotificationLastSentDate;
 
         const dataPhoneNumberStore = useDataPhoneNumberStore();
         const dataUserStore = useDataUserStore();
 
         if (
           dataUserStore.isPhoneAppGroup &&
-          (!this.bomPushNotificationLastSentDate ||
-            Date.now() - this.bomPushNotificationLastSentDate.getTime() >
+          (!this.surveyPushNotificationLastSentDate ||
+            Date.now() - this.surveyPushNotificationLastSentDate.getTime() >
               ONE_HOUR)
         ) {
           // Send push notification for survey (phone app group)
           // This will also set the displayUserSurvey endpoint to true for that user
           if (this.alertsInLastTimePeriod > 0 && this.isShowBomQuestions) {
             dataPhoneNumberStore.sendSurveyNotification('both');
-            this.bomPushNotificationLastSentDate = new Date();
+            this.surveyPushNotificationLastSentDate = new Date();
           } else if (this.alertsInLastTimePeriod > 0) {
             dataPhoneNumberStore.sendSurveyNotification('alert');
-            this.bomPushNotificationLastSentDate = new Date();
+            this.surveyPushNotificationLastSentDate = new Date();
           } else if (this.isShowBomQuestions) {
             dataPhoneNumberStore.sendSurveyNotification('bom');
-            this.bomPushNotificationLastSentDate = new Date();
+            this.surveyPushNotificationLastSentDate = new Date();
           } else {
             console.error('Not sending survey, something has gone wrong');
           }
