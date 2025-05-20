@@ -1,10 +1,10 @@
-# Ethos Raspberry Pi
+# Ethos Base Station
 
 This repository stores the code which is run on the Raspberry Pi for the Ethos in home system trial.
 
 ## Contents
 
-- [Ethos Raspberry Pi](#ethos-raspberry-pi)
+- [Ethos Base Station](#ethos-base-station)
   - [Contents](#contents)
   - [Tips](#tips)
     - [Show settings button](#show-settings-button)
