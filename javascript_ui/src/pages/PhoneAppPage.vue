@@ -12,10 +12,6 @@
         <CardSensorBasic :sensor="sensor"></CardSensorBasic>
       </div>
     </q-list>
-    <div class="image-container">
-      <img src="ethos.svg" height="100" class="q-mr-xl" />
-      <img src="griffith.svg" height="85" />
-    </div>
   </q-page>
 </template>
 

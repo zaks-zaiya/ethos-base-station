@@ -13,12 +13,6 @@
     <!-- Main layout -->
     <q-header flat class="transparent" v-if="$route.path !== '/initialize'">
       <q-toolbar class="ethos-toolbar">
-        <img
-          v-if="$route.path !== '/settings'"
-          src="ethos.svg"
-          height="50"
-          @click="showSettingsButtonHandler.handlePress()"
-        />
         <q-btn
           v-if="
             $route.path !== '/' &&
@@ -66,8 +60,6 @@
           :icon="volumeIcon"
         />
         <q-btn
-          v-if="isShowSettingsButton"
-          @click="hideSettingsButton"
           class="q-ml-md fontsize-16"
           color="info"
           icon="settings"
