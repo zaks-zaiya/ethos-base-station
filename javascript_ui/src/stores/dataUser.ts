@@ -13,6 +13,7 @@ export const useDataUserStore = defineStore('dataUser', {
     ageYears: undefined,
     heightCm: undefined,
     weightKg: undefined,
+    address: undefined,
     sex: undefined,
     isPhoneAppGroup: true,
     isFitbitUser: false,
@@ -30,6 +31,7 @@ export const useDataUserStore = defineStore('dataUser', {
         !state.ageYears ||
         !state.heightCm ||
         !state.weightKg ||
+        !state.address ||
         !state.sex
       );
     },
@@ -115,6 +117,14 @@ export const useDataUserStore = defineStore('dataUser', {
         return true;
       }
       return 'Invalid weight value (1-399kg)';
+    },
+
+    checkAddress(address: string) {
+      if (address.length > 0 && address.length < 100) {
+        this.address = address;
+        return true;
+      }
+      return 'Invalid address';
     },
   },
 });

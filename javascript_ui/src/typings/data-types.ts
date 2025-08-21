@@ -40,6 +40,7 @@ export interface UserData {
   ageYears: undefined | number;
   heightCm: undefined | number;
   weightKg: undefined | number;
+  address: undefined | string;
   sex: undefined | 'male' | 'female' | 'other';
   isPhoneAppGroup: boolean;
   isFitbitUser: boolean;
@@ -52,12 +53,12 @@ export interface CoolingStrategy {
   icon: string;
   effectiveness: number;
   group:
-    | 'Water immersion'
-    | 'Other water'
-    | 'Clothing related'
-    | 'Air ventilation'
-    | 'Activity based'
-    | '';
+  | 'Water immersion'
+  | 'Other water'
+  | 'Clothing related'
+  | 'Air ventilation'
+  | 'Activity based'
+  | '';
   extraInfo: {
     bestUse: Array<string>;
     whenUse: Array<string>;

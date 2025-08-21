@@ -113,6 +113,13 @@
     label="Weight (kg)"
   />
 
+  <!-- Address -->
+  <input-keyboard
+    v-model="dataUserStore.address"
+    :customRule="dataUserStore.checkAddress"
+    label="Address"
+  />
+
   <!-- Sex -->
   <div class="q-mt-lg text-bold">What is your birth sex?</div>
   <q-option-group

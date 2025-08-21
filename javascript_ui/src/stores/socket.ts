@@ -16,6 +16,7 @@ interface SocketEnvironmentalConditions {
   heightM: number;
   ageYears: number;
   weightKg: number;
+  address: string;
   sex: 'male' | 'female';
   Ta: number;
   RH: number;
@@ -139,6 +140,7 @@ export const useSocketStore = defineStore('socket', {
           !(
             dataUserStore.heightCm &&
             dataUserStore.weightKg &&
+            dataUserStore.address &&
             dataUserStore.ageYears &&
             dataUserStore.sex &&
             sensorData.temperature &&
@@ -162,6 +164,7 @@ export const useSocketStore = defineStore('socket', {
           heightM: dataUserStore.heightCm / 100,
           weightKg: dataUserStore.weightKg,
           ageYears: dataUserStore.ageYears,
+          address: dataUserStore.address,
           sex: dataUserStore.sex == 'female' ? 'female' : 'male',
           Ta: sensorData.temperature,
           RH: sensorData.humidity,
