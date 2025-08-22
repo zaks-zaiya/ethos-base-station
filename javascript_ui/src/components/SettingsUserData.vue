@@ -81,7 +81,6 @@
   <div class="q-mt-lg text-bold">User information</div>
   <!-- Postcode -->
   <input-keyboard
-    v-if="!dataUserStore.isPhoneAppGroup"
     v-model.number="dataUserStore.postcode"
     :customRule="dataUserStore.checkPostcode"
     :hint="`Lat: ${dataUserStore.latitude}, Lon: ${dataUserStore.longitude}`"
@@ -111,6 +110,13 @@
     :customRule="dataUserStore.checkWeight"
     type="number"
     label="Weight (kg)"
+  />
+
+  <!-- Address -->
+  <input-keyboard
+    v-model="dataUserStore.address"
+    :customRule="dataUserStore.checkAddress"
+    label="Address"
   />
 
   <!-- Sex -->

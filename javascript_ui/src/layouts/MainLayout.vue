@@ -13,6 +13,7 @@
     <!-- Main layout -->
     <q-header flat class="transparent" v-if="$route.path !== '/initialize'">
       <q-toolbar class="ethos-toolbar">
+        <img src="/Logo.png" class="q-ml-md" style="height: 60px;" />
         <q-btn
           v-if="
             $route.path !== '/' &&
@@ -103,6 +104,7 @@ import ModalFanInfo from 'src/components/ModalFanInfo.vue';
 import ModalSurvey from 'src/components/ModalSurvey.vue';
 import ModalRoomSelection from 'src/components/ModalRoomSelection.vue';
 import ModalChangeDateTime from 'src/components/ModalChangeDateTime.vue';
+import Logo from 'src/assets/Logo.png';
 
 export default defineComponent({
   name: 'MainLayout',
